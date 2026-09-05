@@ -1,0 +1,56 @@
+{
+  "version": "0.2.0",
+  "issue_types": [
+    "bug",
+    "feature_request",
+    "ux_issue",
+    "documentation",
+    "other"
+  ],
+  "categories": [
+    "Reliability",
+    "Performance",
+    "Context & Memory",
+    "Model Quality",
+    "Tool Execution",
+    "Git & Workspace",
+    "App / UI / UX",
+    "CLI",
+    "IDE Integration",
+    "Authentication & Account",
+    "Usage & Credits",
+    "MCP & Integrations",
+    "Safety & Permissions",
+    "Installation & Updates",
+    "Onboarding & Documentation",
+    "Other"
+  ],
+  "surfaces": [
+    "Codex App",
+    "CLI",
+    "IDE Extension",
+    "Web",
+    "Unknown"
+  ],
+  "platforms": [
+    "Windows",
+    "macOS",
+    "Linux",
+    "Android",
+    "iOS",
+    "Other",
+    "Unknown"
+  ],
+  "severities": [
+    "critical",
+    "high",
+    "medium",
+    "low"
+  ],
+  "action_types": [
+    "investigate_now",
+    "validate",
+    "monitor",
+    "low_priority"
+  ]
+}

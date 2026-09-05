@@ -1,0 +1,23 @@
+# Development Pack Manifest
+
+- `README.md` — 项目入口
+- `AGENTS.md` — Codex 必须遵守的工程/产品约束
+- `CODEX_WORKFLOW.md` — 如何逐轮让 Codex 开发
+- `.env.example` — 环境变量模板
+- `docs/PRD.md` — MVP PRD
+- `docs/ARCHITECTURE.md` — 技术架构
+- `docs/DATA_PIPELINE.md` — 数据 Pipeline
+- `docs/EVAL_PLAN.md` — AI Eval 与效率评估
+- `docs/IMPLEMENTATION_PLAN.md` — 5 阶段开发顺序
+- `docs/PRODUCT_COPY_GUIDE.md` — 防止产品文案过度声称
+- `docs/DECISIONS.md` — 已锁定产品决策
+- `docs/SOURCES.md` — 官方实现参考
+- `config/taxonomy.json` — 固定一级 taxonomy
+- `config/ai_output.schema.json` — Structured Output Schema
+- `supabase/schema.sql` — 数据库 Schema
+- `prompts/00_BOOTSTRAP.md` — 第一轮
+- `prompts/01_DATA_INGESTION.md` — 真实数据
+- `prompts/02_AI_EXTRACTION.md` — AI 结构化抽取
+- `prompts/03_INTELLIGENCE.md` — Insights/Trend/Evidence
+- `prompts/04_RELEASES_ACTIONS.md` — Release/Opportunity
+- `prompts/05_EVAL_POLISH.md` — Eval/作品集收尾

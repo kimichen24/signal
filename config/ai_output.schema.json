@@ -1,0 +1,118 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "SignalIssueAnalysis",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "issue_type",
+    "surface",
+    "platform",
+    "category",
+    "subtopic",
+    "user_scenario",
+    "user_impact",
+    "severity",
+    "sentiment",
+    "summary",
+    "confidence",
+    "needs_review"
+  ],
+  "properties": {
+    "issue_type": {
+      "type": "string",
+      "enum": [
+        "bug",
+        "feature_request",
+        "ux_issue",
+        "documentation",
+        "other"
+      ]
+    },
+    "surface": {
+      "type": "string",
+      "enum": [
+        "Codex App",
+        "CLI",
+        "IDE Extension",
+        "Web",
+        "Unknown"
+      ]
+    },
+    "platform": {
+      "type": "string",
+      "enum": [
+        "Windows",
+        "macOS",
+        "Linux",
+        "Android",
+        "iOS",
+        "Other",
+        "Unknown"
+      ]
+    },
+    "category": {
+      "type": "string",
+      "enum": [
+        "Reliability",
+        "Performance",
+        "Context & Memory",
+        "Model Quality",
+        "Tool Execution",
+        "Git & Workspace",
+        "App / UI / UX",
+        "CLI",
+        "IDE Integration",
+        "Authentication & Account",
+        "Usage & Credits",
+        "MCP & Integrations",
+        "Safety & Permissions",
+        "Installation & Updates",
+        "Onboarding & Documentation",
+        "Other"
+      ]
+    },
+    "subtopic": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 120
+    },
+    "user_scenario": {
+      "type": "string",
+      "maxLength": 500
+    },
+    "user_impact": {
+      "type": "string",
+      "maxLength": 500
+    },
+    "severity": {
+      "type": "string",
+      "enum": [
+        "critical",
+        "high",
+        "medium",
+        "low"
+      ]
+    },
+    "sentiment": {
+      "type": "string",
+      "enum": [
+        "negative",
+        "neutral",
+        "positive",
+        "mixed"
+      ]
+    },
+    "summary": {
+      "type": "string",
+      "maxLength": 700
+    },
+    "confidence": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 1
+    },
+    "needs_review": {
+      "type": "boolean"
+    }
+  }
+}
