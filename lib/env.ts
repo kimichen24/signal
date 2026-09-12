@@ -15,6 +15,7 @@ export const serverEnvSchema = z.object({
 
   // Supabase — service role stays server-only (docs/ARCHITECTURE.md §9).
   NEXT_PUBLIC_SUPABASE_URL: z.string().url().optional(),
+  SUPABASE_ANON_KEY: z.string().min(1).optional(),
   SUPABASE_SERVICE_ROLE_KEY: z.string().min(1).optional(),
   DATABASE_URL: z.string().optional(),
 
@@ -96,5 +97,5 @@ export function getServerEnv(): ServerEnv {
 
 export function isSupabaseConfigured(): boolean {
   const env = getServerEnv();
-  return Boolean(env.NEXT_PUBLIC_SUPABASE_URL && env.SUPABASE_SERVICE_ROLE_KEY);
+  return Boolean(env.NEXT_PUBLIC_SUPABASE_URL && env.SUPABASE_ANON_KEY);
 }
