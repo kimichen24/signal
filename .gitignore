@@ -36,3 +36,6 @@ __pycache__/
 .pytest_cache/
 logs/
 eval/codex_agent_benchmark_timing.json
+
+.vercel
+.env*

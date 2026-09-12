@@ -13,7 +13,7 @@ export function InsightCard({ insight }: { insight: Insight }) {
           <CardTitle className="text-sm">{insight.name}</CardTitle>
           {insight.isEmerging ? (
             <Badge variant="destructive" className="ml-auto">
-              Emerging · growth +
+              新兴 · 增长 +
               {insight.growthRate !== null
                 ? Math.round(insight.growthRate * 100)
                 : "—"}
@@ -23,13 +23,13 @@ export function InsightCard({ insight }: { insight: Insight }) {
           ) : null}
           {insight.needsRefinement ? (
             <Badge variant="warning" className={insight.isEmerging ? "" : "ml-auto"}>
-              needs refinement
+              需进一步细化
             </Badge>
           ) : null}
           <Badge variant="secondary" className={insight.needsRefinement ? "" : "ml-auto"}>
             {insight.category}
           </Badge>
-          <Badge variant="outline">{insight.issueCount} issues</Badge>
+          <Badge variant="outline">{insight.issueCount} 条</Badge>
         </div>
         {insight.summary ? (
           <p className="text-sm leading-6 text-muted-foreground">
@@ -65,7 +65,7 @@ export function InsightCard({ insight }: { insight: Insight }) {
           </p>
         ) : null}
         <div>
-          <p className="font-medium">Representative evidence</p>
+          <p className="font-medium">代表性证据</p>
           <ul className="mt-1 space-y-1">
             {insight.representatives.map((evidence) => (
               <li key={evidence.issueNumber}>

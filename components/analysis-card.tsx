@@ -7,6 +7,14 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import type { RecentAnalysis } from "@/lib/supabase/queries";
+import {
+  ISSUE_TYPE,
+  CATEGORY,
+  SURFACE,
+  PLATFORM,
+} from "@/lib/labels";
+
+const label = (map: Record<string, string>, value: string) => map[value] ?? value;
 
 const SEVERITY_VARIANT: Record<string, "destructive" | "warning" | "secondary" | "outline"> = {
   critical: "destructive",
@@ -15,10 +23,14 @@ const SEVERITY_VARIANT: Record<string, "destructive" | "warning" | "secondary" |
   low: "outline",
 };
 
+const SEVERITY_LABEL: Record<string, string> = {
+  critical: "严重", high: "高", medium: "中", low: "低",
+};
+
 const SCOPE_LABEL: Record<string, string> = {
-  codex_core: "Codex core",
-  codex_adjacent: "Codex adjacent",
-  out_of_scope: "Out of scope",
+  codex_core: "Codex 核心",
+  codex_adjacent: "Codex 邻接",
+  out_of_scope: "范围外",
 };
 
 export function AnalysisCard({ analysis }: { analysis: RecentAnalysis }) {
@@ -40,10 +52,10 @@ export function AnalysisCard({ analysis }: { analysis: RecentAnalysis }) {
             variant={SEVERITY_VARIANT[analysis.severity] ?? "outline"}
             className="ml-auto"
           >
-            AI-estimated severity: {analysis.severity}
+            AI 估算严重度：{SEVERITY_LABEL[analysis.severity] ?? analysis.severity}
           </Badge>
           {analysis.needsReview ? (
-            <Badge variant="warning">Needs review</Badge>
+            <Badge variant="warning">建议人工复核</Badge>
           ) : null}
           <Badge
             variant={
@@ -60,13 +72,13 @@ export function AnalysisCard({ analysis }: { analysis: RecentAnalysis }) {
       <CardContent className="space-y-3 text-xs text-muted-foreground">
         <div className="flex flex-wrap gap-x-6 gap-y-1">
           <span>
-            <span className="text-foreground/80">{analysis.issueType}</span> ·{" "}
-            {analysis.surface} / {analysis.platform}
+            <span className="text-foreground/80">{label(ISSUE_TYPE, analysis.issueType)}</span> ·{" "}
+            {label(SURFACE, analysis.surface)} / {label(PLATFORM, analysis.platform)}
           </span>
           <span>
-            {analysis.category} › {analysis.subtopic}
+            {label(CATEGORY, analysis.category)} › {analysis.subtopic}
           </span>
-          <span>confidence {Math.round(analysis.confidence * 100)}%</span>
+          <span>置信度 {Math.round(analysis.confidence * 100)}%</span>
           <span>
             {analysis.analysisVersion} ·{" "}
             {analysis.analyzedAt.slice(0, 10)}
@@ -74,19 +86,19 @@ export function AnalysisCard({ analysis }: { analysis: RecentAnalysis }) {
         </div>
         {analysis.userScenario ? (
           <p>
-            <span className="font-medium text-foreground/80">Scenario: </span>
+            <span className="font-medium text-foreground/80">场景： </span>
             {analysis.userScenario}
           </p>
         ) : null}
         {analysis.userImpact ? (
           <p>
-            <span className="font-medium text-foreground/80">Impact: </span>
+            <span className="font-medium text-foreground/80">影响： </span>
             {analysis.userImpact}
           </p>
         ) : null}
         {analysis.scopeReason ? (
           <p>
-            <span className="font-medium text-foreground/80">Scope: </span>
+            <span className="font-medium text-foreground/80">范围：</span>
             {analysis.scopeReason}
           </p>
         ) : null}

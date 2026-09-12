@@ -58,12 +58,12 @@ python -m pytest tests -q       # 配置一致性测试
 - Opportunities
 
 ## MVP 核心能力
-1. Feedback Intelligence
-2. Pain Point Discovery
-3. Emerging Signals
-4. Release Impact Analysis
-5. Opportunity Prioritization
-6. Evidence-backed Action Brief
+1. 反馈智能（Feedback Intelligence）
+2. 痛点发现（Pain Point Discovery）
+3. 新兴信号（Emerging Signals）
+4. 版本影响分析（Release Impact Analysis）
+5. 机会优先级（Opportunity Prioritization）
+6. 证据支撑的行动简报（Evidence-backed Action Brief）
 
 ## 技术栈
 - Next.js + TypeScript
@@ -74,13 +74,30 @@ python -m pytest tests -q       # 配置一致性测试
 - GitHub REST API
 - Vercel
 
+## 评估结果（实测摘要）
+
+独立参考一致率评估（50 条新鲜 holdout，盲评参考标签，v0.3.4 冻结版）：
+
+| 字段 | 严格一致率 | Cohen's Kappa |
+| --- | --- | --- |
+| platform | 96% | — |
+| product_scope | 94% | 0.725 |
+| issue_type | 94% | 0.785 |
+| surface | 94% | — |
+| category | 70% | 0.659 |
+| severity | 64%（±1 档内 96%） | — |
+
+- 参考标签为独立盲评生成（AI 生成，非人工 ground truth），已在报告中声明
+- 评估仅用于测量，未据此修改任何冻结产物
+- 完整报告：`eval/holdout_v0.3.4_evaluation_report.md`；效率基准：`eval/codex_agent_benchmark_report.md`
+
 ## 产品原则
-- Real feedback only
-- No insight without evidence
-- AI interprets; data decides
-- Correlation ≠ causation
-- AI assists; human decides
-- Every insight must be traceable
+- 只用真实反馈（Real feedback only）
+- 没有证据就没有洞察（No insight without evidence）
+- AI 负责理解，数据负责决策（AI interprets; data decides）
+- 相关性 ≠ 因果（Correlation ≠ causation）
+- AI 辅助，人来决策（AI assists; human decides）
+- 每条洞察必须可溯源（Every insight must be traceable）
 
 ## Portfolio 指标（实测）
 数据规模、管道可靠性、评估一致率、处理效率与已知局限的全部实测值见

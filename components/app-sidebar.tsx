@@ -24,7 +24,7 @@ export function AppSidebar({
           {appName}
         </Link>
         <p className="mt-1 text-xs text-muted-foreground">
-          AI Product Ops Intelligence
+          AI 产品运营智能系统
         </p>
       </div>
       <nav className="flex-1 space-y-1 px-3">
@@ -50,7 +50,7 @@ export function AppSidebar({
         })}
       </nav>
       <div className="border-t px-6 py-6 text-xs text-muted-foreground">
-        <p>Case Study</p>
+        <p>案例研究</p>
         <p className="mt-0.5 text-foreground/80">{caseStudy}</p>
         <p className="mt-3">MVP · Real feedback only</p>
       </div>

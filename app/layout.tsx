@@ -7,11 +7,11 @@ import { MobileNav } from "@/components/mobile-nav";
 
 export const metadata: Metadata = {
   title: {
-    default: "Signal — AI Product Ops Intelligence",
+    default: "Signal｜AI 产品运营智能系统",
     template: "%s — Signal",
   },
   description:
-    "Turns large volumes of unstructured user feedback into evidence-backed product signals: clusters, trends, release impact and investigation priority.",
+    "将海量非结构化用户反馈，转化为可追溯、可解释、可执行的产品运营洞察。",
 };
 
 export default function RootLayout({

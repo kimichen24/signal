@@ -9,10 +9,10 @@ import {
 
 export const dynamic = "force-dynamic";
 
-export const metadata = { title: "Overview" };
+export const metadata = { title: "总览" };
 
 function formatNumber(value: number | null): string {
-  return value === null ? "—" : value.toLocaleString("en-US");
+  return value === null ? "—" : value.toLocaleString("zh-CN");
 }
 
 function DistributionList({
@@ -39,7 +39,7 @@ function DistributionList({
               />
             </span>
             <span className="w-16 text-right tabular-nums text-muted-foreground">
-              {slice.count} ({slice.pct}%)
+              {slice.count}（{slice.pct}%）
             </span>
           </li>
         ))}
@@ -65,98 +65,90 @@ export default async function OverviewPage() {
     <div className="space-y-10">
       <header className="space-y-3">
         <p className="text-xs font-medium uppercase tracking-widest text-muted-foreground">
-          Overview
+          总览
         </p>
         <h1 className="text-3xl font-semibold tracking-tight">
-          What changed?
+          最近发生了什么？
         </h1>
         <p className="max-w-2xl text-sm leading-6 text-muted-foreground">
-          Recent shifts in user feedback for the {caseStudy} case study. Every
-          number on this page is computed from real, ingested GitHub issues —
-          Signal never generates or simulates feedback.
+          {caseStudy} 案例的用户反馈最新变化趋势。本页所有数字均来自真实采集
+          的 GitHub Issues，Signal 不生成或模拟任何反馈数据。
         </p>
       </header>
 
       {!summary.configured ? (
         <EmptyState
-          title="Database not configured"
-          description="Signal reads all data from Supabase. Create .env.local from .env.example, set the Supabase URL and service-role key, then run supabase/schema.sql against the project."
-          hint="NEXT_PUBLIC_SUPABASE_URL · SUPABASE_SERVICE_ROLE_KEY"
+          title="数据库未配置"
+          description="Signal 从 Supabase 读取全部数据。请从 .env.example 创建 .env.local，填入 Supabase URL 和 anon key，然后在项目中执行 supabase/schema.sql。"
+          hint="NEXT_PUBLIC_SUPABASE_URL · SUPABASE_ANON_KEY"
         />
       ) : summary.error ? (
         <EmptyState
-          title="Database query failed"
-          description={`Signal reached for the database but the query did not succeed. Fix the configuration or schema before continuing. (${summary.error})`}
-          hint="Run supabase/schema.sql against your Supabase project"
+          title="数据库查询失败"
+          description={`已尝试读取数据库但查询未成功。请检查配置或 Schema 后重试。(${summary.error})`}
+          hint="在 Supabase 项目中执行 supabase/schema.sql"
         />
       ) : !hasData ? (
         <EmptyState
-          title="No feedback imported yet"
-          description="The pipeline has not ingested any GitHub issues yet. After ingestion and AI analysis (prompts 01–02), this page shows analyzed feedback volume, emerging signals and high-severity items — all computed from real data."
+          title="尚未导入反馈数据"
+          description="管道尚未采集任何 GitHub Issues。完成数据采集和 AI 分析（Prompts 01–02）后，本页将展示基于真实数据的反馈量、新兴信号和高严重度条目。"
           hint="prompts/01_DATA_INGESTION.md"
         />
       ) : (
         <>
           <section className="grid grid-cols-2 gap-4 lg:grid-cols-4">
             <StatCard
-              label="Issues ingested"
+              label="已采集 Issues"
               value={formatNumber(summary.totalIssues)}
-              hint="Real GitHub issues, PRs excluded"
+              hint="真实 GitHub Issues（已过滤 PR）"
             />
             <StatCard
-              label="Feedback analyzed"
+              label="结构化分析"
               value={formatNumber(summary.analyzedIssues)}
-              hint={`analysis version ${version}`}
+              hint={`分析版本 ${version}`}
             />
             <StatCard
-              label="In-scope feedback"
+              label="有效反馈"
               value={formatNumber(distributions?.data?.inScopeTotal ?? null)}
-              hint="codex_core + codex_adjacent"
+              hint="核心 + 邻接"
             />
             <StatCard
-              label="High-severity items"
+              label="高严重度条目"
               value={formatNumber(summary.highSeverityIssues)}
-              hint="AI-estimated severity: high / critical"
+              hint="AI 估算严重度：高 / 严重"
             />
           </section>
 
           <section className="space-y-3">
-            <h2 className="text-sm font-medium">What changed this week</h2>
+            <h2 className="text-sm font-medium">本周变化</h2>
             {trend?.status &&
             trend.status.state === "insufficient_history" ? (
               <div className="rounded-lg border border-dashed p-5">
                 <p className="text-sm font-medium">
-                  More historical feedback is required to calculate reliable
-                  week-over-week changes.
+                  历史数据不足，暂无法计算可靠的周环比变化。
                 </p>
                 <p className="mt-2 text-xs leading-5 text-muted-foreground">
-                  This development dataset covers feedback starting{" "}
-                  {trend.status.earliestObservation?.slice(0, 10) ?? "—"} — the
-                  previous 7-day period has{" "}
-                  {trend.status.previousPeriod.count} observations (minimum 10
-                  required). Signal does not fabricate growth percentages from
-                  a missing baseline.
+                  当前开发数据集最早覆盖{" "}
+                  {trend.status.earliestObservation?.slice(0, 10) ?? "—"}，
+                  上一周期仅有 {trend.status.previousPeriod.count} 条观测
+                  （最少需要 10 条）。Signal 不会基于缺失基线编造增长百分比。
                 </p>
               </div>
             ) : trend?.status ? (
-              <div className="space-y-2 text-sm text-muted-foreground">
-                <p>
-                  Current period: {trend.status.currentPeriod.count}{" "}
-                  observations; previous period:{" "}
-                  {trend.status.previousPeriod.count}. Emerging signals
-                  (deterministic growth ≥ 50% with volume ≥ 5) are flagged on
-                  the Insights page.
-                </p>
-              </div>
+              <p className="text-sm text-muted-foreground">
+                当前周期 {trend.status.currentPeriod.count} 条观测；上一周期{" "}
+                {trend.status.previousPeriod.count} 条。符合新兴信号阈值
+                的条目已在洞察页标注。
+              </p>
             ) : (
               <p className="text-sm text-muted-foreground">
-                Trend status unavailable.
+                趋势状态不可用。
               </p>
             )}
           </section>
 
           <section className="space-y-3">
-            <h2 className="text-sm font-medium">Top pain-point clusters</h2>
+            <h2 className="text-sm font-medium">核心痛点问题簇</h2>
             {topClusters && topClusters.rows.length > 0 ? (
               <ul className="space-y-2">
                 {topClusters.rows.map((cluster) => (
@@ -171,38 +163,36 @@ export default async function OverviewPage() {
                       </span>
                     </span>
                     <span className="shrink-0 tabular-nums text-muted-foreground">
-                      {cluster.issueCount} issues
+                      {cluster.issueCount} 条
                     </span>
                   </li>
                 ))}
               </ul>
             ) : (
               <p className="text-sm text-muted-foreground">
-                No clusters computed yet — run{" "}
+                尚未生成问题簇——请运行{" "}
                 <code className="font-mono text-xs">
                   python -m pipeline.cluster_issues
                 </code>
-                .
+                。
               </p>
             )}
           </section>
 
           {distributions?.data ? (
             <section className="space-y-4">
-              <h2 className="text-sm font-medium">
-                In-scope feedback distribution
-              </h2>
+              <h2 className="text-sm font-medium">有效反馈分布</h2>
               <div className="grid gap-6 md:grid-cols-3">
                 <DistributionList
-                  title="Surface"
+                  title="使用端"
                   slices={distributions.data.surface}
                 />
                 <DistributionList
-                  title="Platform"
+                  title="平台"
                   slices={distributions.data.platform}
                 />
                 <DistributionList
-                  title="Category"
+                  title="问题类别"
                   slices={distributions.data.category}
                 />
               </div>
@@ -211,7 +201,7 @@ export default async function OverviewPage() {
 
           {summary.latestIssueAt ? (
             <p className="text-xs text-muted-foreground">
-              Latest ingested issue: {summary.latestIssueAt.slice(0, 10)}
+              最新采集 Issue：{summary.latestIssueAt.slice(0, 10)}
             </p>
           ) : null}
         </>

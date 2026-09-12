@@ -3,7 +3,7 @@ import { getReleases } from "@/lib/supabase/queries";
 
 export const dynamic = "force-dynamic";
 
-export const metadata = { title: "Releases" };
+export const metadata = { title: "版本影响" };
 
 export default async function ReleasesPage() {
   const { configured, error, rows } = await getReleases();
@@ -12,15 +12,15 @@ export default async function ReleasesPage() {
     <div className="space-y-8">
       <header className="space-y-3">
         <p className="text-xs font-medium uppercase tracking-widest text-muted-foreground">
-          Releases
+          版本影响
         </p>
-        <h1 className="text-3xl font-semibold tracking-tight">Releases</h1>
+        <h1 className="text-3xl font-semibold tracking-tight">版本影响</h1>
         <p className="max-w-2xl text-sm leading-6 text-muted-foreground">
           Public Codex releases (authoritative GitHub source URLs) compared
-          against in-scope feedback volume before and after each release.
-          Signal reports <strong>correlation</strong> — related feedback
-          increasing after a release warrants investigation; it never
-          establishes causation. Windows are ±7 days clipped to the dataset
+          against in-scope feedback volume 前 and 后 each release.
+          Signal reports <strong>相关性</strong> — related feedback
+          increasing 后 a release 值得进一步调查; it never
+          establishes 因果. Windows are ±7 days clipped to the dataset
           bounds (2026-08-23 → 2026-09-06); comparisons below 5 days of
           coverage on either side are marked insufficient.
         </p>
@@ -28,20 +28,20 @@ export default async function ReleasesPage() {
 
       {!configured ? (
         <EmptyState
-          title="Database not configured"
-          description="Create .env.local from .env.example and set the Supabase URL and service-role key."
+          title="数据库未配置"
+          description="请从 .env.example 创建 .env.local，填入 Supabase URL 和 anon key。"
           hint="NEXT_PUBLIC_SUPABASE_URL · SUPABASE_SERVICE_ROLE_KEY"
         />
       ) : error ? (
         <EmptyState
-          title="Database query failed"
+          title="数据库查询失败"
           description={`The releases table could not be read. (${error})`}
-          hint="Run python -m pipeline.releases to seed real public releases"
+          hint="运行 python -m pipeline.releases 导入真实公开版本"
         />
       ) : rows.length === 0 ? (
         <EmptyState
-          title="No release events recorded yet"
-          description="Release events are seeded from official public release notes, each with a source_url."
+          title="尚未记录版本事件"
+          description="版本事件从官方公开发布说明导入，每条都带有 source_url 溯源链接。"
           hint="python -m pipeline.releases"
         />
       ) : (
@@ -65,21 +65,21 @@ export default async function ReleasesPage() {
                 </span>
                 {release.hasImpact ? (
                   <span className="text-xs text-muted-foreground">
-                    in-scope feedback: {release.beforeTotal} before →{" "}
-                    {release.afterTotal} after · {release.clustersImpacted}{" "}
-                    clusters compared
+                    有效反馈： {release.beforeTotal} 前 → {" "}
+                    {release.afterTotal} 后 · {release.clustersImpacted}{" "}
+                    个问题簇比对
                   </span>
                 ) : (
                   <span className="text-xs text-warning">
-                    insufficient_history — temporal coverage in this dataset
+                    历史数据不足 — temporal coverage in this dataset
                     is incomplete for a ±7 day comparison
                   </span>
                 )}
               </div>
               {release.hasImpact ? (
                 <p className="mt-1 text-xs text-muted-foreground">
-                  Where related feedback increased after this release, it
-                  warrants investigation — this is a correlation observation,
+                  Where related feedback increased 后 this release, it
+                  值得进一步调查 — this is a 相关性 observation,
                   not a causal claim.
                 </p>
               ) : null}
