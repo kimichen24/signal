@@ -5,7 +5,7 @@ import {
   getEntityCount,
   getInsights,
 } from "@/lib/supabase/queries";
-import { CATEGORY } from "@/lib/labels";
+import { CATEGORY, SURFACE } from "@/lib/labels";
 
 export const dynamic = "force-dynamic";
 
@@ -235,7 +235,7 @@ export default async function OverviewPage() {
                     className="flex items-center gap-3 text-sm"
                   >
                     <span className="w-20 shrink-0 truncate text-muted-foreground">
-                      {slice.label}
+                      {SURFACE[slice.label] ?? slice.label}
                     </span>
                     <span className="relative h-2 flex-1 overflow-hidden rounded-full bg-secondary">
                       <span
@@ -261,7 +261,7 @@ export default async function OverviewPage() {
                     className="flex items-center gap-3 text-sm"
                   >
                     <span className="w-24 shrink-0 truncate text-muted-foreground">
-                      {slice.label}
+                      {CATEGORY[slice.label] ?? slice.label}
                     </span>
                     <span className="relative h-2 flex-1 overflow-hidden rounded-full bg-secondary">
                       <span
