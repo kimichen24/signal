@@ -1,5 +1,18 @@
 # Data Pipeline Specification
 
+## Dataset windows (reproducible snapshots)
+All production analysis operates on a fixed slice:
+
+```text
+start_date <= github_created_at < snapshot_at
+```
+
+- `snapshot_at` defaults to the run time but is always pinned per run and recorded in the `analysis_runs` table together with `start_date`, version and parameters.
+- Ingestion and analysis CLIs accept `--start-date` / `--snapshot-at` to reproduce a past dataset exactly.
+- Default exclusion: rows with `product_scope = 'out_of_scope'` are preserved in the database but excluded from product analytics, clustering, trends and priority.
+- Classification precedence: deterministic parsed metadata > strong GitHub labels > LLM inference > Unknown (minimum: `platform`, and `surface` where strongly indicated — see `pipeline/normalize.py`). Raw LLM output is kept in `issue_analysis.model_output`.
+
+
 ## Stage 1 — GitHub ingestion
 Repository: `openai/codex`
 

@@ -1,6 +1,7 @@
+import { AnalysisCard } from "@/components/analysis-card";
 import { Badge } from "@/components/ui/badge";
 import { EmptyState } from "@/components/empty-state";
-import { getRecentIssues } from "@/lib/supabase/queries";
+import { getRecentAnalyses, getRecentIssues } from "@/lib/supabase/queries";
 
 export const dynamic = "force-dynamic";
 
@@ -8,6 +9,7 @@ export const metadata = { title: "Feedback" };
 
 export default async function FeedbackPage() {
   const { configured, error, rows } = await getRecentIssues(10);
+  const analyses = configured && !error ? await getRecentAnalyses(8) : null;
 
   return (
     <div className="space-y-8">
@@ -44,8 +46,10 @@ export default async function FeedbackPage() {
       ) : (
         <section className="space-y-3">
           <p className="text-xs text-muted-foreground">
-            Latest {rows.length} ingested issue{rows.length === 1 ? "" : "s"} —
-            the full list with filters arrives with Prompt 01.
+            {rows.length} most recent of all ingested issues — filters and the
+            detail drawer arrive with the AI extraction prompt. Platform comes
+            from the deterministic issue-form parser; &quot;—&quot; means the
+            reporter left it empty.
           </p>
           <div className="overflow-hidden rounded-lg border">
             <table className="w-full text-sm">
@@ -53,6 +57,7 @@ export default async function FeedbackPage() {
                 <tr className="border-b bg-card/50 text-left text-xs uppercase tracking-wide text-muted-foreground">
                   <th className="px-4 py-2.5 font-medium">Issue</th>
                   <th className="px-4 py-2.5 font-medium">Title</th>
+                  <th className="px-4 py-2.5 font-medium">Platform</th>
                   <th className="px-4 py-2.5 font-medium">State</th>
                   <th className="px-4 py-2.5 font-medium">Created</th>
                 </tr>
@@ -73,6 +78,12 @@ export default async function FeedbackPage() {
                         {row.title}
                       </a>
                     </td>
+                    <td
+                      className="max-w-40 truncate px-4 py-2.5 text-muted-foreground"
+                      title={row.parsed_platform ?? undefined}
+                    >
+                      {row.parsed_platform ?? "—"}
+                    </td>
                     <td className="px-4 py-2.5">
                       <Badge variant="outline">{row.state ?? "unknown"}</Badge>
                     </td>
@@ -86,6 +97,33 @@ export default async function FeedbackPage() {
           </div>
         </section>
       )}
+
+
+      {configured && !error && rows.length > 0 ? (
+        <section className="space-y-3">
+          <h2 className="text-sm font-medium">AI analysis</h2>
+          {analyses && analyses.error ? (
+            <p className="text-xs text-muted-foreground">
+              Analysis rows could not be read. ({analyses.error})
+            </p>
+          ) : !analyses || analyses.rows.length === 0 ? (
+            <p className="text-xs text-muted-foreground">
+              AI analysis has not run yet — structured fields, AI-estimated
+              severity and confidence appear here once the extraction pipeline
+              has processed issues.
+            </p>
+          ) : (
+            <div className="space-y-4">
+              {analyses.rows.map((analysis) => (
+                <AnalysisCard
+                  key={`${analysis.analysisVersion}-${analysis.issueNumber}`}
+                  analysis={analysis}
+                />
+              ))}
+            </div>
+          )}
+        </section>
+      ) : null}
     </div>
   );
 }

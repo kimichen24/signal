@@ -82,10 +82,30 @@ python -m pytest tests -q       # 配置一致性测试
 - AI assists; human decides
 - Every insight must be traceable
 
+## Portfolio 指标（实测）
+数据规模、管道可靠性、评估一致率、处理效率与已知局限的全部实测值见
+`docs/PORTFOLIO_METRICS.md`（不包含任何商业影响/收入/采用数据）。
+
+## 数据诚实性（Limitations）
+完整清单见 `docs/DATA_PROVENANCE.md`。要点：
+- 数据集成员按创建时间窗口可复现；分析输入按 sha256 可审计
+- 历史不足即 `insufficient_history`，零基线不显示增长百分比
+- 低基线增长带警示，不作主要排序驱动
+- Engagement 仅用公开 GitHub 字段，稀疏时透明重归一化
+- Release Impact 只报告相关性，覆盖不足即拒绝比较
+- 100 条开发集分析为 legacy（无 input hash），已保留并声明
+- needs_refinement 宽簇不伪装成单一精确痛点
+
 ## 进度（Progress）
 - [x] Phase 0 — Bootstrap：Next.js shell、typed env、Supabase server client、`/api/health`、pipeline 环境、lint/typecheck/test
-- [ ] Phase 1 — 100 条真实 Issue（`prompts/01_DATA_INGESTION.md`）
-- [ ] Phase 2 — AI 结构化抽取（`prompts/02_AI_EXTRACTION.md`）
-- [ ] Phase 3 — Intelligence（`prompts/03_INTELLIGENCE.md`）
+- [x] Phase 1 — 100 条真实 Issue 已入库：`ingest_github` CLI（幂等 upsert、PR 过滤、created-at 窗口）、确定性 parser + `body_clean`、Feedback 页真实数据（`prompts/01_DATA_INGESTION.md`）
+- [x] Phase 2 — AI 结构化抽取已跑通：MiMo provider（OpenAI 兼容 + 本地 schema 校验重试）、确定性元数据优先规范化、scope 三分类（工作流原则锁定）、severity rubric 人工盲评校准（20 条开发诊断集：严格一致率 55%→75%）。**冻结版本 v0.3.4：100/100 条分析完成，0 失败 0 重试**（`prompts/02_AI_EXTRACTION.md`）
+- [x] Phase 3 — Intelligence：按 category 内确定性语义聚类（凝聚聚类 + cosine 阈值，参数/版本可复现，LLM 仅命名）、medoid 代表证据、Insights 页证据链、趋势历史充分性守卫（`insufficient_history` 诚实状态，绝不编造增长）（`prompts/03_INTELLIGENCE.md`）
+- [x] Historical Expansion Phase 1 — 14 天确定性摄入：数据集 `codex-14d-2026-09-06`（8/23 → 9/6，窗口可复现），2254 条真实 issue 入库（403 PR 过滤、幂等验证通过），previous/current 周期数据充足，趋势验证解锁（AI 分析未跑，见工作量估算）
+- [x] Historical Expansion Phase 2 — 全量 v0.3.4 分析完成：**2254/2254（0 缺失 0 重复 0 失败）**，有界并发（基准选优 c=6，37 条/分）、429/5xx 指数退避重试、逐条 `analysis_input_hash` 可审计、分块幂等提交。实测 5.72M in / 586k out tokens（对比 50 条试点投影 -4.5%/-9.4%）。Embedding/聚类/趋势待下一阶段
+- [x] Historical Expansion Phase 3 — 全量嵌入（2,096 in-scope / 384 维 / 单一模型戳）+ 全量聚类重校准（跨进程确定性修复，0.12/3 → 197 簇）+ **首次真实 WoW 趋势**（previous 476 / current 729 → 不变量全 PASS，状态化 Emerging 资格）
+- [x] Prompt 04 — Release Impact + Opportunities + Action Briefs：12 个真实 release（authoritative URL）、覆盖判定（6 充分/6 insufficient_history）、44 个 Opportunities（证据门 + Investigation Priority + 确定性状态）、44 份 MiMo Action Brief（needs_refinement 宽簇守卫）。**未扩 30 天数据集**
+- [x] Prompt 05 Phase 1 — 新鲜 50 条 holdout 集生成（排除全部旧样本，seed=42 冻结 manifest）+ 真盲标注 CSV（零 AI 字段泄漏）。**等待人工标注**（human_* 7 列），标注完成后计算 6 字段一致率；开发诊断集（20 条）已封存，不再用于调优
+- [x] Prompt 05 Phase 2 — 独立参考一致率评估完成：50/50 join 零缺失，六字段 exact agreement（platform 96%/surface 94%/scope 94%/issue_type 94%/category 70%/severity 64%），severity ±1 档内 96%，严格复合 17/50。**参考标签为独立盲评 Codex reference labels（AI 生成，非 ground truth）**。评估仅用 holdout，未据此修改任何冻结产物（见 eval/holdout_v0.3.4_evaluation_report.md）
 - [ ] Phase 4 — Release + Action（`prompts/04_RELEASES_ACTIONS.md`）
 - [ ] Phase 5 — Eval + 作品集收尾（`prompts/05_EVAL_POLISH.md`）

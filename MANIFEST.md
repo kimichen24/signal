@@ -15,6 +15,9 @@
 - `config/taxonomy.json` — 固定一级 taxonomy
 - `config/ai_output.schema.json` — Structured Output Schema
 - `supabase/schema.sql` — 数据库 Schema
+- `docs/CLUSTERING_CALIBRATION.md` — 聚类校准记录（含跨进程确定性修复）
+- `docs/DATA_PROVENANCE.md` — 数据来源与局限清单
+- `eval/` — 人工评估工件（holdout manifest、盲评 CSV、审计集）
 - `prompts/00_BOOTSTRAP.md` — 第一轮
 - `prompts/01_DATA_INGESTION.md` — 真实数据
 - `prompts/02_AI_EXTRACTION.md` — AI 结构化抽取
