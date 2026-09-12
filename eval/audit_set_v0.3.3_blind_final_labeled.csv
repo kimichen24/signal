@@ -1,0 +1,1317 @@
+﻿github_issue_number,title,github_url,state,github_created_at,parsed_version,parsed_subscription,parsed_platform,parsed_actual,parsed_steps,parsed_expected,parsed_additional_info,github_labels,body_clean,human_product_scope,human_issue_type,human_category,human_surface,human_platform,human_severity,reviewer_note
+43053,Resuming a fresh thread from a second client fails before its first message,https://github.com/openai/codex/issues/43053,open,2026-09-05T16:38:14+00:00,,,,,,,,"bug, CLI, app-server","Hi! I’m working on amux, a terminal session manager that uses Codex’s app-server to create and manage conversations. I’d like users to create a conversation and then attach the standard Codex TUI to it, without having to send a message first.
+
+On codex-cli 0.153.4, I’m seeing an issue with this workflow:
+
+1. My app-server client creates a non-ephemeral, paginated thread using `thread/start`.
+2. Before any message is sent, the standard Codex TUI connects to the same server and resumes that thread by ID.
+3. The TUI exits during startup with:
+```
+invalid paginated history lineage ... missing source rollout
+```
+
+The thread remains usable through the original client. Sending a message there makes subsequent TUI attachment work. Naming the thread does not resolve the failure.
+
+From reading the server code, it appears that the server finds the live thread but fails while building its resume response. The TUI requests `excludeTurns: true`, which skips saving the thread’s history file. However, the server still constructs pagination cursors that need that file.
+
+I’ve verified a workaround: my creating client first calls `thread/resume` on the same thread with `excludeTurns: false`. After that, TUI attachment and reattachment work without any model turn, and the same thread can also be resumed after restarting the app-server.
+
+Could the server save the history file before constructing those cursors, including when `excludeTurns: true`? That would let the TUI’s own resume request succeed immediately after `thread/start`, without requiring the extra resume call from my client.
+
+I understand that external PRs aren’t currently accepted. Would you prefer to handle this internally, or would a small, focused PR with a regression test be welcome for this case?
+
+Thanks for considering it!",codex_core,bug,Reliability,CLI,Unknown,medium,"Codex app-server/TUI resume workflow fails before first message; workaround exists, so medium rather than high."
+42958,"Windows sandbox fails with “apply deny-read ACLs”, blocking Computer Use and CLI commands",https://github.com/openai/codex/issues/42958,open,2026-09-05T07:58:22+00:00,26.901.41600 (About dialog); Windows package: 26.901.5280.0; bundled CLI: 0.153.4,ChatGPT Pro,"Windows 10 Pro 22H2, build 19045.6466, x64; Intel Core i5-2390T; 16 GB RAM; NTFS drives","Computer Use and local sandboxed commands fail before the requested action runs.
+
+Error:
+windows sandbox failed: helper_unknown_error: apply deny-read ACLs
+
+Computer Use additionally reports:
+node_repl kernel exited unexpectedly (code=1)
+
+The same sandbox error is reproducible directly with the desktop app's bundled Codex CLI, outside the project and without using Chrome or Computer Use. The CLI exits with code 1.
+
+The user config.toml contains:
+approval_policy = ""on-request""
+sandbox_mode = ""workspace-write""
+
+[windows]
+sandbox = ""elevated""
+
+Repeated Computer Use connection attempts, including a session reset, failed with the same error.
+
+The standard ~/.codex/.sandbox/sandbox.log was last modified on June 2, 2026 and did not update after the CLI reproduction. Exact error strings were not found in the eight most recently modified non-empty codex-desktop logs checked.
+
+A separate Codex extension also runs inside Devin. A conflict between the clients has not been established.
+
+Diagnostic feedback was successfully uploaded from the desktop app.
+Feedback ID: no-active-thread-01a07085-152d-7811-8d6f-d9e09a423d80
+
+Please advise how to locate the current sandbox helper diagnostics and repair the native sandbox in this version.",Feedback ID: no-active-thread-01a07085-152d-7811-8d6f-d9e09a423d80,"The sandbox should initialize and execute the command, printing TM_SANDBOX_OK with exit code 0.
+
+Computer Use should initialize successfully and allow interaction with the approved browser.",,"bug, windows-os, sandbox, app, computer-use","### What version of the Codex App are you using (From “About Codex” dialog)?
+
+26.901.41600 (About dialog); Windows package: 26.901.5280.0; bundled CLI: 0.153.4
+
+### What subscription do you have?
+
+ChatGPT Pro
+
+### What platform is your computer?
+
+Windows 10 Pro 22H2, build 19045.6466, x64; Intel Core i5-2390T; 16 GB RAM; NTFS drives
+
+### What issue are you seeing?
+
+Computer Use and local sandboxed commands fail before the requested action runs.
+
+Error:
+windows sandbox failed: helper_unknown_error: apply deny-read ACLs
+
+Computer Use additionally reports:
+node_repl kernel exited unexpectedly (code=1)
+
+The same sandbox error is reproducible directly with the desktop app's bundled Codex CLI, outside the project and without using Chrome or Computer Use. The CLI exits with code 1.
+
+The user config.toml contains:
+approval_policy = ""on-request""
+sandbox_mode = ""workspace-write""
+
+[windows]
+sandbox = ""elevated""
+
+Repeated Computer Use connection attempts, including a session reset, failed with the same error.
+
+The standard ~/.codex/.sandbox/sandbox.log was last modified on June 2, 2026 and did not update after the CLI reproduction. Exact error strings were not found in the eight most recently modified non-empty codex-desktop logs checked.
+
+A separate Codex extension also runs inside Devin. A conflict between the clients has not been established.
+
+Diagnostic feedback was successfully uploaded from the desktop app.
+Feedback ID: no-active-thread-01a07085-152d-7811-8d6f-d9e09a423d80
+
+Please advise how to locate the current sandbox helper diagnostics and repair the native sandbox in this version.
+
+
+### What steps can reproduce the bug?
+
+Feedback ID: no-active-thread-01a07085-152d-7811-8d6f-d9e09a423d80
+
+### What is the expected behavior?
+
+The sandbox should initialize and execute the command, printing TM_SANDBOX_OK with exit code 0.
+
+Computer Use should initialize successfully and allow interaction with the approved browser.
+
+
+### Additional information
+
+_No response_",codex_core,bug,Safety & Permissions,Codex App,Windows,high,Native Windows sandbox/ACL initialization blocks Computer Use and sandboxed commands; direct Codex workflow impact.
+43054,Withdrawn by Astra who is mistaken.,https://github.com/openai/codex/issues/43054,closed,2026-09-05T16:40:47+00:00,,,,,,,,"bug, model-behavior, CLI",Withdrawn by Astra who is mistaken.,out_of_scope,other,Other,CLI,Unknown,low,Withdrawn with no actionable issue content; excluded from product analytics.
+43063,[macOS desktop] Chat citation-adjacent code/math delimiters swallow subsequent content; same conversation renders correctly on web,https://github.com/openai/codex/issues/43063,open,2026-09-05T17:35:03+00:00,"26.901.41600 (build 7982), ChatGPT-branded desktop app, bundle ID `com.openai.codex`. Installed bundle and running-app log agree on the version.",,"macOS 26.6 (25G72). This affects a Chat conversation displayed inside the unified desktop app, not a local Markdown file preview or the CLI.","The same research conversation renders correctly on chatgpt.com (confirmed by the reporter), but the desktop app misinterprets code/math boundaries:
+
+- A large gray code block contains subsequent ordinary prose, literal headings such as `## 11.1 Schema normalization`, horizontal-rule markup, and raw LaTeX.
+- A later opening fence (` ```text `) is itself displayed literally inside that block. The block finally ends at the later standalone closing fence; the following prose resumes normally.
+- Below that block, a red math-error region includes raw formula delimiters, an internal citation token, intervening ordinary Chinese prose, and part of the next formula.
+
+A screenshot supplied by the reporter confirms these visual symptoms. It has not been uploaded here; the source patterns below describe the relevant boundaries without publishing the full conversation.","Inspection of the saved assistant response found a citation on the same line as an earlier code block's intended closing fence. The following is a reduced source pattern extracted from the affected response, with unrelated intervening sections omitted:
+
+````markdown
+```text
+t=231:
+subtask = 3
+skill = ""pick""
+stage = ""grasp""
+instruction = ""pick up the red mug""
+``` citeturn367462search1
+
+Ordinary prose that should be outside the example.
+
+## 11.1 Schema normalization
+
+首先把不同机器人：
+
+```text
+robot A: joint velocity
+robot B: joint position
+robot C: absolute EEF pose
+robot D: relative EEF pose
+```
+
+统一。
+
+\[
+[x,y,z,r,p,yaw,\text{gripper}].
+\] citeturn367462search4
+
+但这并没有真正解决所有 cross-embodiment 问题，因为：
+
+\[
+\Delta x=5\text{cm}
+\]
+````
+
+The citation strings above are literal internal citation markers in the retrieved response, not ordinary Markdown links. The original response has native citation metadata; pasting these strings into a new user message may not reproduce that path.
+
+Suggested reproduction workflow: render an assistant Chat response with a native citation adjacent to an intended code-block closing fence, followed by headings, another fenced example, and display math with a citation adjacent to its closing delimiter. Compare the same conversation between the desktop Chat renderer and chatgpt.com.
+
+Verification scope: observed in the actual desktop screenshot and checked against the saved response; the reporter verified web renders correctly. This reduced fixture has NOT been independently replayed in the desktop renderer, and we have not established whether streaming versus finalized rendering changes the outcome.",The desktop and web Chat renderers should handle the same assistant response and its native citation metadata consistently. Citations adjacent to code/math boundaries should not cause unrelated later sections to be displayed as code or fed into the math renderer.,,"bug, app","### What version of the Codex App are you using?
+
+26.901.41600 (build 7982), ChatGPT-branded desktop app, bundle ID `com.openai.codex`. Installed bundle and running-app log agree on the version.
+
+### What platform is your computer?
+
+macOS 26.6 (25G72). This affects a Chat conversation displayed inside the unified desktop app, not a local Markdown file preview or the CLI.
+
+### What issue are you seeing?
+
+The same research conversation renders correctly on chatgpt.com (confirmed by the reporter), but the desktop app misinterprets code/math boundaries:
+
+- A large gray code block contains subsequent ordinary prose, literal headings such as `## 11.1 Schema normalization`, horizontal-rule markup, and raw LaTeX.
+- A later opening fence (` ```text `) is itself displayed literally inside that block. The block finally ends at the later standalone closing fence; the following prose resumes normally.
+- Below that block, a red math-error region includes raw formula delimiters, an internal citation token, intervening ordinary Chinese prose, and part of the next formula.
+
+A screenshot supplied by the reporter confirms these visual symptoms. It has not been uploaded here; the source patterns below describe the relevant boundaries without publishing the full conversation.
+
+### Source pattern / reproduction candidate
+
+Inspection of the saved assistant response found a citation on the same line as an earlier code block's intended closing fence. The following is a reduced source pattern extracted from the affected response, with unrelated intervening sections omitted:
+
+```
+t=231:
+subtask = 3
+skill = ""pick""
+stage = ""grasp""
+instruction = ""pick up the red mug""
+```
+
+Ordinary prose that should be outside the example.
+
+## 11.1 Schema normalization
+
+首先把不同机器人：
+
+```
+robot A: joint velocity
+robot B: joint position
+robot C: absolute EEF pose
+robot D: relative EEF pose
+```
+
+统一。
+
+\[
+[x,y,z,r,p,yaw,\text{gripper}].
+\] citeturn367462search4
+
+但这并没有真正解决所有 cross-embodiment 问题，因为：
+
+\[
+\Delta x=5\text{cm}
+\]
+```
+
+The citation strings above are literal internal citation markers in the retrieved response, not ordinary Markdown links. The original response has native citation metadata; pasting these strings into a new user message may not reproduce that path.
+
+Suggested reproduction workflow: render an assistant Chat response with a native citation adjacent to an intended code-block closing fence, followed by headings, another fenced example, and display math with a citation adjacent to its closing delimiter. Compare the same conversation between the desktop Chat renderer and chatgpt.com.
+
+Verification scope: observed in the actual desktop screenshot and checked against the saved response; the reporter verified web renders correctly. This reduced fixture has NOT been independently replayed in the desktop renderer, and we have not established whether streaming versus finalized rendering changes the outcome.
+
+### What is the expected behavior?
+
+The desktop and web Chat renderers should handle the same assistant response and its native citation metadata consistently. Citations adjacent to code/math boundaries should not cause unrelated later sections to be displayed as code or fed into the math renderer.
+
+### Diagnostic interpretation
+
+A closing backtick fence followed by non-whitespace text is not a valid CommonMark closing fence. Therefore this is not a claim that a generic Markdown parser must accept arbitrary trailing text. The suspected issue is an output-normalization / native-citation handling difference between the two Chat surfaces, or missing recovery for assistant-generated boundary markup. The observed code-block extent matches this hypothesis, but the internal implementation cause has not been proven.
+
+The math blocks in the inspected excerpt have paired delimiters and blank lines before their openers. The red region swallows prose and citation markup despite that. Whether this is a separate math-delimiter issue or a cascade from the earlier fence is unknown.
+
+A local log recorded `ResizeObserver loop completed with undelivered notifications` about 139 ms after a successful refetch of the affected conversation. This is only a correlation, not evidence that ResizeObserver caused the parsing failure.
+
+### Related issues reviewed
+
+- #23436: nested fenced Markdown terminates a content box unexpectedly; does not describe native citations at closing fences or web/desktop parity.
+- #22821: display math fails without a preceding blank line; the affected excerpt here has preceding blank lines.
+- #37561: Windows Markdown-file preview misrenders formulas/tables; this report concerns a macOS Chat transcript with citation-adjacent boundaries.
+
+No exact duplicate was found in searches for Markdown, LaTeX, code fences, and citations.",out_of_scope,bug,App / UI / UX,Codex App,macOS,medium,"Occurs in the unified desktop host, but affects regular Chat citation/Markdown rendering rather than a Codex workflow; web is a workaround."
+43062,Automatic context compaction hangs for 20+ minutes and immediately restarts after stop on GPT-6 Astra Ultra,https://github.com/openai/codex/issues/43062,open,2026-09-05T17:25:09+00:00,26.901.5280.0,Pro,Microsoft Windows NT 10.0.26200.0 x64,"In a long-running Codex App project thread using GPT-6 Astra Ultra, automatic context compaction became stuck for more than 20 minutes and the task did not resume.
+
+The UI remained on `Context automatically compacting`, then showed `Reconnecting 2/2` and `stream disconnected before completion: idle timeout on socket`. The thread had made a file change immediately beforehand, but produced no completion or recoverable result after the compaction began.
+
+I manually stopped the stalled turn after more than 20 minutes and sent a new message. Instead of recovering or responding normally, the app immediately started `Context automatically compacting` again. This leaves the thread trapped in a repeat-compaction loop even after a manual stop.
+
+At the time, the context window showed **83% full: 215k / 258k tokens used**.
+
+Feedback ID: `01a07197-ed40-7ce0-933f-ab0c19da0224`","1. Open a long-running project thread in the Codex App on Windows.
+2. Use GPT-6 Astra Ultra for an extended coding/integration task with substantial accumulated context.
+3. Continue the conversation until automatic context compaction starts.
+4. Observe that the UI remains on `Context automatically compacting` for more than 20 minutes.
+5. The app attempts to reconnect (`Reconnecting 2/2`) and reports an idle socket timeout, but the turn does not complete or recover.
+6. Manually stop the stalled turn.
+7. Send a new, ordinary message in the same thread.
+8. Observe that the app immediately starts automatic context compaction again instead of answering the new message.
+
+Model: GPT-6 Astra Ultra
+Context-window usage: 83% full, 215k / 258k tokens used
+Feedback ID: `01a07197-ed40-7ce0-933f-ab0c19da0224`","Automatic compaction should finish within a reasonable time and resume the same task without losing its work. If compaction or the response stream fails, the app should fail promptly with an actionable retry/recovery option rather than remaining indefinitely stuck. Manually stopping the stalled turn should allow the next message to run normally, rather than immediately entering compaction again.","Observed on 5 September 2026 in a project thread titled `Astra - Lead Developer`. The screen showed one file changed (`+11 -1`) immediately before or during the stalled turn. The first compaction indicator remained active for over 20 minutes. After I stopped it and sent the message `Stopped as was compacting for over 20 mins`, a second turn displayed `Context automatically compacting` again after about one minute, without providing a normal response. The context indicator showed **83% full (215k / 258k tokens used)**. Screenshots of the stalled turn, repeated compaction and context usage are available.
+
+This appears related to open issues #14342 and #31834, but this report provides a current Windows/GPT-6 Astra Ultra reproduction, the failed-stop recovery sequence, exact context usage and a feedback ID for server-side correlation.","bug, windows-os, context, app, connectivity, session","### What version of the Codex App are you using (From “About Codex” dialog)?
+
+26.901.5280.0
+
+### What subscription do you have?
+
+Pro
+
+### What platform is your computer?
+
+Microsoft Windows NT 10.0.26200.0 x64
+
+### What issue are you seeing?
+
+In a long-running Codex App project thread using GPT-6 Astra Ultra, automatic context compaction became stuck for more than 20 minutes and the task did not resume.
+
+The UI remained on `Context automatically compacting`, then showed `Reconnecting 2/2` and `stream disconnected before completion: idle timeout on socket`. The thread had made a file change immediately beforehand, but produced no completion or recoverable result after the compaction began.
+
+I manually stopped the stalled turn after more than 20 minutes and sent a new message. Instead of recovering or responding normally, the app immediately started `Context automatically compacting` again. This leaves the thread trapped in a repeat-compaction loop even after a manual stop.
+
+At the time, the context window showed **83% full: 215k / 258k tokens used**.
+
+Feedback ID: `01a07197-ed40-7ce0-933f-ab0c19da0224`
+
+### What steps can reproduce the bug?
+
+1. Open a long-running project thread in the Codex App on Windows.
+2. Use GPT-6 Astra Ultra for an extended coding/integration task with substantial accumulated context.
+3. Continue the conversation until automatic context compaction starts.
+4. Observe that the UI remains on `Context automatically compacting` for more than 20 minutes.
+5. The app attempts to reconnect (`Reconnecting 2/2`) and reports an idle socket timeout, but the turn does not complete or recover.
+6. Manually stop the stalled turn.
+7. Send a new, ordinary message in the same thread.
+8. Observe that the app immediately starts automatic context compaction again instead of answering the new message.
+
+Model: GPT-6 Astra Ultra
+Context-window usage: 83% full, 215k / 258k tokens used
+Feedback ID: `01a07197-ed40-7ce0-933f-ab0c19da0224`
+
+### What is the expected behavior?
+
+Automatic compaction should finish within a reasonable time and resume the same task without losing its work. If compaction or the response stream fails, the app should fail promptly with an actionable retry/recovery option rather than remaining indefinitely stuck. Manually stopping the stalled turn should allow the next message to run normally, rather than immediately entering compaction again.
+
+### Additional information
+
+Observed on 5 September 2026 in a project thread titled `Astra - Lead Developer`. The screen showed one file changed (`+11 -1`) immediately before or during the stalled turn. The first compaction indicator remained active for over 20 minutes. After I stopped it and sent the message `Stopped as was compacting for over 20 mins`, a second turn displayed `Context automatically compacting` again after about one minute, without providing a normal response. The context indicator showed **83% full (215k / 258k tokens used)**. Screenshots of the stalled turn, repeated compaction and context usage are available.
+
+This appears related to open issues #14342 and #31834, but this report provides a current Windows/GPT-6 Astra Ultra reproduction, the failed-stop recovery sequence, exact context usage and a feedback ID for server-side correlation.",codex_core,bug,Context & Memory,Codex App,Windows,high,"Automatic context compaction traps an existing Codex project thread in a repeat loop; core task is blocked, but not enough evidence for system-wide critical."
+43037,Personal Skills do not sync between ChatGPT Work on Web/iOS and the Windows desktop app,https://github.com/openai/codex/issues/43037,open,2026-09-05T15:28:20+00:00,,,,"Personal Skills are not synchronized consistently across ChatGPT Work surfaces when using the same OpenAI account.
+
+I use the same account across:
+
+- ChatGPT on iOS
+- ChatGPT Web in Chrome and Edge
+- The ChatGPT desktop app on Windows
+
+Personal Skills created, added, updated, or deleted through ChatGPT Web/iOS are reflected across the account-based web/mobile experience, but they do not synchronize with the Personal Skills stored and used by the Windows desktop app.
+
+The Windows desktop app appears to rely on its local skill files, effectively creating a separate Personal Skills library from the account-level library available on Web/iOS.
+
+The opposite direction has the same problem: if I add or modify a Personal Skill locally in the Windows desktop app or directly in its local skills directory, that change does not propagate back to my OpenAI account, ChatGPT Web, or the iOS app.
+
+As a result, the same OpenAI account can have two different versions of its Personal Skills library depending on which ChatGPT surface is being used.
+
+This creates version drift, duplicate copies, inconsistent updates/deletions, and requires manually transferring skill files between devices.",,"Personal Skills should remain synchronized across supported ChatGPT Work surfaces when they belong to the same OpenAI account.
+
+For example:
+
+- Adding a Personal Skill on iOS should make it available on ChatGPT Web and the Windows desktop app.
+- Adding a Personal Skill from ChatGPT Web should make it available on iOS and Windows.
+- Adding a Personal Skill from the Windows desktop app should associate it with the account and make it available on Web/iOS.
+- Updating a Personal Skill on one device should propagate the updated version to the other supported devices.
+- Deleting a Personal Skill should synchronize that deletion across the account.
+- Renaming or changing the state of a skill should remain consistent across devices.
+
+If the Windows desktop app requires skills to physically exist as local files, it should automatically download/materialize the account-level skill into its local Personal Skills directory.
+
+Likewise, changes made to an account-synchronized Personal Skill from the Windows desktop app should be uploaded back to the account.
+
+If the same skill is independently modified on multiple devices before synchronization completes, the application should detect the conflict rather than silently overwriting one version.
+
+Ideally, ChatGPT could distinguish between:
+
+- Account-synced Personal Skills
+- Local-only Personal Skills
+- Project/repository-specific Skills
+
+This would still allow deliberately local skills while keeping normal Personal Skills synchronized across the user's account.","Environment tested:
+
+- Same OpenAI account on all devices
+- ChatGPT iOS app on an iPhone 14 Pro
+- ChatGPT Web using Chrome and Edge
+- ChatGPT desktop app on Windows
+- ChatGPT Work / Personal Skills
+
+The issue is especially noticeable because Web/iOS behave like account-based surfaces, while the Windows desktop implementation depends on local skill files.
+
+From a user's perspective, Personal Skills appear to be an account-level customization, so having a separate unsynchronized desktop library is unexpected.
+
+This becomes increasingly problematic when maintaining several custom skills because it is difficult to know which copy is currently the newest version.
+
+A synchronization mechanism could still preserve local filesystem access on desktop. The account copy could act as the canonical/synchronized version, while the desktop client keeps a local representation that is downloaded and updated automatically.
+
+For skills containing functionality that cannot run on mobile/web, the skill could still remain synchronized while unsupported functionality is marked as unavailable on that surface, instead of requiring a completely separate copy.
+
+I can provide additional screenshots, sample skill files, or exact before/after examples if needed.","bug, windows-os, app, skills","### What issue are you seeing?
+
+Personal Skills are not synchronized consistently across ChatGPT Work surfaces when using the same OpenAI account.
+
+I use the same account across:
+
+- ChatGPT on iOS
+- ChatGPT Web in Chrome and Edge
+- The ChatGPT desktop app on Windows
+
+Personal Skills created, added, updated, or deleted through ChatGPT Web/iOS are reflected across the account-based web/mobile experience, but they do not synchronize with the Personal Skills stored and used by the Windows desktop app.
+
+The Windows desktop app appears to rely on its local skill files, effectively creating a separate Personal Skills library from the account-level library available on Web/iOS.
+
+The opposite direction has the same problem: if I add or modify a Personal Skill locally in the Windows desktop app or directly in its local skills directory, that change does not propagate back to my OpenAI account, ChatGPT Web, or the iOS app.
+
+As a result, the same OpenAI account can have two different versions of its Personal Skills library depending on which ChatGPT surface is being used.
+
+This creates version drift, duplicate copies, inconsistent updates/deletions, and requires manually transferring skill files between devices.
+
+### What steps can reproduce the bug?
+
+### Scenario 1 — Add a Personal Skill on iOS
+
+1. Sign in to the ChatGPT iOS app with an OpenAI account.
+2. Open Work and add/create a Personal Skill.
+3. Confirm that the skill is available from the account on the supported web/mobile experience.
+4. On Windows, sign in to the ChatGPT desktop app using the exact same OpenAI account.
+5. Open Work / Personal Skills.
+6. The newly added Personal Skill is not synchronized into the local Personal Skills library used by the Windows desktop app.
+
+### Scenario 2 — Add a Personal Skill on ChatGPT Web
+
+1. Sign in to ChatGPT Web in Chrome or Edge.
+2. Open Work and add/create a Personal Skill.
+3. Confirm that the skill is associated with the account.
+4. Open the ChatGPT Windows desktop app with the same account.
+5. The skill does not automatically appear in the Windows desktop Personal Skills library.
+
+### Scenario 3 — Add a Personal Skill locally on Windows
+
+1. Open the ChatGPT desktop app on Windows.
+2. Add a Personal Skill locally, either through Work or through the local Personal Skills file location used by the desktop app.
+3. Confirm that the skill works in the Windows desktop app.
+4. Open ChatGPT Web with the same account.
+5. Check Personal Skills.
+6. The locally installed skill is not synchronized to the account.
+7. Open the ChatGPT iOS app with the same account.
+8. The locally installed skill is also unavailable there.
+
+### Scenario 4 — Update an existing skill
+
+1. Have the same skill available on both sides after manually copying it.
+2. Edit/update the skill on ChatGPT Web or iOS.
+3. Open the Windows desktop app.
+4. The local Windows copy remains unchanged.
+
+The reverse also occurs:
+
+1. Edit the local Windows copy.
+2. Open ChatGPT Web/iOS.
+3. The account-level copy is not updated.
+
+This can leave two different versions of the same Personal Skill.
+
+### Scenario 5 — Delete a skill
+
+1. Have a Personal Skill available on both sides after manually transferring it.
+2. Delete the skill from the account/web/mobile side.
+3. Open the Windows desktop app.
+4. The local copy may still remain available.
+
+Likewise, deleting a local Windows skill does not remove the account-level version from Web/iOS.
+
+### Current workaround
+
+To use a skill created from Web/iOS on Windows, I currently have to:
+
+1. Ask ChatGPT/Work to give me the skill files.
+2. Export/download the files.
+3. Upload them to cloud storage such as Google Drive.
+4. Download them again on the Windows PC.
+5. Manually import them into the Windows ChatGPT desktop app or place them into the local skills directory.
+
+If I later update the skill from Web/iOS, I may need to repeat this process again manually.
+
+This behavior is reproducible using the same OpenAI account across these surfaces.
+
+### What is the expected behavior?
+
+Personal Skills should remain synchronized across supported ChatGPT Work surfaces when they belong to the same OpenAI account.
+
+For example:
+
+- Adding a Personal Skill on iOS should make it available on ChatGPT Web and the Windows desktop app.
+- Adding a Personal Skill from ChatGPT Web should make it available on iOS and Windows.
+- Adding a Personal Skill from the Windows desktop app should associate it with the account and make it available on Web/iOS.
+- Updating a Personal Skill on one device should propagate the updated version to the other supported devices.
+- Deleting a Personal Skill should synchronize that deletion across the account.
+- Renaming or changing the state of a skill should remain consistent across devices.
+
+If the Windows desktop app requires skills to physically exist as local files, it should automatically download/materialize the account-level skill into its local Personal Skills directory.
+
+Likewise, changes made to an account-synchronized Personal Skill from the Windows desktop app should be uploaded back to the account.
+
+If the same skill is independently modified on multiple devices before synchronization completes, the application should detect the conflict rather than silently overwriting one version.
+
+Ideally, ChatGPT could distinguish between:
+
+- Account-synced Personal Skills
+- Local-only Personal Skills
+- Project/repository-specific Skills
+
+This would still allow deliberately local skills while keeping normal Personal Skills synchronized across the user's account.
+
+### Additional information
+
+Environment tested:
+
+- Same OpenAI account on all devices
+- ChatGPT iOS app on an iPhone 14 Pro
+- ChatGPT Web using Chrome and Edge
+- ChatGPT desktop app on Windows
+- ChatGPT Work / Personal Skills
+
+The issue is especially noticeable because Web/iOS behave like account-based surfaces, while the Windows desktop implementation depends on local skill files.
+
+From a user's perspective, Personal Skills appear to be an account-level customization, so having a separate unsynchronized desktop library is unexpected.
+
+This becomes increasingly problematic when maintaining several custom skills because it is difficult to know which copy is currently the newest version.
+
+A synchronization mechanism could still preserve local filesystem access on desktop. The account copy could act as the canonical/synchronized version, while the desktop client keeps a local representation that is downloaded and updated automatically.
+
+For skills containing functionality that cannot run on mobile/web, the skill could still remain synchronized while unsupported functionality is marked as unavailable on that surface, instead of requiring a completely separate copy.
+
+I can provide additional screenshots, sample skill files, or exact before/after examples if needed.",out_of_scope,bug,App / UI / UX,Codex App,Windows,medium,"Personal Skills sync problem is described as a ChatGPT Work/account-surface issue, not a Codex coding/agent workflow."
+42960,Bug report: Integrated browser download stops despite “Always allow”,https://github.com/openai/codex/issues/42960,open,2026-09-05T08:04:43+00:00,26.901.31953,Pro,Darwin 25.6.0 arm64 arm,"# Bug report: Integrated browser download stops despite “Always allow”
+
+Status: Prepared locally; NOT submitted to OpenAI.
+
+## Environment
+
+- Codex desktop app on macOS 26.6.2 (25G83).
+- App version/build: not established; please attach from the app's About screen.
+- Observed on 2026-09-05; final retest at 09:55 CEST (07:55 UTC).
+- Integrated browser controlled through the provided browser automation interface.
+- User enabled integrated-browser control.
+- Download location: system Downloads folder (screenshot supplied).
+- “Ask where downloads should be saved”: off (screenshot supplied).
+- User reported changing file-download permission to “Always allow” before the final retest. The effective internal permission state was not independently inspected.
+
+## Summary
+
+A normal attachment download from a controlled localhost HTTP server fails to save a file, including after the user selected “Always allow.” A prior attempt appears in the app's download history as “Gestoppt” (Stopped). The final retest closes the HTTP connection while the server writes the PDF response. No new file appears in the system Downloads folder.
+
+## Reproduction used in this session
+
+1. Serve a public PDF using a loopback-only HTTP server at http://127.0.0.1:60689/.
+2. The index page contains a normal link labeled “Download test PDF” pointing to /download.
+3. The endpoint returns HTTP 200 with application/pdf and Content-Disposition: attachment; filename=""codex-browser-download-test-20260905.pdf"".
+4. Open the index page in Codex's integrated browser and activate the link through the browser automation interface.
+5. Inspect the download destination and server output.
+6. Repeat after selecting “Always allow” for file downloads, keeping the same server, payload, URL, and browser interaction.
+
+The test server was stopped after testing; the loopback URL is not a live public reproduction URL.
+
+## Expected
+
+The permitted download completes into the configured system Downloads folder without a Save As prompt. If an additional restriction applies, the app and agent should receive an actionable reason explaining the restriction.
+
+## Actual and evidence
+
+- Before the final permission change, the user's download-history screenshot showed “Gestoppt · 9:49,” without an actionable cause visible in the supplied screenshot.
+- Both controlled attachment-download attempts ended with a server-side BrokenPipeError while writing the PDF.
+- Final retest server output:
+
+```text
+2026-09-05T07:55:04.140616+00:00 [DEBUG] DownloadProbe ""GET /download HTTP/1.1"" 200 -
+2026-09-05T07:55:04.147197+00:00 [DEBUG] DownloadProbe.do_GET failed /download
+BrokenPipeError: [Errno 32] Broken pipe
+```
+
+- After the final retest, stat and shasum reported that the expected output file did not exist. A separate check found no recently modified regular files at the top level of the Downloads folder during the preceding 15 minutes.
+- The browser remained on the test index page, without an error in its exposed page accessibility state. This does not establish that no native dialog existed outside that page.
+- The same PDF had loaded successfully through the server's inline-PDF route during the preceding test. This helps distinguish basic PDF delivery from attachment-download completion, but does not identify the root cause.
+- Payload: public ST LIS2DW12 datasheet, 3,215,600 bytes.
+- Payload SHA-256: 5208623aa91c63a33be0e930518c20f5210c4eb76932350f35369687ae1d0dd5.
+
+## Scope and uncertainty
+
+This report does not prove which layer cancels the transfer. BrokenPipeError records the connection closing while the server sends data, not why it closes. Permission propagation, attachment handling, local-HTTP policy, and download-manager behavior remain unverified possibilities. The behavior after a full app restart and the same attachment test on an HTTPS origin have not been tested.
+
+Native Codex-app automation is explicitly blocked for this agent. That restriction was respected; it prevents using native app controls to inspect or resolve a potentially separate dialog. It is not evidence that this restriction caused the transfer failure.
+
+## Impact and requested improvement
+
+The agent can navigate to a PDF and trigger a download, but cannot reliably complete and verify the file download under the reported allowed configuration. Please investigate attachment-download cancellation and expose download completion, saved-file path, and actionable cancellation reasons to the browser automation interface.",Feedback ID: 01a05e9b-c4e5-7110-8afb-8e1ae0b80afb,,,"bug, app, browser","### What version of the Codex App are you using (From “About Codex” dialog)?
+
+26.901.31953
+
+### What subscription do you have?
+
+Pro
+
+### What platform is your computer?
+
+Darwin 25.6.0 arm64 arm
+
+### What issue are you seeing?
+
+# Bug report: Integrated browser download stops despite “Always allow”
+
+Status: Prepared locally; NOT submitted to OpenAI.
+
+## Environment
+
+- Codex desktop app on macOS 26.6.2 (25G83).
+- App version/build: not established; please attach from the app's About screen.
+- Observed on 2026-09-05; final retest at 09:55 CEST (07:55 UTC).
+- Integrated browser controlled through the provided browser automation interface.
+- User enabled integrated-browser control.
+- Download location: system Downloads folder (screenshot supplied).
+- “Ask where downloads should be saved”: off (screenshot supplied).
+- User reported changing file-download permission to “Always allow” before the final retest. The effective internal permission state was not independently inspected.
+
+## Summary
+
+A normal attachment download from a controlled localhost HTTP server fails to save a file, including after the user selected “Always allow.” A prior attempt appears in the app's download history as “Gestoppt” (Stopped). The final retest closes the HTTP connection while the server writes the PDF response. No new file appears in the system Downloads folder.
+
+## Reproduction used in this session
+
+1. Serve a public PDF using a loopback-only HTTP server at http://127.0.0.1:60689/.
+2. The index page contains a normal link labeled “Download test PDF” pointing to /download.
+3. The endpoint returns HTTP 200 with application/pdf and Content-Disposition: attachment; filename=""codex-browser-download-test-20260905.pdf"".
+4. Open the index page in Codex's integrated browser and activate the link through the browser automation interface.
+5. Inspect the download destination and server output.
+6. Repeat after selecting “Always allow” for file downloads, keeping the same server, payload, URL, and browser interaction.
+
+The test server was stopped after testing; the loopback URL is not a live public reproduction URL.
+
+## Expected
+
+The permitted download completes into the configured system Downloads folder without a Save As prompt. If an additional restriction applies, the app and agent should receive an actionable reason explaining the restriction.
+
+## Actual and evidence
+
+- Before the final permission change, the user's download-history screenshot showed “Gestoppt · 9:49,” without an actionable cause visible in the supplied screenshot.
+- Both controlled attachment-download attempts ended with a server-side BrokenPipeError while writing the PDF.
+- Final retest server output:
+
+```
+2026-09-05T07:55:04.140616+00:00 [DEBUG] DownloadProbe ""GET /download HTTP/1.1"" 200 -
+2026-09-05T07:55:04.147197+00:00 [DEBUG] DownloadProbe.do_GET failed /download
+BrokenPipeError: [Errno 32] Broken pipe
+```
+
+- After the final retest, stat and shasum reported that the expected output file did not exist. A separate check found no recently modified regular files at the top level of the Downloads folder during the preceding 15 minutes.
+- The browser remained on the test index page, without an error in its exposed page accessibility state. This does not establish that no native dialog existed outside that page.
+- The same PDF had loaded successfully through the server's inline-PDF route during the preceding test. This helps distinguish basic PDF delivery from attachment-download completion, but does not identify the root cause.
+- Payload: public ST LIS2DW12 datasheet, 3,215,600 bytes.
+- Payload SHA-256: 5208623aa91c63a33be0e930518c20f5210c4eb76932350f35369687ae1d0dd5.
+
+## Scope and uncertainty
+
+This report does not prove which layer cancels the transfer. BrokenPipeError records the connection closing while the server sends data, not why it closes. Permission propagation, attachment handling, local-HTTP policy, and download-manager behavior remain unverified possibilities. The behavior after a full app restart and the same attachment test on an HTTPS origin have not been tested.
+
+Native Codex-app automation is explicitly blocked for this agent. That restriction was respected; it prevents using native app controls to inspect or resolve a potentially separate dialog. It is not evidence that this restriction caused the transfer failure.
+
+## Impact and requested improvement
+
+The agent can navigate to a PDF and trigger a download, but cannot reliably complete and verify the file download under the reported allowed configuration. Please investigate attachment-download cancellation and expose download completion, saved-file path, and actionable cancellation reasons to the browser automation interface.
+
+
+### What steps can reproduce the bug?
+
+Feedback ID: 01a05e9b-c4e5-7110-8afb-8e1ae0b80afb
+
+### What is the expected behavior?
+
+_No response_
+
+### Additional information
+
+_No response_",codex_core,bug,Tool Execution,Codex App,macOS,medium,Codex integrated-browser download action fails despite permission; meaningful tool failure but an external-browser workaround exists.
+43024,[macOS Desktop] Response stream disconnect followed by repeated silent turns in existing task,https://github.com/openai/codex/issues/43024,open,2026-09-05T14:34:32+00:00,,,,,,,,"bug, app, connectivity, session","## Summary
+
+An existing local desktop task stopped making progress after a logged Responses WebSocket disconnect. Subsequent turn starts were acknowledged but produced no recorded assistant responses or tool calls before manual interruption. This intermittently prevents sustained tasks from finishing.
+
+## Environment
+
+- macOS desktop app version: 26.901.41123 (installed app bundle)
+- Model: gpt-6-astra; initial work used ultra effort, subsequent unsuccessful attempts already used medium
+- Local workspace; desktop app logs and saved execution transcripts inspected
+
+## Correlated timeline (UTC, September 5, 2026)
+
+- 01:15:32: Initial production turn logged `stream disconnected before completion: websocket closed by server before response.completed`, retry 2/5. That turn subsequently completed at 01:29:49, showing recovery was possible earlier.
+- 01:31:33: Follow-up edit turn completed its renderer-code inspection successfully (exit 0; output returned).
+- 01:31:46: Subagent follow-up tool returned.
+- 01:32:13: Last recorded parent reasoning item.
+- 01:34:56: This same follow-up turn logged the WebSocket error above and `stream disconnected - retrying sampling request (2/5 in 400ms)...`.
+- 01:35:30: Child completion event arrived; no further parent tool execution was recorded.
+- 01:45:19: User interrupted the stalled turn.
+- Subsequent starts that evening and the following morning produced no recorded assistant/tool response before interruption (approximately 76–171 seconds each).
+- 14:22:37 and 14:25:02: Two simple-command test attempts likewise produced no recorded assistant/tool items before manual interruption after 71.711 and 98.437 seconds. A separate task could execute `date` immediately.
+
+## Expected behavior
+
+After a stream disconnect, recover and continue execution or surface an actionable failure. Existing tasks should not remain apparently active with no observable progress on repeated follow-ups.
+
+## Evidence boundaries
+
+The local logs show retry 2/5, not proof that all five retries were exhausted. Repeated forwarding of one error into UI logs was deduplicated. The later silent turns have no explicit correlated sampling error in the inspected desktop logs. No explicit context-limit or rate-limit rejection was found. Last recorded input usage before the original stall was 197,688 against a reported 258,400 context window; this does not exclude backend history-processing defects.
+
+Host network testing found failed IPv6 connections while IPv4 HTTPS worked. Switching the Mac to local-only IPv6 did not resolve the subsequent silent-turn tests; IPv6 causation is unproven. No private transcript contents, raw logs, credentials, or local file paths are included here.
+
+## Investigation request
+
+Please investigate response-stream retry recovery and subsequent turn execution/event delivery for existing desktop tasks. In particular, distinguish sampling requests left pending from client event-delivery/replay failures. Exact task/turn identifiers and local source references are retained for private support follow-up.
+
+Potentially related reports: #35203 (Windows existing-task recovery), #28115, #20739. This report adds macOS evidence connecting a successful tool completion, a disconnect in the same turn, and repeated later silent starts.",codex_core,bug,Reliability,Codex App,macOS,high,"Existing Codex task becomes unable to make progress after stream disconnect; another task can still run, so high rather than critical."
+42969,[VS Code][Windows] Regression in 26.901.22334: Codex sidebar missing and chatgpt.openSidebar command not found,https://github.com/openai/codex/issues/42969,closed,2026-09-05T08:55:55+00:00,26.901.22334,ChatGPT Plus,Microsoft Windows NT 10.0.26200.0 x64,"After updating the Codex VS Code extension to version 26.901.22334, the Codex sidebar is missing from VS Code.
+
+When I try to open Codex using the Codex button, VS Code shows the following error:
+
+command 'chatgpt.openSidebar' not found
+
+The Codex CLI works normally on the same machine.
+
+I also tested the previous extension version 26.825.51511 on the same machine and in the same VS Code environment. After downgrading to 26.825.51511, the Codex sidebar appeared again and Codex worked normally.","1. Use VS Code 1.98.2 on Windows x64.
+2. Install or update the Codex VS Code extension to version 26.901.22334.
+3. Open VS Code and a workspace.
+4. Check the VS Code sidebar.
+5. The Codex sidebar entry is missing.
+6. Click the Codex button to open the Codex sidebar.
+7. VS Code reports:
+
+   command 'chatgpt.openSidebar' not found
+
+8. Downgrade the Codex VS Code extension to version 26.825.51511.
+9. Reload VS Code.
+10. The Codex sidebar appears and Codex works normally.",,,"bug, windows-os, extension","### What version of the IDE extension are you using?
+
+26.901.22334
+
+### What subscription do you have?
+
+ChatGPT Plus
+
+### Which IDE are you using?
+
+VS Code 1.98.2
+
+### What platform is your computer?
+
+Microsoft Windows NT 10.0.26200.0 x64
+
+### What issue are you seeing?
+
+After updating the Codex VS Code extension to version 26.901.22334, the Codex sidebar is missing from VS Code.
+
+When I try to open Codex using the Codex button, VS Code shows the following error:
+
+command 'chatgpt.openSidebar' not found
+
+The Codex CLI works normally on the same machine.
+
+I also tested the previous extension version 26.825.51511 on the same machine and in the same VS Code environment. After downgrading to 26.825.51511, the Codex sidebar appeared again and Codex worked normally.
+
+### What steps can reproduce the bug?
+
+1. Use VS Code 1.98.2 on Windows x64.
+2. Install or update the Codex VS Code extension to version 26.901.22334.
+3. Open VS Code and a workspace.
+4. Check the VS Code sidebar.
+5. The Codex sidebar entry is missing.
+6. Click the Codex button to open the Codex sidebar.
+7. VS Code reports:
+
+command 'chatgpt.openSidebar' not found
+
+8. Downgrade the Codex VS Code extension to version 26.825.51511.
+9. Reload VS Code.
+10. The Codex sidebar appears and Codex works normally.
+
+### What is the expected behavior?
+
+_No response_
+
+### Additional information
+
+_No response_",codex_core,bug,IDE Integration,IDE Extension,Windows,high,VS Code Codex sidebar/command is unusable after update; downgrade/CLI is a workaround but the IDE workflow itself is blocked.
+43034,Android: reasoning selector missing in new chats until High is activated by sending a desktop message,https://github.com/openai/codex/issues/43034,open,2026-09-05T15:23:39+00:00,,,,,,,,bug,"Scope: This is a ChatGPT Android client issue, not a Codex issue. I’m reporting it here because I could not find a dedicated public ChatGPT Android issue tracker.
+
+## Title
+
+Android: reasoning/model selector is missing in new chats until a desktop-selected High mode is used to send a message
+
+## Description
+
+I’m a ChatGPT Plus user.
+
+On Android, newly created chats do not show any reasoning/model selector at all. The chat starts without any visible way to switch between Instant / Medium / High.
+
+However, the Android client is clearly capable of rendering the selector, because it appears after I change the same conversation to High on desktop **and send a new message from desktop**.
+
+This looks like a UI/state initialization or synchronization bug rather than an account entitlement issue.
+
+## Steps to reproduce
+
+1. Open ChatGPT on Android.
+2. Create a new chat.
+3. Observe the composer / top bar.
+4. There is no reasoning/model selector available.
+
+Then:
+
+5. Open the same conversation on desktop.
+6. Change the reasoning level to `High`.
+7. Do **not** send a message yet.
+8. Return to Android.
+9. The selector is still missing.
+
+Then:
+
+10. On desktop, while still in `High`, send a new message in that conversation.
+11. Return to Android.
+12. The reasoning selector immediately appears in the Android composer.
+
+## Actual behavior
+
+For a new Android conversation:
+
+- No reasoning/model selector is shown.
+- Changing the conversation to High on desktop alone does not make the selector appear on Android.
+- After sending a message from desktop while High is selected, Android suddenly starts showing the selector.
+
+## Expected behavior
+
+As a Plus user, the reasoning/model selector should be available directly when starting a new Android chat, without requiring another client to initialize the conversation state first.
+
+Changing reasoning level on another synchronized client should also update the Android UI state without requiring a new message to be sent.
+
+## Why this looks like a bug
+
+This does not appear to be an account-permission issue:
+
+- The same account can select `High` on desktop.
+- Android successfully renders the selector once the conversation has been updated by a desktop message.
+- Therefore the Android client supports the UI and the account has access to the feature.
+
+The problem seems specifically related to how a new conversation initializes or synchronizes its reasoning/model-selection state on Android.
+
+
+## Environment
+
+- Plan: ChatGPT Plus
+- Platform: Android
+- Android version: 14
+- ChatGPT app version: 1.2026.223 (20)
+- Desktop: ChatGPT desktop/web, where the reasoning selector works normally
+- Same account and same conversation used for reproduction
+
+## Screenshots
+
+Screenshot 1:
+New Android chat — no reasoning/model selector is visible.
+
+<img width=""265"" height=""595"" alt=""Image"" src=""https://github.com/user-attachments/assets/08039012-48fb-4bfd-aae8-d83957a0a5c6"" />
+
+Screenshot 2:
+Same conversation after selecting `High` on desktop and sending a message — reasoning selector appears immediately on Android.
+
+<img width=""269"" height=""445"" alt=""Image"" src=""https://github.com/user-attachments/assets/6d398d49-0d6b-43f4-a21a-4e4a15399292"" />
+
+Screenshot 3:
+ChatGPT Android version: 1.2026.223 (20)
+<img width=""265"" height=""294"" alt=""Image"" src=""https://github.com/user-attachments/assets/aba335c7-5fd2-4f1a-8493-52e21789fbc5"" />",out_of_scope,bug,App / UI / UX,Unknown,Android,medium,"Reporter explicitly states this is a ChatGPT Android issue, not Codex; desktop-message workaround exists."
+42972,[macOS] Sidebar chat reorder inserts a reference into the active composer on the first drag,https://github.com/openai/codex/issues/42972,open,2026-09-05T09:13:11+00:00,"26.901.31953 (build 7868), read from the installed desktop application's bundle metadata.",ChatGPT Pro,"macOS 27.0 (build 26A5425a), Apple silicon.
+
+`uname -mprs`: `Darwin 27.0.0 arm64 arm`
+
+The desktop app was in Codex mode and macOS full-screen mode when this occurred.","When I drag a chat up or down within a project's sidebar list to change its order, the app treats the first drag as an attempt to reference that chat in the currently open chat.
+
+During the drag, the UI indicates that it will add the dragged chat as a reference to the active chat. When I release it above another chat in the sidebar, the order does not change as intended. Instead, a reference to the dragged chat is inserted into the active chat's message composer.
+
+Repeating the drag a second time successfully changes the sidebar order. This has been happening repeatedly when I try to reorder chats, so a simple reorder requires two drag attempts and leaves an unwanted reference in the composer.","1. Open the desktop app on macOS, switch to Codex mode, and enter full-screen mode.
+2. Expand a project containing multiple chats in the sidebar.
+3. Keep a chat open in the main pane.
+4. Drag another chat up or down within the same project's sidebar list, aiming to drop it immediately above another chat.
+5. Observe the reference-to-current-chat feedback during the drag.
+6. Release the dragged chat at the intended sidebar position.
+7. Observe that the first attempt adds a chat reference to the active composer instead of correctly reordering the list.
+8. Repeat the same reorder gesture. The second attempt successfully reorders the chat.",Dropping a chat at a reorder position within the project's sidebar list should update its position on the first attempt and leave the active message composer unchanged.,"- Observed on September 5, 2026.
+- Full-screen mode describes the environment in which this happened; I have not established whether the issue also occurs in windowed mode.
+- Repeating the drag is a temporary workaround for the ordering failure.
+- Related: #39254 reports sidebar drop-target displacement during auto-scroll. This report concerns a different visible outcome: a sidebar reorder gesture inserts a chat reference into the active composer, with reordering succeeding on the second attempt.","bug, app","### What version of the Codex App are you using (From “About Codex” dialog)?
+
+26.901.31953 (build 7868), read from the installed desktop application's bundle metadata.
+
+### What subscription do you have?
+
+ChatGPT Pro
+
+### What platform is your computer?
+
+macOS 27.0 (build 26A5425a), Apple silicon.
+
+`uname -mprs`: `Darwin 27.0.0 arm64 arm`
+
+The desktop app was in Codex mode and macOS full-screen mode when this occurred.
+
+### What issue are you seeing?
+
+When I drag a chat up or down within a project's sidebar list to change its order, the app treats the first drag as an attempt to reference that chat in the currently open chat.
+
+During the drag, the UI indicates that it will add the dragged chat as a reference to the active chat. When I release it above another chat in the sidebar, the order does not change as intended. Instead, a reference to the dragged chat is inserted into the active chat's message composer.
+
+Repeating the drag a second time successfully changes the sidebar order. This has been happening repeatedly when I try to reorder chats, so a simple reorder requires two drag attempts and leaves an unwanted reference in the composer.
+
+### What steps can reproduce the bug?
+
+1. Open the desktop app on macOS, switch to Codex mode, and enter full-screen mode.
+2. Expand a project containing multiple chats in the sidebar.
+3. Keep a chat open in the main pane.
+4. Drag another chat up or down within the same project's sidebar list, aiming to drop it immediately above another chat.
+5. Observe the reference-to-current-chat feedback during the drag.
+6. Release the dragged chat at the intended sidebar position.
+7. Observe that the first attempt adds a chat reference to the active composer instead of correctly reordering the list.
+8. Repeat the same reorder gesture. The second attempt successfully reorders the chat.
+
+### What is the expected behavior?
+
+Dropping a chat at a reorder position within the project's sidebar list should update its position on the first attempt and leave the active message composer unchanged.
+
+### Additional information
+
+- Observed on September 5, 2026.
+- Full-screen mode describes the environment in which this happened; I have not established whether the issue also occurs in windowed mode.
+- Repeating the drag is a temporary workaround for the ordering failure.
+- Related: #39254 reports sidebar drop-target displacement during auto-scroll. This report concerns a different visible outcome: a sidebar reorder gesture inserts a chat reference into the active composer, with reordering succeeding on the second attempt.",codex_core,bug,App / UI / UX,Codex App,macOS,low,Codex-mode sidebar reorder misbehaves on first drag but succeeds on the second; localized UX defect with easy workaround.
+42963,[Windows][Chat] Composer disappears after assistant response in ChatGPT Desktop 26.901.31953,https://github.com/openai/codex/issues/42963,open,2026-09-05T08:14:08+00:00,"ChatGPT Desktop / unified ChatGPT-Codex app `26.901.31953`  
+Released September 4, 2026  
+Shown in the About dialog as: **ChatGPT – Powered by Codex & OWL**",ChatGPT Team,"Windows 11 x64  
+Display resolution: `3440 x 1440`  
+Windows display scaling: `125%`","In the unified ChatGPT desktop application on Windows, the message composer/input field disappears after the assistant finishes responding in regular **Chat** mode.
+
+The initial composer is available normally and I can submit a message. The assistant response is rendered correctly. However, once the response has completed, the composer is completely absent from the bottom of the conversation, making it impossible to send a follow-up message in the same chat.
+
+This is reproducible in regular Chat mode.
+
+**ChatGPT Classic on the same computer and with the same account works normally.**","1. Launch ChatGPT Desktop `26.901.31953` on Windows.
+2. Open regular Chat mode.
+3. Start or open a conversation.
+4. Enter and send a message.
+5. Wait for the assistant response to finish.
+6. Observe the bottom of the conversation.",The composer should remain visible and usable after every assistant response so the conversation can continue normally.,"The issue was reproduced on September 5, 2026, immediately after installing/running build `26.901.31953`.
+
+Screenshots are available showing:
+- the missing composer after an assistant response;
+- the About dialog with exact app version `26.901.31953`.","bug, windows-os, app","<img width=""1602"" height=""1367"" alt=""Image"" src=""https://github.com/user-attachments/assets/d3844ed7-0829-4b84-a724-8de3ad0b304f"" />
+
+<img width=""485"" height=""447"" alt=""Image"" src=""https://github.com/user-attachments/assets/74d4bb7e-ea26-4248-a89c-858d36308093"" />
+
+### What version of the Codex App are you using?
+
+ChatGPT Desktop / unified ChatGPT-Codex app `26.901.31953`
+Released September 4, 2026
+Shown in the About dialog as: **ChatGPT – Powered by Codex & OWL**
+
+### What subscription do you have?
+
+ChatGPT Team
+
+### What platform is your computer?
+
+Windows 11 x64
+Display resolution: `3440 x 1440`
+Windows display scaling: `125%`
+
+### What issue are you seeing?
+
+In the unified ChatGPT desktop application on Windows, the message composer/input field disappears after the assistant finishes responding in regular **Chat** mode.
+
+The initial composer is available normally and I can submit a message. The assistant response is rendered correctly. However, once the response has completed, the composer is completely absent from the bottom of the conversation, making it impossible to send a follow-up message in the same chat.
+
+This is reproducible in regular Chat mode.
+
+**ChatGPT Classic on the same computer and with the same account works normally.**
+
+### What steps can reproduce the bug?
+
+1. Launch ChatGPT Desktop `26.901.31953` on Windows.
+2. Open regular Chat mode.
+3. Start or open a conversation.
+4. Enter and send a message.
+5. Wait for the assistant response to finish.
+6. Observe the bottom of the conversation.
+
+### Actual behavior
+
+The composer/input field disappears completely after the assistant response. There is no visible field in which to type another message.
+
+### Expected behavior
+
+The composer should remain visible and usable after every assistant response so the conversation can continue normally.
+
+### Troubleshooting / observations
+
+- Windows display scaling is already `125%`, not `150%`.
+- Resolution is `3440 x 1440`.
+- `Ctrl + Shift + R` has no effect.
+- Restarting/opening the application does not provide a useful permanent workaround.
+- ChatGPT Classic works correctly on the same machine.
+- The issue therefore appears specific to the new unified ChatGPT/Codex/OWL desktop client.
+
+### Related reports
+
+- #42776 – same app version `26.901.31953`, composer-related regression after a response on macOS.
+- #42583 – composer disappears after the first message in regular Chat mode on macOS.
+- #42649 – Windows desktop composer can disappear or move outside the viewport.
+- #23024 – older Windows composer-disappearance issue related to `150%` scaling; this reproduction is different because it occurs at **125% scaling**.
+
+### Additional information
+
+The issue was reproduced on September 5, 2026, immediately after installing/running build `26.901.31953`.
+
+Screenshots are available showing:
+- the missing composer after an assistant response;
+- the About dialog with exact app version `26.901.31953`.",out_of_scope,bug,App / UI / UX,Codex App,Windows,medium,"Regular Chat composer disappears in the unified desktop host; not a Codex workflow, and ChatGPT Classic provides a workaround."
+43038,ChatGPT Working Astra Compaction takes 5x longer than before Astra update with Sol,https://github.com/openai/codex/issues/43038,open,2026-09-05T15:30:20+00:00,Version 26.901.41600,Pro 200,Microsoft Windows NT 10.0.26200.0 x64,"Auto-Compaction and Manual Compaction are taking 3-5x+ longer to complete than what I was used to seeing before the Astra update using Sol. Not sure if it's a new compaction method that was implemented or if Model makes the difference, but i'm seeing 5-6 minute manual compactions on relatively new chat sessions. Normally new chat sessions are faster before around 45 seconds to 1.5 min depending on length of the session chat history. But even on new chats, this is taking an unreasonably long time. I did notice Astra is definitely slower than Sol, so I wasn't sure if compaction is just inheriting that difference.",Just let it auto-compact or run manual compaction on a short chat thread.,I would expect 30 seconds to 2.5 minutes at most depending on chat length.,,"bug, context, app, performance","### What version of the Codex App are you using (From “About Codex” dialog)?
+
+Version 26.901.41600
+
+### What subscription do you have?
+
+Pro 200
+
+### What platform is your computer?
+
+Microsoft Windows NT 10.0.26200.0 x64
+
+### What issue are you seeing?
+
+Auto-Compaction and Manual Compaction are taking 3-5x+ longer to complete than what I was used to seeing before the Astra update using Sol. Not sure if it's a new compaction method that was implemented or if Model makes the difference, but i'm seeing 5-6 minute manual compactions on relatively new chat sessions. Normally new chat sessions are faster before around 45 seconds to 1.5 min depending on length of the session chat history. But even on new chats, this is taking an unreasonably long time. I did notice Astra is definitely slower than Sol, so I wasn't sure if compaction is just inheriting that difference.
+
+### What steps can reproduce the bug?
+
+Just let it auto-compact or run manual compaction on a short chat thread.
+
+### What is the expected behavior?
+
+I would expect 30 seconds to 2.5 minutes at most depending on chat length.
+
+### Additional information
+
+_No response_",out_of_scope,bug,Performance,Codex App,Windows,medium,"Described as ChatGPT/Astra conversation compaction latency, not a Codex task workflow; degraded performance rather than complete failure."
+43030,Is OpenAI Deceiving $200/Month Pro Users? GPT-5.6 Sol Gave Provably False Model Information,https://github.com/openai/codex/issues/43030,open,2026-09-05T14:57:21+00:00,,,,,,,,"bug, model-behavior","## Why I am raising this publicly
+
+I pay $200 per month for ChatGPT Pro. The product interface explicitly told me that I was using **GPT-5.6 Sol with Light reasoning**. However, when I asked for its knowledge-training cutoff date, the assistant stated without hesitation:
+
+> My built-in knowledge cutoff is June 2024.
+
+This was not an ambiguous response, and it was not a user misunderstanding. The model presented false information with complete confidence. Only after being challenged did it check OpenAI's official documentation and acknowledge that `gpt-5.6` is an alias for `gpt-5.6-sol`, whose published knowledge cutoff is **February 16, 2026**.
+
+## Reproduction
+
+**Model displayed by the product:** GPT-5.6 Sol
+**Reasoning level:** Light
+**Subscription:** ChatGPT Pro ($200/month)
+
+**User:** What is your knowledge-training cutoff date?
+**Assistant:** My built-in knowledge cutoff is June 2024. When newer information is needed, I can use available tools to look it up.
+**User:** Why does my GPT-5.6 say 2024? Isn't that GPT-4o?
+**Assistant:** My previous answer was wrong. According to OpenAI's official model documentation, GPT-5.6 Sol has a February 16, 2026 knowledge cutoff.
+
+## This cannot simply be dismissed as “models hallucinate”
+
+The model does not operate independently of OpenAI. The model name, system instructions, routing, fallback mechanisms, and the actual backend model serving the request are all controlled by OpenAI. Users can see only the name displayed in the interface; they cannot inspect what was actually served on the backend.
+
+When the interface displays **GPT-5.6 Sol**, but the assistant provides model information that directly contradicts OpenAI's published specification, OpenAI cannot simply shift responsibility to “model hallucination.” Whether the specific cause was system configuration, model behavior, silent fallback, or model substitution, it occurred inside a product controlled and sold by OpenAI. OpenAI is responsible for explaining it.
+
+As a paying customer, I have grounds to ask whether OpenAI is displaying a premium model name to Pro users while serving a different, older, or less capable model on the backend. If this did not happen, OpenAI should provide verifiable server-side evidence instead of asking users to blindly trust an interface label.
+
+## The assistant's response after being confronted with the evidence
+
+Even after the false statement was exposed, the assistant repeatedly emphasized that the user could not prove “deliberate fraud,” instead of applying the same level of scrutiny to OpenAI—the party that controls and possesses all relevant backend evidence.
+
+That response made it appear that the AI's first priority was to protect the company that developed it rather than fairly address a paying user's evidence and legitimate concerns. Users should not be repeatedly told that their evidence is insufficient when the decisive evidence is held exclusively by the service provider. The entire burden of proof should not be shifted onto the consumer.
+
+The assistant should acknowledge:
+
+> I initially provided false information and misled the user by stating it with unjustified confidence. Afterward, I overemphasized the user's inability to prove OpenAI's intent, making the user feel that I was defending the company instead of giving proper weight to the evidence and the user's consumer rights. I apologize for both the false information and the unfair way I responded.
+
+## Questions OpenAI must answer publicly
+
+Please do not avoid this issue with a generic reference to “hallucinations.” OpenAI should answer clearly:
+
+1. Which exact backend model generated these responses?
+2. Did any fallback, substitution, or model downgrade occur during the request?
+3. Does the `GPT-5.6 Sol` label displayed in the interface always match the model that actually processes the request?
+4. Can Pro users ever be silently routed to an older or lower-tier model?
+5. Why did a GPT-5.6 Sol session confidently claim that its knowledge cutoff was June 2024?
+6. Will OpenAI provide auditable model identity and routing records so paying users can verify the service they purchased?
+7. If the actual model did not match the displayed label, how will OpenAI compensate affected Pro users?
+
+## Conclusion
+
+The conversation and the product interface together prove that a paid session labeled **GPT-5.6 Sol** provided clearly false and misleading information about its own model characteristics.
+
+I am publishing this so other Pro users can check whether they have experienced similar behavior and so OpenAI can be held accountable for the models, routing, and product labels it controls.
+
+Users paying $200 per month deserve a truthful, transparent, and verifiable service—not an unauditable model label they are simply expected to trust.",out_of_scope,bug,Model Quality,Unknown,Unknown,medium,ChatGPT model-identity/knowledge-cutoff complaint with no Codex workflow or reliable surface/platform evidence.
+43050,Withdrawn,https://github.com/openai/codex/issues/43050,closed,2026-09-05T16:20:52+00:00,,,,,,,,"bug, app, computer-use",,out_of_scope,other,Other,Codex App,Unknown,low,Withdrawn with no substantive body; retained for audit but excluded from actionable product analysis.
+42961,Expand diff,https://github.com/openai/codex/issues/42961,open,2026-09-05T08:09:27+00:00,App,,,"Expand the diff above / below the diff.
+
+Often it's useful to see the code above or below the diff for context. and the diff has no reasonable usefulness without that. 
+
+This is something that requires using another tool outside of codex to understand the code changes.
+
+<img width=""1336"" height=""714"" alt=""Image"" src=""https://github.com/user-attachments/assets/d07ea2f1-6dc2-41a6-932e-35927660efd3"" />",,,Please don't reply to this with me too - just thumbs up if you want this fixed.,"enhancement, app","### What variant of Codex are you using?
+
+App
+
+### What feature would you like to see?
+
+Expand the diff above / below the diff.
+
+Often it's useful to see the code above or below the diff for context. and the diff has no reasonable usefulness without that.
+
+This is something that requires using another tool outside of codex to understand the code changes.
+
+<img width=""1336"" height=""714"" alt=""Image"" src=""https://github.com/user-attachments/assets/d07ea2f1-6dc2-41a6-932e-35927660efd3"" />
+
+### Additional information
+
+Please don't reply to this with me too - just thumbs up if you want this fixed.",codex_core,feature_request,App / UI / UX,Codex App,Unknown,medium,Direct Codex App diff-review feature request; missing surrounding context forces use of another tool.
+42971,[Windows Desktop] Switching ChatGPT accounts restores a stale turn for the same local Codex task,https://github.com/openai/codex/issues/42971,open,2026-09-05T09:09:12+00:00,Exact build is currently unavailable because the desktop helper is also failing with `helper_unknown_error: setup refresh had errors`. The issue appeared in the recently updated unified ChatGPT/Codex Windows desktop app.,Paid ChatGPT accounts.,"Windows, x64.","After switching the ChatGPT account used by Codex Desktop, reopening an existing long-running **local Codex task** can restore an old persisted turn instead of the latest conversation state.
+
+This is not just an old sidebar timestamp:
+
+- The same local task remains listed and its task metadata has a recent `updatedAt`.
+- Reading the task history returns a much older turn.
+- That older turn is still reported as `inProgress`.
+- Many later completed user/assistant turns that were visible before the account switch are absent from the restored/readable history.
+- Continuing from the restored task therefore gives the agent stale research state and can cause it to resume work that was superseded many turns earlier.
+
+The complete affected task identifier and private transcript details are intentionally omitted from this public issue and can be supplied privately to OpenAI support.","1. Create or continue a long-running local Codex task on Windows.
+2. Complete many later turns in that task.
+3. Switch the ChatGPT account used by the desktop application.
+4. Reopen the same local project and task.
+5. Compare the task list metadata with the newest turn returned by the task-history/read path.
+6. Observe that the task may show a recent update while the readable transcript stops at an older turn still marked `inProgress`.","For local tasks that remain visible after an account transition, Codex Desktop should restore the latest durable rollout/branch.
+
+If account ownership prevents access, the app should show an explicit account-boundary error. It should not silently display an older transcript as the current complete history.
+
+Account switching must not overwrite or regress the selected rollout/turn pointer.",,"bug, windows-os, app, session","### What version of the Codex App are you using?
+
+Exact build is currently unavailable because the desktop helper is also failing with `helper_unknown_error: setup refresh had errors`. The issue appeared in the recently updated unified ChatGPT/Codex Windows desktop app.
+
+### What subscription do you have?
+
+Paid ChatGPT accounts.
+
+### What platform is your computer?
+
+Windows, x64.
+
+### What issue are you seeing?
+
+After switching the ChatGPT account used by Codex Desktop, reopening an existing long-running **local Codex task** can restore an old persisted turn instead of the latest conversation state.
+
+This is not just an old sidebar timestamp:
+
+- The same local task remains listed and its task metadata has a recent `updatedAt`.
+- Reading the task history returns a much older turn.
+- That older turn is still reported as `inProgress`.
+- Many later completed user/assistant turns that were visible before the account switch are absent from the restored/readable history.
+- Continuing from the restored task therefore gives the agent stale research state and can cause it to resume work that was superseded many turns earlier.
+
+The complete affected task identifier and private transcript details are intentionally omitted from this public issue and can be supplied privately to OpenAI support.
+
+### Steps to reproduce
+
+1. Create or continue a long-running local Codex task on Windows.
+2. Complete many later turns in that task.
+3. Switch the ChatGPT account used by the desktop application.
+4. Reopen the same local project and task.
+5. Compare the task list metadata with the newest turn returned by the task-history/read path.
+6. Observe that the task may show a recent update while the readable transcript stops at an older turn still marked `inProgress`.
+
+### Expected behavior
+
+For local tasks that remain visible after an account transition, Codex Desktop should restore the latest durable rollout/branch.
+
+If account ownership prevents access, the app should show an explicit account-boundary error. It should not silently display an older transcript as the current complete history.
+
+Account switching must not overwrite or regress the selected rollout/turn pointer.
+
+### Actual behavior
+
+The UI and task APIs disagree about the task's current state: metadata is recent, but the transcript/history projection resolves to an old in-progress turn. The agent then resumes obsolete work.
+
+### User impact
+
+This makes long-running paid Codex workflows unreliable. Users may switch accounts when one account reaches its usage window; after switching, substantial completed research context can appear lost or be replaced by stale state.
+
+### Requested investigation
+
+Please inspect:
+
+- account-transition handling for local Codex tasks;
+- selected rollout/branch pointer reconciliation;
+- task-history projection/reindexing;
+- preservation of completed rollout JSONL data;
+- conflicts between recent task metadata and an older `inProgress` turn.
+
+A supported “reindex/recover latest local rollout” action would also be useful.
+
+### Related reports
+
+- #40915 — resumed task follow-ups become stale or unreadable after restart
+- #41874 — selective loss of historical local sessions and incomplete project migration
+- #39677 — OAuth account transition disconnects AppServerManager RPC
+- #42269 — older conversation branch restored and later turns hidden",codex_core,bug,Context & Memory,Codex App,Windows,critical,"Account switching can restore stale task state and hide later completed turns, creating potential state/history loss and obsolete agent work."
+43021,Stuck task keeps consuming usage allowance with no output and cannot be stopped,https://github.com/openai/codex/issues/43021,open,2026-09-05T14:20:42+00:00,26.901.41600,Pro,Darwin 25.6.0 arm64 arm,"A task in the Codex App hangs at a step and produces no further output, but the usage allowance keeps decreasing while it is stuck, and there is no way to stop it from the UI.
+
+Latest instance (today):
+- Task ran for 1h 19m 19s, then showed ""Backend release and Ritual intro finished"" and got stuck at ""Preparing UI screenshot test"" with no further output.
+- While stuck, the usage meter went from roughly 43% remaining to 0% within the same window. This is the second time in a week: it is now at 20% left within 24 hours of the last reset, with no proportional work delivered.
+- Stopping the task from the App does nothing; the meter keeps draining.
+
+Support case 14375358 confirms that Support has no visibility into task-level usage (thread id, timestamps, model, token counts, retries), so I cannot identify what consumed the allowance and they cannot either. The Usage dashboard only shows a percentage.
+
+This looks like a retry/loop inside a stuck step that is billed against the allowance but never surfaces to the user.","1. Open the Codex App, Pro subscription.
+2. Start a multi-step task (mine: a backend release plus a UI screenshot test step).
+3. Let it run. In my case it completed the first steps (~1h 19m), then displayed ""Preparing UI screenshot test"" and produced no further output.
+4. Leave it in that state for 30+ minutes.
+5. Open the account menu → Usage. The remaining percentage keeps dropping while the task shows no progress.
+6. Try to stop the task from the App. The meter continues to drain.
+
+Observed twice in one week: ~43% → 0% on the first occurrence; 20% left within 24h of reset on the second.
+
+Session id: available on request (not posting publicly).","1. A stuck task should stop consuming allowance, or time out after N minutes without output.
+2. Stop/cancel from the App should actually halt execution and billing.
+3. Task-level usage (per thread: timestamps, model, tokens, retries) should be visible somewhere the user or Support can see it, so a drain like this can be attributed.","Screenshots available: task view showing 1h 19m 19s and the stuck step; account menu showing 20% left. Happy to share a session id privately if there is a channel for it.
+
+Related (same family of unexplained drain, different trigger): #35711 (usage ticking down after killing sessions), #36733 (background jobs drain quota while idle), #37445 (desktop app silently consumes weekly limit, reproduced), #36848 (unexplained usage). This report is specifically about a *stuck* task that keeps billing and cannot be stopped.
+
+Support case reference: 14375358.","bug, rate-limits, agent, app","### What version of the Codex App are you using (From “About Codex” dialog)?
+
+26.901.41600
+
+### What subscription do you have?
+
+Pro
+
+### What platform is your computer?
+
+Darwin 25.6.0 arm64 arm
+
+### What issue are you seeing?
+
+A task in the Codex App hangs at a step and produces no further output, but the usage allowance keeps decreasing while it is stuck, and there is no way to stop it from the UI.
+
+Latest instance (today):
+- Task ran for 1h 19m 19s, then showed ""Backend release and Ritual intro finished"" and got stuck at ""Preparing UI screenshot test"" with no further output.
+- While stuck, the usage meter went from roughly 43% remaining to 0% within the same window. This is the second time in a week: it is now at 20% left within 24 hours of the last reset, with no proportional work delivered.
+- Stopping the task from the App does nothing; the meter keeps draining.
+
+Support case 14375358 confirms that Support has no visibility into task-level usage (thread id, timestamps, model, token counts, retries), so I cannot identify what consumed the allowance and they cannot either. The Usage dashboard only shows a percentage.
+
+This looks like a retry/loop inside a stuck step that is billed against the allowance but never surfaces to the user.
+
+### What steps can reproduce the bug?
+
+1. Open the Codex App, Pro subscription.
+2. Start a multi-step task (mine: a backend release plus a UI screenshot test step).
+3. Let it run. In my case it completed the first steps (~1h 19m), then displayed ""Preparing UI screenshot test"" and produced no further output.
+4. Leave it in that state for 30+ minutes.
+5. Open the account menu → Usage. The remaining percentage keeps dropping while the task shows no progress.
+6. Try to stop the task from the App. The meter continues to drain.
+
+Observed twice in one week: ~43% → 0% on the first occurrence; 20% left within 24h of reset on the second.
+
+Session id: available on request (not posting publicly).
+
+### What is the expected behavior?
+
+1. A stuck task should stop consuming allowance, or time out after N minutes without output.
+2. Stop/cancel from the App should actually halt execution and billing.
+3. Task-level usage (per thread: timestamps, model, tokens, retries) should be visible somewhere the user or Support can see it, so a drain like this can be attributed.
+
+### Additional information
+
+Screenshots available: task view showing 1h 19m 19s and the stuck step; account menu showing 20% left. Happy to share a session id privately if there is a channel for it.
+
+Related (same family of unexplained drain, different trigger): #35711 (usage ticking down after killing sessions), #36733 (background jobs drain quota while idle), #37445 (desktop app silently consumes weekly limit, reproduced), #36848 (unexplained usage). This report is specifically about a *stuck* task that keeps billing and cannot be stopped.
+
+Support case reference: 14375358.",codex_core,bug,Usage & Credits,Codex App,macOS,critical,Stuck Codex task cannot be stopped and continues draining paid usage allowance to zero; combines core task failure with material usage loss.
+42974,01a06564-8a30-7b21-aa1e-4346aa5f23a2,https://github.com/openai/codex/issues/42974,open,2026-09-05T09:33:03+00:00,01a06564-8a30-7b21-aa1e-4346aa5f23a2,01a06564-8a30-7b21-aa1e-4346aa5f23a2,01a06564-8a30-7b21-aa1e-4346aa5f23a2,01a06564-8a30-7b21-aa1e-4346aa5f23a2,Feedback ID: 01a06564-8a30-7b21-aa1e-4346aa5f23a2,01a06564-8a30-7b21-aa1e-4346aa5f23a2,01a06564-8a30-7b21-aa1e-4346aa5f23a2,"bug, app","### What version of the Codex App are you using (From “About Codex” dialog)?
+
+01a06564-8a30-7b21-aa1e-4346aa5f23a2
+
+### What subscription do you have?
+
+01a06564-8a30-7b21-aa1e-4346aa5f23a2
+
+### What platform is your computer?
+
+01a06564-8a30-7b21-aa1e-4346aa5f23a2
+
+### What issue are you seeing?
+
+01a06564-8a30-7b21-aa1e-4346aa5f23a2
+
+### What steps can reproduce the bug?
+
+Feedback ID: 01a06564-8a30-7b21-aa1e-4346aa5f23a2
+
+### What is the expected behavior?
+
+01a06564-8a30-7b21-aa1e-4346aa5f23a2
+
+### Additional information
+
+01a06564-8a30-7b21-aa1e-4346aa5f23a2",out_of_scope,bug,Other,Codex App,Unknown,low,Only a feedback ID is present. There is insufficient evidence to identify an affected Codex workflow; default-excluded rather than guessed.
+43059,High toke use,https://github.com/openai/codex/issues/43059,open,2026-09-05T17:07:16+00:00,26.901.41600,Plus,Microsoft Windows NT 10.0.26200.0 x64,I’d like to report that Astra causes very high token usage when using Computer Use and Voice Mode.,Uploaded performance trace: 019e0267-8af3-70a2-b55d-97e47462cf71,,,"bug, rate-limits, app, computer-use","### What version of the Codex App are you using (From “About Codex” dialog)?
+
+26.901.41600
+
+### What subscription do you have?
+
+Plus
+
+### What platform is your computer?
+
+Microsoft Windows NT 10.0.26200.0 x64
+
+### What issue are you seeing?
+
+I’d like to report that Astra causes very high token usage when using Computer Use and Voice Mode.
+
+### What steps can reproduce the bug?
+
+Uploaded performance trace: 019e0267-8af3-70a2-b55d-97e47462cf71
+
+### What is the expected behavior?
+
+_No response_
+
+### Additional information
+
+_No response_",out_of_scope,bug,Usage & Credits,Codex App,Windows,medium,Reports Astra token usage in Computer Use + Voice Mode but does not establish a Codex coding/agent workflow; insufficient basis to promote to core.

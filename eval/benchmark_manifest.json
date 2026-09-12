@@ -1,0 +1,283 @@
+{
+  "dataset_id": "codex-14d-2026-09-06",
+  "purpose": "efficiency benchmark with two disjoint matched arms — Arm A: manual triage from scratch; Arm B: review of Signal's pre-structured output. Same-issue carryover is explicitly avoided. Timings must be measured, never fabricated.",
+  "matching_factors": "period, template availability, body-length bucket, platform group — each pair comes from the same matching cell",
+  "seed": 42,
+  "per_arm": 15,
+  "pairs": [
+    {
+      "cell": "current|non_template|long|unknown_or_other",
+      "issue_a": 42424,
+      "issue_b": 42778
+    },
+    {
+      "cell": "current|non_template|medium|unknown_or_other",
+      "issue_a": 42669,
+      "issue_b": 42862
+    },
+    {
+      "cell": "current|non_template|short|unknown_or_other",
+      "issue_a": 42860,
+      "issue_b": 42942
+    },
+    {
+      "cell": "current|template|long|Linux",
+      "issue_a": 42644,
+      "issue_b": 41587
+    },
+    {
+      "cell": "current|template|long|Windows",
+      "issue_a": 41632,
+      "issue_b": 41822
+    },
+    {
+      "cell": "current|template|long|macOS",
+      "issue_a": 42684,
+      "issue_b": 42509
+    },
+    {
+      "cell": "current|template|long|unknown_or_other",
+      "issue_a": 42478,
+      "issue_b": 42170
+    },
+    {
+      "cell": "current|template|medium|Linux",
+      "issue_a": 42253,
+      "issue_b": 42007
+    },
+    {
+      "cell": "current|template|medium|Windows",
+      "issue_a": 41602,
+      "issue_b": 42037
+    },
+    {
+      "cell": "current|template|medium|macOS",
+      "issue_a": 42185,
+      "issue_b": 41585
+    },
+    {
+      "cell": "current|template|medium|unknown_or_other",
+      "issue_a": 42168,
+      "issue_b": 42130
+    },
+    {
+      "cell": "current|template|short|Linux",
+      "issue_a": 42452,
+      "issue_b": 42772
+    },
+    {
+      "cell": "current|template|short|Windows",
+      "issue_a": 42493,
+      "issue_b": 42539
+    },
+    {
+      "cell": "current|template|short|macOS",
+      "issue_a": 41712,
+      "issue_b": 42379
+    },
+    {
+      "cell": "current|template|short|unknown_or_other",
+      "issue_a": 41663,
+      "issue_b": 42119
+    }
+  ],
+  "excluded_populations": {
+    "dev_100": 100,
+    "workload_pilot_50": 50,
+    "dev_diagnostic_audit_20": 20,
+    "holdout_50": 50
+  },
+  "pool_after_exclusions": 2054,
+  "period_mix_actual": {
+    "current": 30
+  },
+  "note_fix1": "period_mix is reported exactly as selected; period balance is not required for this efficiency benchmark",
+  "group_a_file": "eval/benchmark_group_a.csv",
+  "group_b_file": "eval/benchmark_group_b.csv",
+  "group_a_evidence": "eval/benchmark_group_a_evidence.csv",
+  "group_b_evidence": "eval/benchmark_group_b_evidence.csv",
+  "group_b_signal_predictions": "eval/benchmark_group_b_signal_predictions.csv",
+  "execution_order": [
+    {
+      "step": 1,
+      "pair_index": 1,
+      "arm": "A",
+      "github_issue_number": 42424
+    },
+    {
+      "step": 2,
+      "pair_index": 1,
+      "arm": "B",
+      "github_issue_number": 42778
+    },
+    {
+      "step": 3,
+      "pair_index": 2,
+      "arm": "B",
+      "github_issue_number": 42862
+    },
+    {
+      "step": 4,
+      "pair_index": 2,
+      "arm": "A",
+      "github_issue_number": 42669
+    },
+    {
+      "step": 5,
+      "pair_index": 3,
+      "arm": "A",
+      "github_issue_number": 42860
+    },
+    {
+      "step": 6,
+      "pair_index": 3,
+      "arm": "B",
+      "github_issue_number": 42942
+    },
+    {
+      "step": 7,
+      "pair_index": 4,
+      "arm": "B",
+      "github_issue_number": 41587
+    },
+    {
+      "step": 8,
+      "pair_index": 4,
+      "arm": "A",
+      "github_issue_number": 42644
+    },
+    {
+      "step": 9,
+      "pair_index": 5,
+      "arm": "A",
+      "github_issue_number": 41632
+    },
+    {
+      "step": 10,
+      "pair_index": 5,
+      "arm": "B",
+      "github_issue_number": 41822
+    },
+    {
+      "step": 11,
+      "pair_index": 6,
+      "arm": "B",
+      "github_issue_number": 42509
+    },
+    {
+      "step": 12,
+      "pair_index": 6,
+      "arm": "A",
+      "github_issue_number": 42684
+    },
+    {
+      "step": 13,
+      "pair_index": 7,
+      "arm": "A",
+      "github_issue_number": 42478
+    },
+    {
+      "step": 14,
+      "pair_index": 7,
+      "arm": "B",
+      "github_issue_number": 42170
+    },
+    {
+      "step": 15,
+      "pair_index": 8,
+      "arm": "B",
+      "github_issue_number": 42007
+    },
+    {
+      "step": 16,
+      "pair_index": 8,
+      "arm": "A",
+      "github_issue_number": 42253
+    },
+    {
+      "step": 17,
+      "pair_index": 9,
+      "arm": "A",
+      "github_issue_number": 41602
+    },
+    {
+      "step": 18,
+      "pair_index": 9,
+      "arm": "B",
+      "github_issue_number": 42037
+    },
+    {
+      "step": 19,
+      "pair_index": 10,
+      "arm": "B",
+      "github_issue_number": 41585
+    },
+    {
+      "step": 20,
+      "pair_index": 10,
+      "arm": "A",
+      "github_issue_number": 42185
+    },
+    {
+      "step": 21,
+      "pair_index": 11,
+      "arm": "A",
+      "github_issue_number": 42168
+    },
+    {
+      "step": 22,
+      "pair_index": 11,
+      "arm": "B",
+      "github_issue_number": 42130
+    },
+    {
+      "step": 23,
+      "pair_index": 12,
+      "arm": "B",
+      "github_issue_number": 42772
+    },
+    {
+      "step": 24,
+      "pair_index": 12,
+      "arm": "A",
+      "github_issue_number": 42452
+    },
+    {
+      "step": 25,
+      "pair_index": 13,
+      "arm": "A",
+      "github_issue_number": 42493
+    },
+    {
+      "step": 26,
+      "pair_index": 13,
+      "arm": "B",
+      "github_issue_number": 42539
+    },
+    {
+      "step": 27,
+      "pair_index": 14,
+      "arm": "B",
+      "github_issue_number": 42379
+    },
+    {
+      "step": 28,
+      "pair_index": 14,
+      "arm": "A",
+      "github_issue_number": 41712
+    },
+    {
+      "step": 29,
+      "pair_index": 15,
+      "arm": "A",
+      "github_issue_number": 41663
+    },
+    {
+      "step": 30,
+      "pair_index": 15,
+      "arm": "B",
+      "github_issue_number": 42119
+    }
+  ],
+  "timing_rule": "start_time begins immediately before opening/reading the evidence for that issue; end_time only after all six final labels are entered. Interrupted rows are marked invalid and documented — never time-estimated."
+}

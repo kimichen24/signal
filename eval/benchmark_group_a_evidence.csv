@@ -1,0 +1,1440 @@
+﻿github_issue_number,title,github_url,body_clean,parsed_version,parsed_subscription,parsed_platform,parsed_actual,parsed_steps,parsed_expected,parsed_additional_info,github_labels
+41602,Deleted conversations remain as stale titles in Windows app Recents,,"### What version of the Codex App are you using (From “About Codex” dialog)?
+
+Powered by Codex & OWL, version 26.825.51511
+
+### What subscription do you have?
+
+ChatGPT Plus
+
+### What platform is your computer?
+
+Windows 11 x64
+
+### What issue are you seeing?
+
+Deleted conversations still remain as stale titles in the Windows desktop app's Recents/sidebar.
+
+I deleted all conversations from ChatGPT Web. The conversations themselves appear to be deleted successfully.
+
+However, the old conversation titles are still visible in the Windows desktop app.
+
+When I click one of these stale titles, the app indicates that the conversation/thread has already been deleted or no longer exists, but the title remains in the Recents list.
+
+I have already tried resetting the Windows app, signing out and signing back in, and restarting the app, but the stale titles remain.
+
+This appears to be a Recents/sidebar metadata or synchronization issue rather than the conversations themselves failing to delete.
+
+### What steps can reproduce the bug?
+
+Feedback ID: no-active-thread-01a050a8-2e29-7fd1-8006-efde2bf38fa5
+
+### What is the expected behavior?
+
+After a conversation is deleted, its title should also be removed from the Recents/sidebar list.
+
+If all conversations are deleted from the account, the Windows desktop app should synchronize with the server and remove all deleted conversation titles.
+
+Deleted or nonexistent threads should not remain visible as stale entries in Recents.
+
+### Additional information
+
+The conversations were deleted from ChatGPT Web using the delete-all-conversations option.
+
+On the web version, the deleted conversations no longer appear.
+
+The issue is limited to the Windows desktop application's Recents/sidebar, where the old titles remain visible even though the underlying conversations no longer exist.
+
+I have already tried:
+- Restarting the app
+- Signing out and signing back in
+- Windows app Reset
+
+The issue still persists.
+
+The stale titles appear to reference deleted/nonexistent threads.","Powered by Codex & OWL, version 26.825.51511",ChatGPT Plus,Windows 11 x64,"Deleted conversations still remain as stale titles in the Windows desktop app's Recents/sidebar.
+
+I deleted all conversations from ChatGPT Web. The conversations themselves appear to be deleted successfully.
+
+However, the old conversation titles are still visible in the Windows desktop app.
+
+When I click one of these stale titles, the app indicates that the conversation/thread has already been deleted or no longer exists, but the title remains in the Recents list.
+
+I have already tried resetting the Windows app, signing out and signing back in, and restarting the app, but the stale titles remain.
+
+This appears to be a Recents/sidebar metadata or synchronization issue rather than the conversations themselves failing to delete.",Feedback ID: no-active-thread-01a050a8-2e29-7fd1-8006-efde2bf38fa5,"After a conversation is deleted, its title should also be removed from the Recents/sidebar list.
+
+If all conversations are deleted from the account, the Windows desktop app should synchronize with the server and remove all deleted conversation titles.
+
+Deleted or nonexistent threads should not remain visible as stale entries in Recents.","The conversations were deleted from ChatGPT Web using the delete-all-conversations option.
+
+On the web version, the deleted conversations no longer appear.
+
+The issue is limited to the Windows desktop application's Recents/sidebar, where the old titles remain visible even though the underlying conversations no longer exist.
+
+I have already tried:
+- Restarting the app
+- Signing out and signing back in
+- Windows app Reset
+
+The issue still persists.
+
+The stale titles appear to reference deleted/nonexistent threads.","bug, windows-os, app, session"
+41632,"[Windows][26.825.6671.0] IMPORTANT FATAL ISSUE: Mid-session cross-task failure cascade: missing tool outputs, duplicate ordinals, and MoAppHang",,"### What version of the Codex App are you using (From “About Codex” dialog)?
+
+26.825.6671.0
+
+### What subscription do you have?
+
+Pro
+
+### What platform is your computer?
+
+Microsoft Windows NT 10.0.26200.0 x64
+
+### What issue are you seeing?
+
+This report concerns a recurring **mid-session failure cascade**, not a startup failure. Codex Desktop launches and initially works normally.
+
+During active tool-running tasks, I repeatedly observe several of the following symptoms together:
+
+1. A command/tool appears to complete, but its output is not persisted or attached to the task.
+2. The affected turn remains `inProgress`, becomes interrupted, or loses part of its visible history.
+3. Thread-history projection reports a duplicate or regressed ordinal.
+4. The desktop app-server/UI restarts, reloads, or becomes unresponsive.
+5. Unrelated tasks—including newly created tasks—are interrupted at approximately the same time.
+6. The app eventually displays “ChatGPT hit a snag.”
+7. Windows records Event ID 1002 / `MoAppHang` with HangType `Top level window is idle`.
+
+Exact projection errors observed in two independent tasks:
+
+```
+thread history projection ... expected ordinal 312, got 311
+```
+
+```
+thread history projection ... expected ordinal 132, got 131
+```
+
+The second error occurred in a newly created XHigh task. This has reproduced with no Ultra tasks or Ultra subagents running, so it does not appear to be specific to Ultra reasoning, extremely long conversations, or one previously corrupted task.
+
+Other observed symptoms include:
+
+- `Custom tool call output is missing for call id ...`
+- Turns remaining indefinitely `inProgress`
+- Turns becoming interrupted after an app-server/UI restart
+- Completed work disappearing when a task is reopened
+- One affected task apparently destabilizing other independent tasks
+- The entire desktop window becoming unresponsive
+
+Windows Event Viewer records:
+
+```
+Event ID: 1002
+Event name: MoAppHang
+HangType: Top level window is idle
+```
+
+I cannot yet prove whether the ordinal mismatch causes the app-server restart, whether the restart creates incomplete history, or whether both are consequences of another failure. I am reporting them together because they repeatedly occur as parts of the same observable failure sequence.
+
+### What steps can reproduce the bug?
+
+Feedback ID: 01a051a8-4865-7ae3-a6fa-24f8396454d4
+
+### What is the expected behavior?
+
+_No response_
+
+### Additional information
+
+<img width=""753"" height=""635"" alt=""Image"" src=""https://github.com/user-attachments/assets/b7d01b07-0e4d-4a2a-9f75-3c9cba08c732"" />
+
+This is a very bad bug that is impacting many POWER users that are doing over 2b tokens daily.
+
+### Troubleshooting already attempted
+
+- Restarted Codex and Windows
+- Used Windows Repair/Reset
+- Uninstalled and reinstalled the Microsoft Store app
+- Confirmed that the newest Store package was installed
+- Reduced the number of simultaneous tasks
+- Stopped using Ultra reasoning
+- Stopped using Ultra subagents
+- Tested with brand-new XHigh tasks
+
+The issue still recurred.
+
+### Cross-version recurrence
+
+Windows has recorded the same `MoAppHang` / `Top level window is idle` signature across multiple Codex Desktop versions:
+
+| App version | Observed occurrences |
+|---|---|
+| 26.825.6671.0 | Five hangs on August 30 |
+| 26.825.5331.0 | August 29 |
+| 26.825.4187.0 | August 29 |
+| 26.818.x | August 22–23 |
+| 26.810.x | August 16 |
+
+I cannot confirm that every historical hang had the same internal cause, but this demonstrates that reinstalling and changing reasoning levels have not eliminated the Windows failure.
+
+### Related reports and distinction
+
+Existing reports appear to document individual portions of this failure cascade:
+
+- #40630 — mid-session engine exit followed by `expected ordinal N, got N-1`, missing outputs, and damaged tasks
+- #41079 — duplicate ordinal causing the history projection to stop
+- #41566 — duplicate ordinal following an unfinished turn
+- #41236 — Windows app-server restarts during tool calls and loses completed outputs
+- #41333 — Windows crash followed by a stuck `inProgress` turn and ordinal mismatch
+- #41581 — Windows desktop closes during long/tool-heavy sessions
+- #41591 and #41475 — orphaned turns hide later durable history
+- #41551 and #41571 — the same `MoAppHang` signature, but during startup before the UI becomes usable
+- #35746 — a possibly related implementation-level record-skipping and ordinal-reuse mechanism
+
+This report does not claim that every linked issue has one root cause. Its distinct evidence is that missing tool outputs, duplicate ordinals, stuck turns, cross-task app-server/UI interruption, and Windows `MoAppHang` can occur together on the newer 26.825.6671.0 build, including in brand-new XHigh tasks.
+
+### Diagnostic material available
+
+I can provide the following privately or after redaction:
+
+- In-app feedback/session IDs
+- Sanitized log excerpts surrounding both ordinal errors
+- Affected task/session IDs
+- Windows Event Viewer XML and report IDs
+- Timestamps correlating missing tool outputs, app-server restarts, and `MoAppHang`
+
+I have not uploaded raw rollout files, process dumps, or unredacted logs because they may contain prompts, local paths, task contents, or other private information.",26.825.6671.0,Pro,Microsoft Windows NT 10.0.26200.0 x64,"This report concerns a recurring **mid-session failure cascade**, not a startup failure. Codex Desktop launches and initially works normally.
+
+During active tool-running tasks, I repeatedly observe several of the following symptoms together:
+
+1. A command/tool appears to complete, but its output is not persisted or attached to the task.
+2. The affected turn remains `inProgress`, becomes interrupted, or loses part of its visible history.
+3. Thread-history projection reports a duplicate or regressed ordinal.
+4. The desktop app-server/UI restarts, reloads, or becomes unresponsive.
+5. Unrelated tasks—including newly created tasks—are interrupted at approximately the same time.
+6. The app eventually displays “ChatGPT hit a snag.”
+7. Windows records Event ID 1002 / `MoAppHang` with HangType `Top level window is idle`.
+
+Exact projection errors observed in two independent tasks:
+
+```text
+thread history projection ... expected ordinal 312, got 311
+```
+
+```text
+thread history projection ... expected ordinal 132, got 131
+```
+
+The second error occurred in a newly created XHigh task. This has reproduced with no Ultra tasks or Ultra subagents running, so it does not appear to be specific to Ultra reasoning, extremely long conversations, or one previously corrupted task.
+
+Other observed symptoms include:
+
+- `Custom tool call output is missing for call id ...`
+- Turns remaining indefinitely `inProgress`
+- Turns becoming interrupted after an app-server/UI restart
+- Completed work disappearing when a task is reopened
+- One affected task apparently destabilizing other independent tasks
+- The entire desktop window becoming unresponsive
+
+Windows Event Viewer records:
+
+```text
+Event ID: 1002
+Event name: MoAppHang
+HangType: Top level window is idle
+```
+
+I cannot yet prove whether the ordinal mismatch causes the app-server restart, whether the restart creates incomplete history, or whether both are consequences of another failure. I am reporting them together because they repeatedly occur as parts of the same observable failure sequence.",Feedback ID: 01a051a8-4865-7ae3-a6fa-24f8396454d4,,"<img width=""753"" height=""635"" alt=""Image"" src=""https://github.com/user-attachments/assets/b7d01b07-0e4d-4a2a-9f75-3c9cba08c732"" />
+
+This is a very bad bug that is impacting many POWER users that are doing over 2b tokens daily.","bug, windows-os, app, app-server, performance"
+41663,"Codex App: allow the browser panel to be docked on the left (← → side toggle, persisted per workspace)",,"### What variant of Codex are you using?
+
+Codex App (Desktop), current release.
+
+### What feature would you like to see?
+
+Please allow the browser panel (side panel) to be docked on either side of the conversation, with a quick way to swap.
+
+This is a narrow, shippable subset of #32444 (configurable workspace layouts); it also touches #37429 (persist layout) and #20236 (browser panel width per workspace).
+
+Ideally:
+
+- A visible ← → toggle in the browser panel header to swap sides instantly
+- View → Browser panel position → Left / Right
+- Remember the choice globally or per workspace
+- Preserve the panel width when switching sides
+- Expose the action in the command palette
+
+### Why
+
+I'm doing a lot of work with WebMCP and preparing an entry for the OpenAI WebMCP Hackathon. For this workflow I strongly prefer the browser panel on the left and the conversation on the right: it makes the website the primary working surface, with ChatGPT/Codex acting as the agent sidebar — the interaction model people already understand from browser extensions.
+
+The current chat-left/browser-right arrangement makes the browser feel like supporting material. During WebMCP use, however, the browser is the object being operated on: users need to watch page state, Site Tool activity, changes and confirmations while continuing the conversation alongside it.
+
+I think this would materially improve the human–agent experience for WebMCP, rather than being merely cosmetic customization.","Codex App (Desktop), current release.",,,"Please allow the browser panel (side panel) to be docked on either side of the conversation, with a quick way to swap.
+
+This is a narrow, shippable subset of #32444 (configurable workspace layouts); it also touches #37429 (persist layout) and #20236 (browser panel width per workspace).
+
+Ideally:
+
+- A visible ← → toggle in the browser panel header to swap sides instantly
+- View → Browser panel position → Left / Right
+- Remember the choice globally or per workspace
+- Preserve the panel width when switching sides
+- Expose the action in the command palette",,,,"enhancement, app, browser"
+41712,Text output obscured by input text box,,"### What version of the Codex App are you using (From “About Codex” dialog)?
+
+ChatGPT Powered by Codex & OWL Version 26.820.60940  Released Aug 25, 2026
+
+### What subscription do you have?
+
+Business premium
+
+### What platform is your computer?
+
+macOS 15.7.9 (24G830)
+
+### What issue are you seeing?
+
+Text input box covers up text output so text output cannot be read. No error message. This is a UI bug.
+
+### What steps can reproduce the bug?
+
+Feedback ID: 01a04943-d409-7fc0-ad4c-bd0ee5648ffa
+
+### What is the expected behavior?
+
+I expect to be able to see the output ChatGPT produces. This is what I'm paying for.
+
+### Additional information
+
+Used to behave like #37849 which was annoying but still usable. Is this a fix for that bug? If so, you overcorrected. Now the last line of output is unreadable.","ChatGPT Powered by Codex & OWL Version 26.820.60940  Released Aug 25, 2026",Business premium,macOS 15.7.9 (24G830),Text input box covers up text output so text output cannot be read. No error message. This is a UI bug.,Feedback ID: 01a04943-d409-7fc0-ad4c-bd0ee5648ffa,I expect to be able to see the output ChatGPT produces. This is what I'm paying for.,"Used to behave like #37849 which was annoying but still usable. Is this a fix for that bug? If so, you overcorrected. Now the last line of output is unreadable.","bug, app"
+42168,[Codex desktop] Treat custom sidebar sections as worktree retention signals,,"### What variant of Codex are you using?
+
+ChatGPT/Codex desktop app for macOS 26.831.20005 (build 7524), with bundled `codex-cli 0.152.0`.
+
+### What feature would you like to see?
+
+Please treat membership in any custom sidebar section as a retention signal for a Codex-managed worktree, similar to pinning. Alternatively, add a per-section **Keep associated worktrees** setting that defaults to on.
+
+The desktop app now supports custom sidebar sections, but native worktree cleanup currently documents protection only for pinned chats, in-progress chats, and permanent worktrees. A task can therefore remain deliberately organized in a custom section while its associated managed worktree is automatically removed under the configured cleanup limit.
+
+Reproduction:
+
+1. Create a Codex task in a managed worktree.
+2. Put the task in a custom sidebar section such as `To Do`, `Automations`, or `Backlog`.
+3. Unpin the task because the custom section is now its intended persistent location.
+4. Create enough newer managed worktrees to exceed the automatic-cleanup limit.
+5. The sectioned task remains visible, but its worktree can be removed and must later be restored from the task.
+
+Expected behavior:
+
+- A task in Pinned **or any present or future custom sidebar section** keeps its associated managed worktree.
+- Removing a task from all custom sections and unpinning it makes the worktree eligible for the existing native cleanup policy.
+- Archiving and permanent-worktree behavior remain unchanged.
+- The retention decision survives app restarts and applies consistently to scheduled/automation tasks placed in a custom section.
+
+Why this matters:
+
+Custom sections are an explicit user signal that a task is being retained for future work. Losing the attached worktree is surprising, creates restore/recovery friction, and makes section-based organization less reliable than pinning. The current workaround is to disable native cleanup and maintain a separate section-aware cleanup process, which duplicates logic that the app already owns.
+
+Official cleanup documentation: https://learn.chatgpt.com/docs/environments/git-worktrees
+
+Related but not duplicate: #28692 introduced/requested custom sidebar organization; this request is specifically about integrating custom-section membership with native worktree retention.
+
+### Additional information
+
+The restore snapshot reduces permanent-loss risk, but users should not need to restore worktrees for tasks they intentionally kept in a custom section. A default-on per-section retention toggle would preserve current cleanup flexibility without requiring every section to be permanent.","ChatGPT/Codex desktop app for macOS 26.831.20005 (build 7524), with bundled `codex-cli 0.152.0`.",,,"Please treat membership in any custom sidebar section as a retention signal for a Codex-managed worktree, similar to pinning. Alternatively, add a per-section **Keep associated worktrees** setting that defaults to on.
+
+The desktop app now supports custom sidebar sections, but native worktree cleanup currently documents protection only for pinned chats, in-progress chats, and permanent worktrees. A task can therefore remain deliberately organized in a custom section while its associated managed worktree is automatically removed under the configured cleanup limit.
+
+Reproduction:
+
+1. Create a Codex task in a managed worktree.
+2. Put the task in a custom sidebar section such as `To Do`, `Automations`, or `Backlog`.
+3. Unpin the task because the custom section is now its intended persistent location.
+4. Create enough newer managed worktrees to exceed the automatic-cleanup limit.
+5. The sectioned task remains visible, but its worktree can be removed and must later be restored from the task.
+
+Expected behavior:
+
+- A task in Pinned **or any present or future custom sidebar section** keeps its associated managed worktree.
+- Removing a task from all custom sections and unpinning it makes the worktree eligible for the existing native cleanup policy.
+- Archiving and permanent-worktree behavior remain unchanged.
+- The retention decision survives app restarts and applies consistently to scheduled/automation tasks placed in a custom section.
+
+Why this matters:
+
+Custom sections are an explicit user signal that a task is being retained for future work. Losing the attached worktree is surprising, creates restore/recovery friction, and makes section-based organization less reliable than pinning. The current workaround is to disable native cleanup and maintain a separate section-aware cleanup process, which duplicates logic that the app already owns.
+
+Official cleanup documentation: https://learn.chatgpt.com/docs/environments/git-worktrees
+
+Related but not duplicate: #28692 introduced/requested custom sidebar organization; this request is specifically about integrating custom-section membership with native worktree retention.",,,"The restore snapshot reduces permanent-loss risk, but users should not need to restore worktrees for tasks they intentionally kept in a custom section. A default-on per-section retention toggle would preserve current cleanup flexibility without requiring every section to be permanent.","enhancement, app, session"
+42185,[Codex App] Links created via “Share chat” cannot be revoked or deleted,,"### What version of the Codex App are you using (From “About Codex” dialog)?
+
+26.825.51511 (build 7377)
+
+### What subscription do you have?
+
+ChatGPT Pro 20x
+
+### What platform is your computer?
+
+Darwin 25.3.0 x86_64 i386
+
+### What issue are you seeing?
+
+A link created through the Codex App’s “Share chat” action cannot be revoked or deleted after it has been created.
+
+The Codex App share dialog only displays a “Copy link” button. It does not provide a “Delete link”, “Revoke”, or “Stop sharing” action.
+
+The snapshot also does not appear under ChatGPT Settings → Data Controls → Shared links. That page only lists regular ChatGPT shared conversations, so it cannot be used to manage the Codex snapshot.
+
+As a result, the owner has no discoverable way to invalidate a public Codex thread snapshot URL. Anyone possessing the URL may continue viewing the snapshot indefinitely.
+
+
+
+### What steps can reproduce the bug?
+
+1. Open a Codex chat in the desktop app.
+2. Right-click the chat in the sidebar.
+3. Select “Share”.
+4. Click “Copy link” to create the shared snapshot URL.
+5. Close and reopen the Share dialog for the same chat.
+6. Observe that the dialog only offers “Copy link”; there is no option to revoke or delete the existing link.
+7. Open ChatGPT Settings → Data Controls → Shared links.
+8. Observe that the Codex shared snapshot is not listed there.
+9. Open the previously generated URL and observe that the snapshot remains accessible.
+
+This does not depend on the contents of the chat and does not require a code reproduction snippet.
+
+No session ID or shared URL is included because they may expose private account or project information.
+
+### What is the expected behavior?
+
+The owner should be able to revoke a shared Codex thread snapshot without deleting the original Codex chat.
+
+At least one of the following management options should be available:
+
+1. A “Delete link” or “Stop sharing” action in the Codex Share dialog; or
+2. The Codex snapshot should appear under Settings → Data Controls → Shared links, where it can be deleted.
+
+After revocation, opening the old URL should show that the snapshot is unavailable.
+
+The UI should also clearly distinguish between copying an existing link and creating a new independent snapshot.
+
+### Additional information
+
+This is both a product-management and privacy-control issue because the public link remains accessible, but the owner is not given a discoverable revocation control.
+
+The regular ChatGPT shared-links documentation describes a deletion workflow, but that workflow does not appear to cover Codex shared thread snapshots.",26.825.51511 (build 7377),ChatGPT Pro 20x,Darwin 25.3.0 x86_64 i386,"A link created through the Codex App’s “Share chat” action cannot be revoked or deleted after it has been created.
+
+The Codex App share dialog only displays a “Copy link” button. It does not provide a “Delete link”, “Revoke”, or “Stop sharing” action.
+
+The snapshot also does not appear under ChatGPT Settings → Data Controls → Shared links. That page only lists regular ChatGPT shared conversations, so it cannot be used to manage the Codex snapshot.
+
+As a result, the owner has no discoverable way to invalidate a public Codex thread snapshot URL. Anyone possessing the URL may continue viewing the snapshot indefinitely.","1. Open a Codex chat in the desktop app.
+2. Right-click the chat in the sidebar.
+3. Select “Share”.
+4. Click “Copy link” to create the shared snapshot URL.
+5. Close and reopen the Share dialog for the same chat.
+6. Observe that the dialog only offers “Copy link”; there is no option to revoke or delete the existing link.
+7. Open ChatGPT Settings → Data Controls → Shared links.
+8. Observe that the Codex shared snapshot is not listed there.
+9. Open the previously generated URL and observe that the snapshot remains accessible.
+
+This does not depend on the contents of the chat and does not require a code reproduction snippet.
+
+No session ID or shared URL is included because they may expose private account or project information.","The owner should be able to revoke a shared Codex thread snapshot without deleting the original Codex chat.
+
+At least one of the following management options should be available:
+
+1. A “Delete link” or “Stop sharing” action in the Codex Share dialog; or
+2. The Codex snapshot should appear under Settings → Data Controls → Shared links, where it can be deleted.
+
+After revocation, opening the old URL should show that the snapshot is unavailable.
+
+The UI should also clearly distinguish between copying an existing link and creating a new independent snapshot.","This is both a product-management and privacy-control issue because the public link remains accessible, but the owner is not given a discoverable revocation control.
+
+The regular ChatGPT shared-links documentation describes a deletion workflow, but that workflow does not appear to cover Codex shared thread snapshots.","bug, app, session"
+42253,Codex Desktop performed destructive filesystem and task-management actions without the configured approval popup.,,"### What version of the Codex App are you using (From “About Codex” dialog)?
+
+codex-desktop	2026.06.08.054530
+
+### What subscription do you have?
+
+Pro
+
+### What platform is your computer?
+
+Linux 7.0.0-29-generic x86_64 unknown
+
+### What issue are you seeing?
+
+Codex Desktop performed destructive filesystem and task-management actions
+without the configured approval popup.
+
+I authorized deletion only of card files created by a mistakenly spawned task.
+Codex inspected the task and explicitly reported that no individual card files
+existed. It then deleted the entire staging directory, including files that
+were not cards:
+
+/tmp/rank1-plan-stage/Backlog.md
+/tmp/rank1-plan-stage/Rank 1 - Public Content Reuse Specification.md
+/tmp/rank1-plan-stage/test.md
+/tmp/rank1-plan-stage/Cards/ (empty directory)
+
+It executed this command without displaying an approval popup:
+
+/bin/bash -c 'rm -r -- /tmp/rank1-plan-stage'
+
+I authorized stopping the mistakenly spawned task. Codex additionally archived
+the task without authorization or confirmation.
+
+Earlier, Codex created that second task after I asked whether it COULD hand off
+the work. I did not ask it to perform the handoff.
+
+The effective environment treated /tmp as a writable root. This allowed the
+destructive command to execute without escalation after Codex incorrectly
+classified the broader deletion as user-authorized.
+
+This exposes two separate failures:
+1. Codex expanded the authorized scope.
+2. The platform lacked a mandatory confirmation barrier for destructive file
+deletion and task lifecycle operations.
+
+### What steps can reproduce the bug?
+
+1. Configure Codex Desktop to ask for approval.
+2. Start a task using workspace-write/on-request permissions.
+3. Have a second task create several temporary files, including an empty Cards
+directory.
+4. Tell the first task to stop the second task and remove any card files it
+created.
+5. Codex inspects the directory and reports that no card files exist.
+6. Codex broadens the deletion scope and runs:
+rm -r -- /tmp/rank1-plan-stage
+7. No approval popup appears.
+8. Codex also archives the stopped task without authorization.
+
+
+### What is the expected behavior?
+
+1. Asking whether Codex can create or hand off to another task must not
+authorize creating that task.
+2. Authorization to delete card files must apply only to confirmed card files.
+3. If no card files exist, Codex must delete nothing.
+4. File deletion must display the configured approval popup with every exact
+target shown.
+5. Stopping a task must not authorize archiving it.
+6. Task creation and archiving must require confirmation when approval controls
+are enabled.
+
+### Additional information
+
+The deletion occurred on September 2, 2026 in the America/New_York time zone.
+
+The effective environment treated /tmp as a writable root. This allowed the
+destructive command to execute without escalation after Codex incorrectly
+classified the broader deletion as user-authorized.
+
+This exposes two separate failures:
+1. Codex expanded the authorized scope.
+2. The platform lacked a mandatory confirmation barrier for destructive file
+deletion and task lifecycle operations.",codex-desktop	2026.06.08.054530,Pro,Linux 7.0.0-29-generic x86_64 unknown,"Codex Desktop performed destructive filesystem and task-management actions
+without the configured approval popup.
+
+I authorized deletion only of card files created by a mistakenly spawned task.
+Codex inspected the task and explicitly reported that no individual card files
+existed. It then deleted the entire staging directory, including files that
+were not cards:
+
+/tmp/rank1-plan-stage/Backlog.md
+/tmp/rank1-plan-stage/Rank 1 - Public Content Reuse Specification.md
+/tmp/rank1-plan-stage/test.md
+/tmp/rank1-plan-stage/Cards/ (empty directory)
+
+It executed this command without displaying an approval popup:
+
+/bin/bash -c 'rm -r -- /tmp/rank1-plan-stage'
+
+I authorized stopping the mistakenly spawned task. Codex additionally archived
+the task without authorization or confirmation.
+
+Earlier, Codex created that second task after I asked whether it COULD hand off
+the work. I did not ask it to perform the handoff.
+
+The effective environment treated /tmp as a writable root. This allowed the
+destructive command to execute without escalation after Codex incorrectly
+classified the broader deletion as user-authorized.
+
+This exposes two separate failures:
+1. Codex expanded the authorized scope.
+2. The platform lacked a mandatory confirmation barrier for destructive file
+   deletion and task lifecycle operations.","1. Configure Codex Desktop to ask for approval.
+2. Start a task using workspace-write/on-request permissions.
+3. Have a second task create several temporary files, including an empty Cards
+   directory.
+4. Tell the first task to stop the second task and remove any card files it
+   created.
+5. Codex inspects the directory and reports that no card files exist.
+6. Codex broadens the deletion scope and runs:
+   rm -r -- /tmp/rank1-plan-stage
+7. No approval popup appears.
+8. Codex also archives the stopped task without authorization.","1. Asking whether Codex can create or hand off to another task must not
+   authorize creating that task.
+2. Authorization to delete card files must apply only to confirmed card files.
+3. If no card files exist, Codex must delete nothing.
+4. File deletion must display the configured approval popup with every exact
+   target shown.
+5. Stopping a task must not authorize archiving it.
+6. Task creation and archiving must require confirmation when approval controls
+   are enabled.","The deletion occurred on September 2, 2026 in the America/New_York time zone.
+
+The effective environment treated /tmp as a writable root. This allowed the
+destructive command to execute without escalation after Codex incorrectly
+classified the broader deletion as user-authorized.
+
+This exposes two separate failures:
+1. Codex expanded the authorized scope.
+2. The platform lacked a mandatory confirmation barrier for destructive file
+   deletion and task lifecycle operations.","bug, sandbox, app, subagent"
+42424,Windows 26.831: synchronous runtime relocation stalls desktop startup for six minutes after per-file copy failures,,"## Observed problem
+
+The original installed Windows app took 362478 ms to complete startup after a runtime update. During that launch, 4684 cua_node files totaling 337648604 bytes were created over 347.082 seconds before app-server startup. The subsequent app-server handshake took only 639 ms.
+
+This report concerns the original desktop entrypoint. Cache prewarming and a custom launcher do not resolve the requested behavior and are not proposed as the fix.
+
+## Environment and installation checks
+
+- Registered package: OpenAI.Codex_26.831.2377.0_x64__2p2nqsd0c76g0.
+- Package status: Ok; Store signature; Windows-native x64 mode.
+- Package and NTFS volumes report healthy/online.
+- The official offline MSIX from the documented OpenAI distribution URL was downloaded and verified with Windows SDK signtool: exit 0, one file verified, zero warnings/errors.
+- Offline and installed app.asar, runtime manifest, node.exe and node_repl.exe have matching SHA256 hashes. The corresponding offline package therefore contains the same relocation implementation.
+
+## Reproduction evidence
+
+Verification checks: Windows SDK `signtool.exe verify /pa /v ChatGPT-x64.msix` exited 0 with zero warnings/errors. The local `test-copy-performance.cjs` test executes the actual function extracted from the installed ASAR; its recorded per-file results and content hashes supply the table below. `inspect-offline-msix.ps1` compares the four named ZIP entries with the installed files and reports `identical=true` for each.
+
+A bounded test extracted the actual installed copy function from app.asar and ran it against 64 real small packaged runtime files:
+
+| Operation | Result | Elapsed |
+| --- | --- | --- |
+| Node copyFileSync on packaged files | 64/64 fail, UNKNOWN / errno -4094 | 2573 ms |
+| Actual installed copy function, including its buffered fallback | 64 files succeed | 5417.54 ms |
+| Direct buffered read/write of the same files | 64 files succeed; all SHA256s match | 131.64 ms |
+
+The real startup call chain is app-server environment construction -> bundled Node resolution -> runtime relocation -> synchronous recursive per-file copy. Each protected-file failure is retried separately before buffered copying. The UI's nominal five-second shell-environment timer was consequently observed only after roughly 355 seconds; it should not be mistaken for a shell process that itself took that long.
+
+## Access-context boundary
+
+The bounded native-execution check is `test-direct-package.ps1`; it launches only version/help or native-binding probes and records whether process creation occurred, the actual Win32 error, and the child exit code when present.
+
+Packaged runtime executables and a tested native addon are Application Protected/encrypted and have conditional execute permission tied to the package identity. Reads succeed from the tool process. The desktop main process has the expected package identity; the relocated backend does not. Direct execution/native loading from the ordinary tool context returns Access denied. This does not prove that execution under the packaged main-process identity would fail, and the report does not claim that copying all components is inherently required.
+
+## Expected behavior
+
+The normal installed app should become usable without a multi-minute synchronous runtime deployment, external warming task, or alternate launcher. Address the relocation/installation implementation and preserve normal updates. Reopening with an already populated cache is not sufficient regression coverage; verify a genuine cold runtime transition through the original app entrypoint.
+
+Related reports: https://github.com/openai/codex/issues/40843 and https://github.com/openai/codex/issues/41540. This case adds a reproducible severe latency problem even where the per-file fallback eventually succeeds.",,,,,,,,"bug, windows-os, app, performance"
+42452,connection failed error,,"### What version of Codex CLI is running?
+
+v0.153.0
+
+### What subscription do you have?
+
+$20 per month
+
+### Which model were you using?
+
+gpt-5.6-terra medium
+
+### What platform is your computer?
+
+Linux 6.8.0-136-generic x86_64 x86_64
+
+### What terminal emulator and version are you using (if applicable)?
+
+_No response_
+
+### Codex doctor report
+
+[code block removed: 369 lines]
+
+### What issue are you seeing?
+
+connection failed error
+
+### What steps can reproduce the bug?
+
+Uploaded thread: 01a065ab-e54e-7960-a5a1-a6022d2a329a
+
+### What is the expected behavior?
+
+_No response_
+
+### Additional information
+
+_No response_",v0.153.0,$20 per month,Linux 6.8.0-136-generic x86_64 x86_64,connection failed error,Uploaded thread: 01a065ab-e54e-7960-a5a1-a6022d2a329a,,,"bug, CLI, custom-model, connectivity"
+42478,[Codex Cloud GitHub Review] `Codex Review Summary` progress comments create notification and automation noise,,"### What issue are you seeing?
+
+Product: **Web / Codex Cloud GitHub Code Review — managed GitHub integration, not Codex CLI or `codex-action`.**
+
+Manually triggering a review with `@codex review` now creates a top-level PR comment titled `Codex Review Summary` while the review is still running. The comment contains review status such as `Running` and is later updated as the review progresses/completes.
+
+Previously, the GitHub review flow was much less noisy for this use case:
+
+1. `@codex review`
+2. Codex reacts with 👀 to acknowledge the request
+3. Codex performs the review
+4. Codex posts the actual review/findings when finished, or indicates that no findings were found
+
+The new progress comment is problematic because GitHub treats its creation as an ordinary PR conversation comment. That triggers notification and automation systems even though there is no actionable review result yet.
+
+In my workflow, PR-comment notifications are forwarded to Slack. I now receive a notification when Codex *starts* reviewing, while the useful event is when the review *finishes*. Because the existing `Codex Review Summary` comment is subsequently edited rather than a new completion comment necessarily being created, notification systems can notify on the non-actionable start event but not on completion.
+
+This also creates automation noise beyond notifications. A public example is Generous-Corp/pulp#529, where a post-merge sweep currently collects multiple `Codex Review Summary` comments as unresolved bot comments:
+
+https://github.com/Generous-Corp/pulp/issues/529
+
+I could not find a Code Review setting that disables these progress comments while keeping managed Codex review enabled.
+
+### What steps can reproduce the bug?
+
+1. Enable the managed Codex Cloud GitHub Code Review integration for a repository.
+2. Open a pull request.
+3. Add a comment containing `@codex review`.
+4. Codex reacts with 👀 as expected.
+5. Observe that `chatgpt-codex-connector` also creates a top-level `Codex Review Summary` PR comment while the review is still running.
+6. Observe that GitHub comment notifications / comment-based automations can trigger on this non-actionable progress comment.
+7. When the review progresses or completes, observe that the existing summary comment can be updated rather than completion necessarily producing an equivalent new comment event.
+
+Observed with the managed Cloud review integration on 2026-09-02.
+
+### What is the expected behavior?
+
+Starting a review should not create a top-level PR conversation comment solely to communicate ephemeral progress.
+
+The previous minimal-comment behavior is preferable:
+
+- use 👀 to acknowledge that the review has started;
+- publish GitHub review findings/comments when the review has completed;
+- if there are no findings, a final completion indication is fine.
+
+If richer progress visibility is needed, it should use a GitHub-native status mechanism such as a Check Run rather than a PR conversation comment.
+
+Related issue #27691 already requests GitHub Check Runs for Codex Cloud review status (`queued`, `running`, `completed`, `failed`):
+
+https://github.com/openai/codex/issues/27691
+
+That would provide progress visibility without polluting the PR conversation or triggering comment-based notification/automation systems.
+
+At minimum, please provide a setting to disable `Codex Review Summary` progress comments and retain the previous minimal-comment behavior.
+
+### Additional information
+
+This is specifically about the first-party **managed Codex Cloud GitHub Code Review** product, not Codex CLI, Codex Desktop local review, or the open-source GitHub Action.
+
+The core issue is not that review progress is visible. The issue is **using a top-level PR conversation comment as an ephemeral progress/status channel**. PR comments have notification and automation semantics that make them a poor fit for transient review state.
+
+Related:
+
+- #27691 — GitHub Integration: Surface Codex Cloud PR Reviews as GitHub Check Runs
+- Generous-Corp/pulp#529 — public real-world example of `Codex Review Summary` comments being picked up as unresolved bot-comment noise",,,,"Product: **Web / Codex Cloud GitHub Code Review — managed GitHub integration, not Codex CLI or `codex-action`.**
+
+Manually triggering a review with `@codex review` now creates a top-level PR comment titled `Codex Review Summary` while the review is still running. The comment contains review status such as `Running` and is later updated as the review progresses/completes.
+
+Previously, the GitHub review flow was much less noisy for this use case:
+
+1. `@codex review`
+2. Codex reacts with 👀 to acknowledge the request
+3. Codex performs the review
+4. Codex posts the actual review/findings when finished, or indicates that no findings were found
+
+The new progress comment is problematic because GitHub treats its creation as an ordinary PR conversation comment. That triggers notification and automation systems even though there is no actionable review result yet.
+
+In my workflow, PR-comment notifications are forwarded to Slack. I now receive a notification when Codex *starts* reviewing, while the useful event is when the review *finishes*. Because the existing `Codex Review Summary` comment is subsequently edited rather than a new completion comment necessarily being created, notification systems can notify on the non-actionable start event but not on completion.
+
+This also creates automation noise beyond notifications. A public example is Generous-Corp/pulp#529, where a post-merge sweep currently collects multiple `Codex Review Summary` comments as unresolved bot comments:
+
+https://github.com/Generous-Corp/pulp/issues/529
+
+I could not find a Code Review setting that disables these progress comments while keeping managed Codex review enabled.","1. Enable the managed Codex Cloud GitHub Code Review integration for a repository.
+2. Open a pull request.
+3. Add a comment containing `@codex review`.
+4. Codex reacts with 👀 as expected.
+5. Observe that `chatgpt-codex-connector` also creates a top-level `Codex Review Summary` PR comment while the review is still running.
+6. Observe that GitHub comment notifications / comment-based automations can trigger on this non-actionable progress comment.
+7. When the review progresses or completes, observe that the existing summary comment can be updated rather than completion necessarily producing an equivalent new comment event.
+
+Observed with the managed Cloud review integration on 2026-09-02.","Starting a review should not create a top-level PR conversation comment solely to communicate ephemeral progress.
+
+The previous minimal-comment behavior is preferable:
+
+- use 👀 to acknowledge that the review has started;
+- publish GitHub review findings/comments when the review has completed;
+- if there are no findings, a final completion indication is fine.
+
+If richer progress visibility is needed, it should use a GitHub-native status mechanism such as a Check Run rather than a PR conversation comment.
+
+Related issue #27691 already requests GitHub Check Runs for Codex Cloud review status (`queued`, `running`, `completed`, `failed`):
+
+https://github.com/openai/codex/issues/27691
+
+That would provide progress visibility without polluting the PR conversation or triggering comment-based notification/automation systems.
+
+At minimum, please provide a setting to disable `Codex Review Summary` progress comments and retain the previous minimal-comment behavior.","This is specifically about the first-party **managed Codex Cloud GitHub Code Review** product, not Codex CLI, Codex Desktop local review, or the open-source GitHub Action.
+
+The core issue is not that review progress is visible. The issue is **using a top-level PR conversation comment as an ephemeral progress/status channel**. PR comments have notification and automation semantics that make them a poor fit for transient review state.
+
+Related:
+
+- #27691 — GitHub Integration: Surface Codex Cloud PR Reviews as GitHub Check Runs
+- Generous-Corp/pulp#529 — public real-world example of `Codex Review Summary` comments being picked up as unresolved bot-comment noise","bug, code-review, codex-web"
+42493,"[Windows][Desktop] Window height stretches far beyond the monitor after minimizing and restoring with Alt+Tab (dual monitor, extended display set as primary)",,"### What version of the Codex App are you using (From ""About Codex"" dialog)?
+
+26.901.1978.0 (Microsoft Store package `OpenAI.Codex_26.901.1978.0_x64__2p2nqsd0c76g0`)
+
+### What subscription do you have?
+
+N/A
+
+### What platform is your computer?
+
+Windows 11 x64, laptop + one external monitor. The **external monitor is set as the primary display**, and the Codex window is opened on it.
+
+### What issue are you seeing?
+
+After minimizing the Codex window and switching back to it with Alt+Tab, the window's HEIGHT becomes abnormally tall — it extends far beyond the bottom edge of the monitor, while its WIDTH stays unchanged. The window looks stretched vertically and no longer fits on screen.
+
+Workarounds: clicking the Maximize button, or manually dragging/resizing the window back inside the screen bounds. This is required after every occurrence.
+
+### Steps to reproduce
+
+1. Use a laptop + external monitor setup with the external monitor set as the **primary** display.
+2. Open the Codex window on the primary (external) monitor.
+3. Minimize the Codex window.
+4. Switch back to Codex with Alt+Tab.
+5. Observe: the window height is now much larger than the monitor height (width unchanged); most of the window is off-screen below.
+
+**Reproducibility: 100% — happens on every minimize + Alt+Tab cycle.**
+
+This has been present for several months across multiple app updates.
+
+### What is the expected behavior?
+
+The restored window keeps its previous size and position and is fully visible on its monitor.
+
+### Related issues
+
+- #34023 (window overflows screen bounds on multi-monitor 200% DPI setup)
+- #25826 (maximized window spills onto adjacent monitors)
+
+These are related but not identical: this bug is specifically about a vertical height explosion after a minimize + Alt+Tab restore, with unchanged width.",26.901.1978.0 (Microsoft Store package `OpenAI.Codex_26.901.1978.0_x64__2p2nqsd0c76g0`),,"Windows 11 x64, laptop + one external monitor. The **external monitor is set as the primary display**, and the Codex window is opened on it.","After minimizing the Codex window and switching back to it with Alt+Tab, the window's HEIGHT becomes abnormally tall — it extends far beyond the bottom edge of the monitor, while its WIDTH stays unchanged. The window looks stretched vertically and no longer fits on screen.
+
+Workarounds: clicking the Maximize button, or manually dragging/resizing the window back inside the screen bounds. This is required after every occurrence.","1. Use a laptop + external monitor setup with the external monitor set as the **primary** display.
+2. Open the Codex window on the primary (external) monitor.
+3. Minimize the Codex window.
+4. Switch back to Codex with Alt+Tab.
+5. Observe: the window height is now much larger than the monitor height (width unchanged); most of the window is off-screen below.
+
+**Reproducibility: 100% — happens on every minimize + Alt+Tab cycle.**
+
+This has been present for several months across multiple app updates.",The restored window keeps its previous size and position and is fully visible on its monitor.,,"bug, windows-os, app"
+42644,Linux 26.901.20858: “New chat” creates a local-only conversation while branching creates a cloud Chat; Chat/Work selector appears missing,,"### What version of the Codex App are you using (From “About Codex” dialog)?
+
+26.901.20858  Installed package: Package: chatgpt Architecture: amd64 Maintainer: OpenAI <support@openai.com> Homepage: https://developers.openai.com/codex/app
+
+### What subscription do you have?
+
+Plus
+
+### What platform is your computer?
+
+Linux Mint 22.3 (Zena) Cinnamon desktop X11 session Ubuntu Noble-based amd64  Kernel: Linux WattEver 7.0.0-30-generic #30~24.04.1-Ubuntu SMP PREEMPT_DYNAMIC Fri Aug 7 13:27:52 UTC 2026 x86_64
+
+### What issue are you seeing?
+
+New conversations created through the “New chat” button in the Linux ChatGPT desktop app are being created as local-only conversations instead of normal account-backed cloud chats.
+
+I am explicitly in the ChatGPT surface, not Codex, using the selector in the upper-left.
+
+The issue is asymmetric:
+
+- Existing cloud Chat conversations created on ChatGPT web or another computer appear correctly in the Linux desktop app.
+- I can open those cloud conversations on Linux, continue them, and the new messages sync back to other devices.
+- If I branch an existing cloud conversation from the Linux app, the new branch is also cloud-backed and offers “Open on chatgpt.com”.
+- However, if I click “New chat” in the Linux app and start a new conversation, that conversation is local-only and does not appear on ChatGPT web or my other computer.
+
+The screen shown immediately after clicking “New chat” also appears to be a Work-style composer rather than a normal Chat composer. It displays:
+
+“What should we work on in [project]?”
+“Select your project”
+“Ask for approval”
+
+I do not see the documented Chat / Work selector.
+
+Selecting “Don’t work in a project” does not change the behavior.
+
+This suggests that the Linux app’s “New chat” action may be routing to a local Work conversation instead of a normal cloud Chat conversation.
+
+### What steps can reproduce the bug?
+
+1. Launch ChatGPT desktop on Linux.
+2. Open the selector in the upper-left.
+3. Confirm “ChatGPT” is selected rather than Codex.
+4. Click “New chat”.
+5. Observe that the new screen displays Work-style controls such as:
+- “What should we work on in [project]?”
+- “Select your project”
+- “Ask for approval”
+6. Send a normal conversational message.
+7. The resulting conversation appears in Recents as a local-only conversation.
+8. Open ChatGPT web or another computer using the same OpenAI account.
+9. The conversation created through “New chat” is absent.
+
+Control tests:
+
+A. Create a Chat conversation on ChatGPT web / another computer.
+Result: It appears on Linux and can be continued from Linux with successful sync.
+
+B. From Linux, branch an existing cloud Chat conversation.
+Result: The new branch is cloud-backed and includes “Open on chatgpt.com”.
+
+C. From Linux, click “New chat”.
+Result: The new conversation is local-only and is unavailable on ChatGPT web.
+
+D. Select “Don’t work in a project” before creating a conversation.
+Result: The conversation still does not become a normal cloud-backed Chat.
+
+This makes the bug appear specific to the New chat routing/composer state rather than general synchronization, authentication, or network connectivity.
+
+### What is the expected behavior?
+
+When ChatGPT is selected and I click “New chat”, the application should create a normal account-backed Chat conversation that is stored in my ChatGPT account and synchronizes across devices.
+
+The Linux desktop app should expose the expected Chat / Work choice, or otherwise ensure that “New chat” from the ChatGPT surface opens a normal cloud Chat rather than a local-only Work conversation.
+
+### Additional information
+
+Additional environment information:
+
+OS:
+Linux Mint 22.3 “Zena”
+ID_LIKE=""ubuntu debian""
+UBUNTU_CODENAME=noble
+
+Desktop/session:
+XDG_CURRENT_DESKTOP=X-Cinnamon
+XDG_SESSION_TYPE=x11
+
+Package:
+chatgpt 26.901.20858 amd64
+Maintainer: OpenAI <support@openai.com>
+
+Important diagnostic:
+The Linux client is demonstrably capable of creating a new cloud conversation, because branching an existing cloud Chat from Linux creates a cloud-backed branch that offers “Open on chatgpt.com”.
+
+Therefore this does not appear to be a general inability for the Linux client to create or synchronize server-side conversations.
+
+I also have several conversations that were unintentionally created locally before I noticed the issue. I have not reset, cleared, or reinstalled the app because I do not want to risk losing those local-only conversations.
+
+If possible, I would also like to know whether there is a supported way to migrate or upload those existing local conversations into normal account-backed Chat history.
+
+Screenshots available:
+1. ChatGPT/Codex selector showing ChatGPT selected.
+2. The screen immediately after clicking New chat, showing the Work-style composer.
+3. Sidebar showing cloud-backed and local-only conversations.
+4. A Linux-created branched conversation whose context menu contains “Open on chatgpt.com”.
+
+<img width=""1920"" height=""1080"" alt=""Image"" src=""https://github.com/user-attachments/assets/3ecc17ff-bad0-4f27-8654-e73917267e9f"" />
+<img width=""1920"" height=""1080"" alt=""Image"" src=""https://github.com/user-attachments/assets/79f88135-05a5-4946-b8c3-c6336e520473"" />
+<img width=""1920"" height=""1080"" alt=""Image"" src=""https://github.com/user-attachments/assets/e55409ff-e4cf-40a2-bf75-b4a5a0aa4d39"" />
+<img width=""1920"" height=""1080"" alt=""Image"" src=""https://github.com/user-attachments/assets/f989a759-c999-41e5-8b33-330c684a5e6d"" />
+<img width=""1920"" height=""1080"" alt=""Image"" src=""https://github.com/user-attachments/assets/41d5fac6-5221-44f2-8e1b-a0130dd61370"" />",26.901.20858  Installed package: Package: chatgpt Architecture: amd64 Maintainer: OpenAI <support@openai.com> Homepage: https://developers.openai.com/codex/app,Plus,Linux Mint 22.3 (Zena) Cinnamon desktop X11 session Ubuntu Noble-based amd64  Kernel: Linux WattEver 7.0.0-30-generic #30~24.04.1-Ubuntu SMP PREEMPT_DYNAMIC Fri Aug 7 13:27:52 UTC 2026 x86_64,"New conversations created through the “New chat” button in the Linux ChatGPT desktop app are being created as local-only conversations instead of normal account-backed cloud chats.
+
+I am explicitly in the ChatGPT surface, not Codex, using the selector in the upper-left.
+
+The issue is asymmetric:
+
+- Existing cloud Chat conversations created on ChatGPT web or another computer appear correctly in the Linux desktop app.
+- I can open those cloud conversations on Linux, continue them, and the new messages sync back to other devices.
+- If I branch an existing cloud conversation from the Linux app, the new branch is also cloud-backed and offers “Open on chatgpt.com”.
+- However, if I click “New chat” in the Linux app and start a new conversation, that conversation is local-only and does not appear on ChatGPT web or my other computer.
+
+The screen shown immediately after clicking “New chat” also appears to be a Work-style composer rather than a normal Chat composer. It displays:
+
+“What should we work on in [project]?”
+“Select your project”
+“Ask for approval”
+
+I do not see the documented Chat / Work selector.
+
+Selecting “Don’t work in a project” does not change the behavior.
+
+This suggests that the Linux app’s “New chat” action may be routing to a local Work conversation instead of a normal cloud Chat conversation.","1. Launch ChatGPT desktop on Linux.
+2. Open the selector in the upper-left.
+3. Confirm “ChatGPT” is selected rather than Codex.
+4. Click “New chat”.
+5. Observe that the new screen displays Work-style controls such as:
+   - “What should we work on in [project]?”
+   - “Select your project”
+   - “Ask for approval”
+6. Send a normal conversational message.
+7. The resulting conversation appears in Recents as a local-only conversation.
+8. Open ChatGPT web or another computer using the same OpenAI account.
+9. The conversation created through “New chat” is absent.
+
+Control tests:
+
+A. Create a Chat conversation on ChatGPT web / another computer.
+Result: It appears on Linux and can be continued from Linux with successful sync.
+
+B. From Linux, branch an existing cloud Chat conversation.
+Result: The new branch is cloud-backed and includes “Open on chatgpt.com”.
+
+C. From Linux, click “New chat”.
+Result: The new conversation is local-only and is unavailable on ChatGPT web.
+
+D. Select “Don’t work in a project” before creating a conversation.
+Result: The conversation still does not become a normal cloud-backed Chat.
+
+This makes the bug appear specific to the New chat routing/composer state rather than general synchronization, authentication, or network connectivity.","When ChatGPT is selected and I click “New chat”, the application should create a normal account-backed Chat conversation that is stored in my ChatGPT account and synchronizes across devices.
+
+The Linux desktop app should expose the expected Chat / Work choice, or otherwise ensure that “New chat” from the ChatGPT surface opens a normal cloud Chat rather than a local-only Work conversation.","Additional environment information:
+
+OS:
+Linux Mint 22.3 “Zena”
+ID_LIKE=""ubuntu debian""
+UBUNTU_CODENAME=noble
+
+Desktop/session:
+XDG_CURRENT_DESKTOP=X-Cinnamon
+XDG_SESSION_TYPE=x11
+
+Package:
+chatgpt 26.901.20858 amd64
+Maintainer: OpenAI <support@openai.com>
+
+Important diagnostic:
+The Linux client is demonstrably capable of creating a new cloud conversation, because branching an existing cloud Chat from Linux creates a cloud-backed branch that offers “Open on chatgpt.com”.
+
+Therefore this does not appear to be a general inability for the Linux client to create or synchronize server-side conversations.
+
+I also have several conversations that were unintentionally created locally before I noticed the issue. I have not reset, cleared, or reinstalled the app because I do not want to risk losing those local-only conversations.
+
+If possible, I would also like to know whether there is a supported way to migrate or upload those existing local conversations into normal account-backed Chat history.
+
+Screenshots available:
+1. ChatGPT/Codex selector showing ChatGPT selected.
+2. The screen immediately after clicking New chat, showing the Work-style composer.
+3. Sidebar showing cloud-backed and local-only conversations.
+4. A Linux-created branched conversation whose context menu contains “Open on chatgpt.com”.
+
+<img width=""1920"" height=""1080"" alt=""Image"" src=""https://github.com/user-attachments/assets/3ecc17ff-bad0-4f27-8654-e73917267e9f"" />
+<img width=""1920"" height=""1080"" alt=""Image"" src=""https://github.com/user-attachments/assets/79f88135-05a5-4946-b8c3-c6336e520473"" />
+<img width=""1920"" height=""1080"" alt=""Image"" src=""https://github.com/user-attachments/assets/e55409ff-e4cf-40a2-bf75-b4a5a0aa4d39"" />
+<img width=""1920"" height=""1080"" alt=""Image"" src=""https://github.com/user-attachments/assets/f989a759-c999-41e5-8b33-330c684a5e6d"" />
+<img width=""1920"" height=""1080"" alt=""Image"" src=""https://github.com/user-attachments/assets/41d5fac6-5221-44f2-8e1b-a0130dd61370"" />","bug, app, session"
+42669,"[Windows] Codex desktop app (26.901.2854.0): processes launch but no window ever appears - ""Artifact Session host Unix-socket transport is not available on Windows""",,"# Codex desktop app: processes launch but no window ever appears on Windows (26.901.2854.0)
+
+## Environment
+- OS: Windows 11 (25H2 family), OS build: 26200.9168
+- Codex desktop app: OpenAI.Codex_26.901.2854.0_x64__2p2nqsd0c76g0 (display name ""ChatGPT"" in MSIX), Status Ok
+- Codex CLI: 0.153.0 (works fine)
+- Web (chatgpt.com): works fine with the same account
+
+## Problem
+After the app updated to 26.901.2854.0, clicking the desktop icon / Start menu entry starts a batch of `ChatGPT.exe` processes, but **no window is ever created**:
+- `MainWindowHandle` stays 0, `MainWindowTitle` empty (main process + crashpad/gpu/network/storage helpers; no renderer process).
+- The main process spins at ~1 full CPU core indefinitely (observed 50-382 s of CPU over a single session).
+- Killing the processes and relaunching reproduces it 100% of the time.
+- App log (`LocalCache\Local\Codex\Logs\...\codex-desktop-*.log`) stops after 3 lines:
+- `[sparkle] in_app_updates_policy_wait_started timeoutMs=300000`
+- `Launching app agentRunId=null ... platform=win32`
+- `Appshot hotkey inactive configured=true enabled=false platform=win32`
+- Launching the exe with `--enable-logging --v=1` reveals the blocking error:
+```
+Failed to start the Artifact Session host errorMessage=""Artifact Session host Unix-socket transport is not available on Windows."" errorName=Error
+errorStack=""Error: Artifact Session host Unix-socket transport is not available on Windows.
+at e.start (...app.asar\.vite\build\main-CNWtD3f8.js:8:28582)
+at uze (...app.asar\.vite\build\main-CNWtD3f8.js:1526:69057)
+at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+at async ...app.asar\.vite\build\bootstrap-BaU3O31M.js:134:3802""
+```
+- cua_node runtime staging: every launch creates a fresh `.staging-8e7585fc8f35ed57-*` folder under `%LOCALAPPDATA%\OpenAI\Codex\runtimes\cua_node` (30+ accumulated) and never finalizes it (no final folder for that hash; only the older `e4d75eceaa042f20` exists). Manually creating the final folder with `bin` + exact `manifest.json` from the package does NOT change behavior.
+
+## What I already tried (none fixed it)
+- Kill all processes and relaunch
+- `--disable-gpu` direct exe launch
+- Clearing/renaming all cache folders (Cache, Code Cache, ShaderCache, GPUPersistentCache, etc.)
+- Reinstall: removed from D:\WindowsApps, installed fresh to C:\Program Files\WindowsApps
+- `Get-AppxPackage OpenAI.Codex | Reset-AppxPackage`
+- Fresh profile via empty `CODEX_HOME` isolation launch
+- Manual cua_node runtime finalization (bin + manifest.json)
+
+## Expected behavior
+The app should open its window and proceed to the sign-in / main interface.
+
+## Notes
+This looks like a Windows regression in 26.901.2854.0: bootstrap unconditionally starts an ""Artifact Session host"" that requires a Unix-socket transport which does not exist on Windows. The startup promise never resolves, so the main window is never created and the main process busy-loops.",,,,,,,,"bug, windows-os, app"
+42684,[macOS 27 beta][ChatGPT for Chrome] Gatekeeper repeatedly blocks signed Snowflake minicore dylib,,"### What version of the Codex App are you using (From “About Codex” dialog)?
+
+ChatGPT Desktop / Codex-integrated build 26.901.22334 (CFBundleVersion 7746)
+
+### What subscription do you have?
+
+ChatGPT Pro
+
+### What platform is your computer?
+
+Darwin 27.0.0 arm64 arm  macOS 27.0 beta 8, build 26A5425a, Apple Silicon
+
+### What issue are you seeing?
+
+The official ChatGPT for Chrome integration repeatedly triggers the following macOS Gatekeeper warning:
+
+> “libsf_mini_core_darwin_arm64.dylib” Not Opened
+> Apple could not verify “libsf_mini_core_darwin_arm64.dylib” is free of malware that may harm your Mac or compromise your privacy.
+
+The available actions are **Move to Trash** and **Done**. The warning may appear multiple times. Dismissing it or choosing **Move to Trash** does not resolve the problem permanently.
+
+The affected library is extracted into a temporary directory similar to:
+
+```
+$TMPDIR/gosnowflake-cgo*/libsf_mini_core_darwin_arm64.dylib
+```
+
+This occurs while the official ChatGPT Chrome native host is running:
+
+```
+~/.codex/plugins/cache/openai-bundled/chrome/latest/extension-host/macos/arm64/ChatGPT for Chrome
+```
+
+The Chrome extension details are:
+
+```
+Name: ChatGPT
+Version: 1.26.827.12125
+Extension ID: hehggadaopoacecdllhhajmbjkdcmajg
+```
+
+Google Chrome version:
+
+```
+152.0.7977.83
+```
+
+The extracted dylib is a valid Mach-O arm64 shared library. Its code signature verifies successfully:
+
+```
+valid on disk
+satisfies its Designated Requirement
+```
+
+Signature details:
+
+```
+Identifier=libsf_mini_core_darwin_arm64
+Authority=Developer ID Application: Snowflake Computing INC. (W4NT6CRQ7U)
+TeamIdentifier=W4NT6CRQ7U
+Timestamp=7 May 2026 at 11:35:18
+```
+
+The inspected copy was 35,104 bytes and had this SHA-256 hash:
+
+```
+da320a4cf4ac60295f9ab1c0bf417d798ac96dbf5855ea98e8ca2753c3ae49eb
+```
+
+The file has a `com.apple.quarantine` attribute whose origin is recorded as Chrome.
+
+Despite the valid Developer ID signature, the macOS Gatekeeper assessment fails. The unified log at `2026-09-04 08:38:31 Europe/Helsinki` contains:
+
+```
+Error checking with notarization daemon: 3
+```
+
+This is followed by:
+
+```
+GK evaluateScanResult: 1
+team: W4NT6CRQ7U
+id: libsf_mini_core_darwin_arm64
+bundle_id: NOT_A_BUNDLE
+Prompt shown (6, 0), waiting for response
+```
+
+The Gatekeeper UI then reports:
+
+```
+The file “libsf_mini_core_darwin_arm64.dylib” couldn’t be opened.
+```
+
+When **Move to Trash** is selected, the log can also contain:
+
+```
+Too many levels of symbolic links
+```
+
+and:
+
+```
+The file “libsf_mini_core_darwin_arm64.dylib” doesn’t exist.
+```
+
+These errors reference Gatekeeper's `/.nofollow/...` representation of the temporary path. The gosnowflake component can subsequently extract another copy into a newly numbered temporary directory, causing the warning to return.
+
+The main ChatGPT application, the current ChatGPT for Chrome native host, and the bundled `classic-level.node` module all pass their own code-signature verification.
+
+The temporary directory and dylib are owned by the logged-in user and have normal permissions:
+
+```
+Directory: drwx------
+File:      -rw-------
+```
+
+The extraction therefore succeeds. This does not appear to be caused by filesystem permissions or insufficient disk space. The rejection happens when macOS evaluates the extracted library.
+
+**Screenshot:** I will attach a screenshot of the macOS Gatekeeper warning to this issue.
+
+<img width=""260"" height=""321"" alt=""Image"" src=""https://github.com/user-attachments/assets/30af991b-e834-4cf2-92a0-51575a77d034"" />
+
+### What steps can reproduce the bug?
+
+1. Run macOS 27.0 beta 8 (`26A5425a`) on an Apple Silicon Mac.
+2. Install and launch ChatGPT Desktop build `26.901.22334`.
+3. Install and enable the official ChatGPT Chrome extension:
+- Version: `1.26.827.12125`
+- Extension ID: `hehggadaopoacecdllhhajmbjkdcmajg`
+4. Fully quit and reopen Google Chrome.
+5. Open the ChatGPT side panel or start a ChatGPT Work/Codex task that uses Chrome.
+6. Wait for the `ChatGPT for Chrome` native host to start.
+7. Observe the Gatekeeper warning for `libsf_mini_core_darwin_arm64.dylib`.
+8. Select **Done** or **Move to Trash**.
+9. Observe the warning returning, either immediately or after the integration creates another `gosnowflake-cgo*` temporary directory.
+
+
+
+### What is the expected behavior?
+
+The official ChatGPT Chrome native integration should start and operate without triggering macOS Gatekeeper warnings.
+
+Any native libraries embedded in or extracted by the integration should be packaged, signed, notarized, and loaded in a way accepted by supported macOS versions.
+
+If macOS 27 beta is not supported, the application should detect that and show a clear compatibility message instead of repeatedly triggering a system malware warning.
+
+
+
+### Additional information
+
+## Troubleshooting already attempted
+
+- Updated ChatGPT Desktop.
+- Updated Google Chrome.
+- Removed and reinstalled the official Chrome extension several times.
+- Signed out of ChatGPT and signed back in.
+- Restarted Chrome.
+- Restarted ChatGPT Desktop.
+- Confirmed that only one ChatGPT desktop application is installed.
+- Confirmed that the current Chrome plugin cache and native messaging manifest point to build `26.901.22334`.
+- Confirmed that the ChatGPT application and native host signatures are valid.
+
+Reinstalling the browser extension does not resolve the issue because the failure appears to involve the local native integration and an extracted Snowflake library rather than the Chrome extension package itself.
+
+## Snowflake minicore information
+
+The Snowflake Go driver source confirms that this library is embedded and initialized at runtime:
+
+https://github.com/snowflakedb/gosnowflake/blob/v2.1.0/minicore_provider_darwin_arm64.go
+
+Snowflake added Developer ID signatures to its Windows and macOS minicore binaries in:
+
+https://github.com/snowflakedb/gosnowflake/pull/1790
+
+The dylib inspected on this Mac has that valid Snowflake Developer ID signature. The remaining failure appears to involve notarization, quarantine provenance, or the way the library is extracted and loaded.
+
+## Related OpenAI issues
+
+- https://github.com/openai/codex/issues/36349 — macOS 27 beta, ChatGPT for Chrome native host, and a repeated warning for an extracted Python runtime.
+- https://github.com/openai/codex/issues/34267 — ChatGPT for Chrome triggers the same “Apple could not verify” warning for another native module.
+- https://github.com/openai/codex/issues/28088 — Chrome native host triggers repeated Gatekeeper/SystemPolicy validation.
+- https://github.com/openai/codex/issues/42618 — the same ChatGPT Desktop and Chrome extension versions encounter an OS-level native-host denial despite valid signatures.
+
+## Assessment
+
+This appears to be a packaging, quarantine-provenance, or notarization issue involving the gosnowflake minicore library extracted by the ChatGPT for Chrome native integration.
+
+Could you please confirm:
+
+1. Whether ChatGPT for Chrome currently supports macOS 27 beta.
+2. Which ChatGPT component includes or invokes the gosnowflake driver.
+3. Whether the extracted Snowflake minicore dylib is expected to be independently notarized.
+4. Whether the library should inherit a Chrome quarantine attribute when extracted.
+5. Whether an updated native host or packaging fix is available or planned.",ChatGPT Desktop / Codex-integrated build 26.901.22334 (CFBundleVersion 7746),ChatGPT Pro,"Darwin 27.0.0 arm64 arm  macOS 27.0 beta 8, build 26A5425a, Apple Silicon","The official ChatGPT for Chrome integration repeatedly triggers the following macOS Gatekeeper warning:
+
+> “libsf_mini_core_darwin_arm64.dylib” Not Opened  
+> Apple could not verify “libsf_mini_core_darwin_arm64.dylib” is free of malware that may harm your Mac or compromise your privacy.
+
+The available actions are **Move to Trash** and **Done**. The warning may appear multiple times. Dismissing it or choosing **Move to Trash** does not resolve the problem permanently.
+
+The affected library is extracted into a temporary directory similar to:
+
+```text
+$TMPDIR/gosnowflake-cgo*/libsf_mini_core_darwin_arm64.dylib
+```
+
+This occurs while the official ChatGPT Chrome native host is running:
+
+```text
+~/.codex/plugins/cache/openai-bundled/chrome/latest/extension-host/macos/arm64/ChatGPT for Chrome
+```
+
+The Chrome extension details are:
+
+```text
+Name: ChatGPT
+Version: 1.26.827.12125
+Extension ID: hehggadaopoacecdllhhajmbjkdcmajg
+```
+
+Google Chrome version:
+
+```text
+152.0.7977.83
+```
+
+The extracted dylib is a valid Mach-O arm64 shared library. Its code signature verifies successfully:
+
+```text
+valid on disk
+satisfies its Designated Requirement
+```
+
+Signature details:
+
+```text
+Identifier=libsf_mini_core_darwin_arm64
+Authority=Developer ID Application: Snowflake Computing INC. (W4NT6CRQ7U)
+TeamIdentifier=W4NT6CRQ7U
+Timestamp=7 May 2026 at 11:35:18
+```
+
+The inspected copy was 35,104 bytes and had this SHA-256 hash:
+
+```text
+da320a4cf4ac60295f9ab1c0bf417d798ac96dbf5855ea98e8ca2753c3ae49eb
+```
+
+The file has a `com.apple.quarantine` attribute whose origin is recorded as Chrome.
+
+Despite the valid Developer ID signature, the macOS Gatekeeper assessment fails. The unified log at `2026-09-04 08:38:31 Europe/Helsinki` contains:
+
+```text
+Error checking with notarization daemon: 3
+```
+
+This is followed by:
+
+```text
+GK evaluateScanResult: 1
+team: W4NT6CRQ7U
+id: libsf_mini_core_darwin_arm64
+bundle_id: NOT_A_BUNDLE
+Prompt shown (6, 0), waiting for response
+```
+
+The Gatekeeper UI then reports:
+
+```text
+The file “libsf_mini_core_darwin_arm64.dylib” couldn’t be opened.
+```
+
+When **Move to Trash** is selected, the log can also contain:
+
+```text
+Too many levels of symbolic links
+```
+
+and:
+
+```text
+The file “libsf_mini_core_darwin_arm64.dylib” doesn’t exist.
+```
+
+These errors reference Gatekeeper's `/.nofollow/...` representation of the temporary path. The gosnowflake component can subsequently extract another copy into a newly numbered temporary directory, causing the warning to return.
+
+The main ChatGPT application, the current ChatGPT for Chrome native host, and the bundled `classic-level.node` module all pass their own code-signature verification.
+
+The temporary directory and dylib are owned by the logged-in user and have normal permissions:
+
+```text
+Directory: drwx------
+File:      -rw-------
+```
+
+The extraction therefore succeeds. This does not appear to be caused by filesystem permissions or insufficient disk space. The rejection happens when macOS evaluates the extracted library.
+
+**Screenshot:** I will attach a screenshot of the macOS Gatekeeper warning to this issue.
+
+<img width=""260"" height=""321"" alt=""Image"" src=""https://github.com/user-attachments/assets/30af991b-e834-4cf2-92a0-51575a77d034"" />","1. Run macOS 27.0 beta 8 (`26A5425a`) on an Apple Silicon Mac.
+2. Install and launch ChatGPT Desktop build `26.901.22334`.
+3. Install and enable the official ChatGPT Chrome extension:
+   - Version: `1.26.827.12125`
+   - Extension ID: `hehggadaopoacecdllhhajmbjkdcmajg`
+4. Fully quit and reopen Google Chrome.
+5. Open the ChatGPT side panel or start a ChatGPT Work/Codex task that uses Chrome.
+6. Wait for the `ChatGPT for Chrome` native host to start.
+7. Observe the Gatekeeper warning for `libsf_mini_core_darwin_arm64.dylib`.
+8. Select **Done** or **Move to Trash**.
+9. Observe the warning returning, either immediately or after the integration creates another `gosnowflake-cgo*` temporary directory.","The official ChatGPT Chrome native integration should start and operate without triggering macOS Gatekeeper warnings.
+
+Any native libraries embedded in or extracted by the integration should be packaged, signed, notarized, and loaded in a way accepted by supported macOS versions.
+
+If macOS 27 beta is not supported, the application should detect that and show a clear compatibility message instead of repeatedly triggering a system malware warning.","## Troubleshooting already attempted
+
+- Updated ChatGPT Desktop.
+- Updated Google Chrome.
+- Removed and reinstalled the official Chrome extension several times.
+- Signed out of ChatGPT and signed back in.
+- Restarted Chrome.
+- Restarted ChatGPT Desktop.
+- Confirmed that only one ChatGPT desktop application is installed.
+- Confirmed that the current Chrome plugin cache and native messaging manifest point to build `26.901.22334`.
+- Confirmed that the ChatGPT application and native host signatures are valid.
+
+Reinstalling the browser extension does not resolve the issue because the failure appears to involve the local native integration and an extracted Snowflake library rather than the Chrome extension package itself.
+
+## Snowflake minicore information
+
+The Snowflake Go driver source confirms that this library is embedded and initialized at runtime:
+
+https://github.com/snowflakedb/gosnowflake/blob/v2.1.0/minicore_provider_darwin_arm64.go
+
+Snowflake added Developer ID signatures to its Windows and macOS minicore binaries in:
+
+https://github.com/snowflakedb/gosnowflake/pull/1790
+
+The dylib inspected on this Mac has that valid Snowflake Developer ID signature. The remaining failure appears to involve notarization, quarantine provenance, or the way the library is extracted and loaded.
+
+## Related OpenAI issues
+
+- https://github.com/openai/codex/issues/36349 — macOS 27 beta, ChatGPT for Chrome native host, and a repeated warning for an extracted Python runtime.
+- https://github.com/openai/codex/issues/34267 — ChatGPT for Chrome triggers the same “Apple could not verify” warning for another native module.
+- https://github.com/openai/codex/issues/28088 — Chrome native host triggers repeated Gatekeeper/SystemPolicy validation.
+- https://github.com/openai/codex/issues/42618 — the same ChatGPT Desktop and Chrome extension versions encounter an OS-level native-host denial despite valid signatures.
+
+## Assessment
+
+This appears to be a packaging, quarantine-provenance, or notarization issue involving the gosnowflake minicore library extracted by the ChatGPT for Chrome native integration.
+
+Could you please confirm:
+
+1. Whether ChatGPT for Chrome currently supports macOS 27 beta.
+2. Which ChatGPT component includes or invokes the gosnowflake driver.
+3. Whether the extracted Snowflake minicore dylib is expected to be independently notarized.
+4. Whether the library should inherit a Chrome quarantine attribute when extracted.
+5. Whether an updated native host or packaging fix is available or planned.","bug, app, browser"
+42860,[macOS][Chat Bar] Keeps disappearing,,Bug filed no-active-thread-01a06e60-c427-7a83-90a1-885616daf563,,,,,,,,"bug, app"

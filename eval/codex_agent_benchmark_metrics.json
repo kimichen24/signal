@@ -1,0 +1,45 @@
+{
+  "benchmark_type": "independent Codex agent operational benchmark — unaided triage vs Signal-assisted review",
+  "not_human_timing": "This benchmark measures an independent Codex agent performing unaided triage versus reviewing Signal's pre-structured output. It does not measure human operator productivity.",
+  "arms": {
+    "A_manual": {
+      "n": 15,
+      "wall_clock_seconds": 348.0,
+      "seconds_per_issue": {
+        "batch_derived_average": 23.2,
+        "median": "not_applicable",
+        "p25": "not_applicable",
+        "p75": "not_applicable",
+        "note": "timing measured at arm/batch level; per-item latency not independently observed"
+      },
+      "issues_per_hour": 155.2,
+      "issues_per_minute": 2.59,
+      "batch_derived_average_seconds_per_issue": 23.2
+    },
+    "B_signal_review": {
+      "n": 15,
+      "wall_clock_seconds": 28.5,
+      "seconds_per_issue": {
+        "batch_derived_average": 1.9,
+        "median": "not_applicable",
+        "p25": "not_applicable",
+        "p75": "not_applicable",
+        "note": "timing measured at arm/batch level; per-item latency not independently observed"
+      },
+      "issues_per_hour": 1894.7,
+      "total_corrected_fields": 6,
+      "mean_corrected_fields_per_issue": 0.4,
+      "zero_correction_issues": 10,
+      "zero_correction_pct": 66.7,
+      "at_least_one_correction_issues": 5,
+      "at_least_one_correction_pct": 33.3,
+      "issues_per_minute": 31.58,
+      "batch_derived_average_seconds_per_issue": 1.9
+    }
+  },
+  "comparison": {
+    "relative_wall_clock_reduction_pct": 91.8,
+    "throughput_multiplier": 12.21
+  },
+  "timing_granularity_limitation": "Timing measured per-arm batch wall-clock (start of evidence supply to end of validated labels), not per-item. Per-item median/p25/p75 are not applicable. Batch-derived average seconds per issue = wall-clock / n."
+}

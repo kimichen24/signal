@@ -1,0 +1,434 @@
+{
+  "dataset_id": "codex-14d-2026-09-06",
+  "analysis_version": "v0.3.4",
+  "repository": "openai/codex",
+  "window": "2026-08-23T00:00:00Z <= github_created_at < 2026-09-06T00:00:00Z",
+  "purpose": "50-issue real MiMo workload pilot (reproducible)",
+  "seed": 42,
+  "requested": 50,
+  "selected": 50,
+  "shortfall": 0,
+  "length_bounds": {
+    "short_lt": 1850,
+    "medium_lt": 3477
+  },
+  "allocation": {
+    "current|non_template|long": 4,
+    "current|non_template|medium": 4,
+    "current|non_template|short": 4,
+    "current|template|long": 4,
+    "current|template|medium": 5,
+    "current|template|short": 5,
+    "previous|non_template|long": 4,
+    "previous|non_template|medium": 4,
+    "previous|non_template|short": 4,
+    "previous|template|long": 4,
+    "previous|template|medium": 4,
+    "previous|template|short": 4
+  },
+  "pool_size": 2154,
+  "issue_numbers": [
+    40210,
+    40230,
+    40270,
+    40350,
+    40364,
+    40367,
+    40400,
+    40467,
+    40753,
+    40793,
+    40871,
+    40872,
+    40917,
+    41093,
+    41145,
+    41274,
+    41282,
+    41299,
+    41304,
+    41418,
+    41491,
+    41492,
+    41558,
+    41577,
+    41599,
+    41612,
+    41656,
+    41689,
+    41703,
+    41872,
+    41935,
+    41970,
+    41975,
+    42005,
+    42115,
+    42141,
+    42225,
+    42396,
+    42415,
+    42429,
+    42446,
+    42450,
+    42594,
+    42643,
+    42653,
+    42775,
+    42820,
+    42869,
+    42911,
+    43085
+  ],
+  "rows": [
+    {
+      "github_issue_number": 40210,
+      "stratum": "previous|non_template|short",
+      "body_clean_chars": 1010,
+      "template": "non_template",
+      "period": "previous"
+    },
+    {
+      "github_issue_number": 40230,
+      "stratum": "previous|non_template|long",
+      "body_clean_chars": 5001,
+      "template": "non_template",
+      "period": "previous"
+    },
+    {
+      "github_issue_number": 40270,
+      "stratum": "previous|template|medium",
+      "body_clean_chars": 3400,
+      "template": "template",
+      "period": "previous"
+    },
+    {
+      "github_issue_number": 40350,
+      "stratum": "previous|template|short",
+      "body_clean_chars": 1129,
+      "template": "template",
+      "period": "previous"
+    },
+    {
+      "github_issue_number": 40364,
+      "stratum": "previous|template|medium",
+      "body_clean_chars": 2415,
+      "template": "template",
+      "period": "previous"
+    },
+    {
+      "github_issue_number": 40367,
+      "stratum": "previous|template|short",
+      "body_clean_chars": 440,
+      "template": "template",
+      "period": "previous"
+    },
+    {
+      "github_issue_number": 40400,
+      "stratum": "previous|non_template|long",
+      "body_clean_chars": 4571,
+      "template": "non_template",
+      "period": "previous"
+    },
+    {
+      "github_issue_number": 40467,
+      "stratum": "previous|non_template|short",
+      "body_clean_chars": 1427,
+      "template": "non_template",
+      "period": "previous"
+    },
+    {
+      "github_issue_number": 40753,
+      "stratum": "previous|non_template|medium",
+      "body_clean_chars": 2533,
+      "template": "non_template",
+      "period": "previous"
+    },
+    {
+      "github_issue_number": 40793,
+      "stratum": "previous|template|long",
+      "body_clean_chars": 4757,
+      "template": "template",
+      "period": "previous"
+    },
+    {
+      "github_issue_number": 40871,
+      "stratum": "previous|non_template|medium",
+      "body_clean_chars": 3202,
+      "template": "non_template",
+      "period": "previous"
+    },
+    {
+      "github_issue_number": 40872,
+      "stratum": "previous|non_template|long",
+      "body_clean_chars": 6364,
+      "template": "non_template",
+      "period": "previous"
+    },
+    {
+      "github_issue_number": 40917,
+      "stratum": "previous|template|short",
+      "body_clean_chars": 756,
+      "template": "template",
+      "period": "previous"
+    },
+    {
+      "github_issue_number": 41093,
+      "stratum": "previous|non_template|long",
+      "body_clean_chars": 4408,
+      "template": "non_template",
+      "period": "previous"
+    },
+    {
+      "github_issue_number": 41145,
+      "stratum": "previous|template|short",
+      "body_clean_chars": 684,
+      "template": "template",
+      "period": "previous"
+    },
+    {
+      "github_issue_number": 41274,
+      "stratum": "previous|non_template|short",
+      "body_clean_chars": 1096,
+      "template": "non_template",
+      "period": "previous"
+    },
+    {
+      "github_issue_number": 41282,
+      "stratum": "previous|template|long",
+      "body_clean_chars": 5647,
+      "template": "template",
+      "period": "previous"
+    },
+    {
+      "github_issue_number": 41299,
+      "stratum": "previous|template|medium",
+      "body_clean_chars": 2851,
+      "template": "template",
+      "period": "previous"
+    },
+    {
+      "github_issue_number": 41304,
+      "stratum": "previous|template|long",
+      "body_clean_chars": 3727,
+      "template": "template",
+      "period": "previous"
+    },
+    {
+      "github_issue_number": 41418,
+      "stratum": "previous|template|medium",
+      "body_clean_chars": 3038,
+      "template": "template",
+      "period": "previous"
+    },
+    {
+      "github_issue_number": 41491,
+      "stratum": "previous|template|long",
+      "body_clean_chars": 6486,
+      "template": "template",
+      "period": "previous"
+    },
+    {
+      "github_issue_number": 41492,
+      "stratum": "previous|non_template|short",
+      "body_clean_chars": 1157,
+      "template": "non_template",
+      "period": "previous"
+    },
+    {
+      "github_issue_number": 41558,
+      "stratum": "previous|non_template|medium",
+      "body_clean_chars": 2278,
+      "template": "non_template",
+      "period": "previous"
+    },
+    {
+      "github_issue_number": 41577,
+      "stratum": "previous|non_template|medium",
+      "body_clean_chars": 2271,
+      "template": "non_template",
+      "period": "previous"
+    },
+    {
+      "github_issue_number": 41599,
+      "stratum": "current|template|short",
+      "body_clean_chars": 1468,
+      "template": "template",
+      "period": "current"
+    },
+    {
+      "github_issue_number": 41612,
+      "stratum": "current|non_template|short",
+      "body_clean_chars": 1490,
+      "template": "non_template",
+      "period": "current"
+    },
+    {
+      "github_issue_number": 41656,
+      "stratum": "current|non_template|long",
+      "body_clean_chars": 4624,
+      "template": "non_template",
+      "period": "current"
+    },
+    {
+      "github_issue_number": 41689,
+      "stratum": "current|template|short",
+      "body_clean_chars": 1670,
+      "template": "template",
+      "period": "current"
+    },
+    {
+      "github_issue_number": 41703,
+      "stratum": "current|non_template|long",
+      "body_clean_chars": 5416,
+      "template": "non_template",
+      "period": "current"
+    },
+    {
+      "github_issue_number": 41872,
+      "stratum": "current|template|long",
+      "body_clean_chars": 6179,
+      "template": "template",
+      "period": "current"
+    },
+    {
+      "github_issue_number": 41935,
+      "stratum": "current|template|long",
+      "body_clean_chars": 6635,
+      "template": "template",
+      "period": "current"
+    },
+    {
+      "github_issue_number": 41970,
+      "stratum": "current|non_template|short",
+      "body_clean_chars": 846,
+      "template": "non_template",
+      "period": "current"
+    },
+    {
+      "github_issue_number": 41975,
+      "stratum": "current|template|long",
+      "body_clean_chars": 4362,
+      "template": "template",
+      "period": "current"
+    },
+    {
+      "github_issue_number": 42005,
+      "stratum": "current|template|medium",
+      "body_clean_chars": 2996,
+      "template": "template",
+      "period": "current"
+    },
+    {
+      "github_issue_number": 42115,
+      "stratum": "current|non_template|long",
+      "body_clean_chars": 3511,
+      "template": "non_template",
+      "period": "current"
+    },
+    {
+      "github_issue_number": 42141,
+      "stratum": "current|non_template|medium",
+      "body_clean_chars": 1922,
+      "template": "non_template",
+      "period": "current"
+    },
+    {
+      "github_issue_number": 42225,
+      "stratum": "current|template|short",
+      "body_clean_chars": 541,
+      "template": "template",
+      "period": "current"
+    },
+    {
+      "github_issue_number": 42396,
+      "stratum": "current|template|medium",
+      "body_clean_chars": 2299,
+      "template": "template",
+      "period": "current"
+    },
+    {
+      "github_issue_number": 42415,
+      "stratum": "current|template|medium",
+      "body_clean_chars": 2409,
+      "template": "template",
+      "period": "current"
+    },
+    {
+      "github_issue_number": 42429,
+      "stratum": "current|non_template|medium",
+      "body_clean_chars": 3178,
+      "template": "non_template",
+      "period": "current"
+    },
+    {
+      "github_issue_number": 42446,
+      "stratum": "current|non_template|short",
+      "body_clean_chars": 858,
+      "template": "non_template",
+      "period": "current"
+    },
+    {
+      "github_issue_number": 42450,
+      "stratum": "current|non_template|medium",
+      "body_clean_chars": 2956,
+      "template": "non_template",
+      "period": "current"
+    },
+    {
+      "github_issue_number": 42594,
+      "stratum": "current|template|short",
+      "body_clean_chars": 1093,
+      "template": "template",
+      "period": "current"
+    },
+    {
+      "github_issue_number": 42643,
+      "stratum": "current|template|medium",
+      "body_clean_chars": 2644,
+      "template": "template",
+      "period": "current"
+    },
+    {
+      "github_issue_number": 42653,
+      "stratum": "current|template|medium",
+      "body_clean_chars": 2563,
+      "template": "template",
+      "period": "current"
+    },
+    {
+      "github_issue_number": 42775,
+      "stratum": "current|template|long",
+      "body_clean_chars": 3998,
+      "template": "template",
+      "period": "current"
+    },
+    {
+      "github_issue_number": 42820,
+      "stratum": "current|non_template|short",
+      "body_clean_chars": 208,
+      "template": "non_template",
+      "period": "current"
+    },
+    {
+      "github_issue_number": 42869,
+      "stratum": "current|non_template|medium",
+      "body_clean_chars": 2010,
+      "template": "non_template",
+      "period": "current"
+    },
+    {
+      "github_issue_number": 42911,
+      "stratum": "current|non_template|long",
+      "body_clean_chars": 5603,
+      "template": "non_template",
+      "period": "current"
+    },
+    {
+      "github_issue_number": 43085,
+      "stratum": "current|template|short",
+      "body_clean_chars": 920,
+      "template": "template",
+      "period": "current"
+    }
+  ]
+}

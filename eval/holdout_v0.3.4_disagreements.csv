@@ -1,0 +1,45 @@
+﻿github_issue_number,title,field,mimo_prediction,codex_reference,mimo_confidence,needs_review
+40708,Opened in error,product_scope,out_of_scope,codex_core,0.6,True
+40792,Linux app: Chat-mode Voice is blocked by Codex usage limit,product_scope,codex_adjacent,out_of_scope,0.85,False
+41807,Codex Cloud: new mobile tasks can edit files but no diff or Create PR handoff ap,product_scope,codex_adjacent,codex_core,0.85,False
+40708,Opened in error,issue_type,other,bug,0.6,True
+41694,"""To complete the final phase and achieve a stable deployment of the Angel-horizo",issue_type,feature_request,other,0.95,False
+42345,Rollout files store each command's output four times; a 12-day session grew to 1,issue_type,bug,feature_request,0.9,False
+40223,Thread title generation burn tokens unnecessarily by inheriting full Codex agent,category,Performance,Usage & Credits,0.88,False
+40312,"[Windows] Signing out shows “Oops, an error has occurred” after AppServer RPC di",category,Reliability,Authentication & Account,0.9,False
+40439,Model stuck in error loop,category,Tool Execution,Model Quality,0.85,False
+41066,Plan mode remains active internally after being disabled in the Codex desktop UI,category,Reliability,App / UI / UX,0.9,False
+41114,iOS Remote Control should keep a persistent logical session across brief app bac,category,Reliability,App / UI / UX,0.85,False
+41133,MCP shutdown can lose a rotated refresh token during session cleanup,category,MCP & Integrations,Authentication & Account,0.85,False
+41187,Cannot use codex agents when brew install,category,CLI,Installation & Updates,0.9,False
+41389,Additional evidence from the shipped Windows desktop bundle:,category,Reliability,App / UI / UX,0.85,False
+41556,Windows Desktop: invalid always_allowed_app_ids TOML causes setup loop and unusa,category,Reliability,Installation & Updates,0.9,False
+41695,iPad App Freezes Constantly Accessing Remote Codex Sessions,category,Reliability,Performance,0.82,False
+41754,I am experiencing the same native Windows sandbox failure.,category,Reliability,Tool Execution,0.9,False
+42116,config/batchWrite on startup rewrites config.toml and drops all unmanaged keys,category,Reliability,Installation & Updates,0.92,False
+42466,Browser Use fails on all sites: admin-enforced policy could not be verified,category,Tool Execution,Safety & Permissions,0.85,False
+42747,Error creating chat,category,Reliability,IDE Integration,0.88,False
+42815,"Codex repeatedly ignores durable user instructions, misreports task state, and i",category,Model Quality,Context & Memory,0.9,False
+40185,Open Source docs point to the deprecated skills repo and overstate codex-univers,surface,Web,CLI,0.85,False
+41114,iOS Remote Control should keep a persistent logical session across brief app bac,surface,Web,Codex App,0.85,False
+41807,Codex Cloud: new mobile tasks can edit files but no diff or Create PR handoff ap,surface,Codex App,Web,0.85,False
+41114,iOS Remote Control should keep a persistent logical session across brief app bac,platform,Windows,iOS,0.85,False
+42466,Browser Use fails on all sites: admin-enforced policy could not be verified,platform,macOS,Unknown,0.85,False
+40185,Open Source docs point to the deprecated skills repo and overstate codex-univers,severity,medium,low,0.85,False
+40440,Codex Desktop: active task self-archive succeeds but tool reports failure and in,severity,high,medium,0.9,False
+40792,Linux app: Chat-mode Voice is blocked by Codex usage limit,severity,medium,low,0.85,False
+41133,MCP shutdown can lose a rotated refresh token during session cleanup,severity,critical,medium,0.85,False
+41187,Cannot use codex agents when brew install,severity,high,medium,0.9,False
+41372,Codex desktop heartbeat automation has multi-minute latency for sub-second local,severity,high,medium,0.85,False
+41389,Additional evidence from the shipped Windows desktop bundle:,severity,high,low,0.85,False
+41402,Make project identity available when a remote SSH connection is established,severity,medium,low,0.92,False
+41538,Allow adaptive context-window expansion based on compaction feedback,severity,medium,low,0.9,False
+41708,Android Remote message queue can stay stuck after host turn completes; recovery ,severity,critical,high,0.88,False
+41797,MCP numeric elicitation falls back to approval and submits empty content,severity,high,medium,0.92,False
+41930,Feature Request: Chinese UI support,severity,medium,low,0.85,False
+42198,macOS side-panel editor consumes the first Cmd+V after opening an external file,severity,medium,low,0.9,False
+42305,Computer Use loses Shift through Tart or Screen Sharing into a macOS guest,severity,high,medium,0.88,False
+42499,Codex Desktop: sticky code-block header leaves code visible above it while scrol,severity,medium,low,0.85,False
+42747,Error creating chat,severity,high,medium,0.88,False
+42759,[Windows][Codex Beta 26.727.4816.0] Idle app pegs CPU and causes large idle netw,severity,high,medium,0.95,False
+42857,[Linux][Pets] Floating desktop pet jitters and jumps during rapid back-and-forth,severity,medium,low,0.85,False

@@ -1,0 +1,1211 @@
+﻿github_issue_number,title,github_url,body_clean,parsed_version,parsed_subscription,parsed_platform,parsed_actual,parsed_steps,parsed_expected,parsed_additional_info,github_labels
+41585,[Codex Desktop][macOS] Prompt submission hangs when large pasted text becomes an attachment,,"### What version of the Codex App are you using (From “About Codex” dialog)?
+
+26.825.41651
+
+### What subscription do you have?
+
+Business
+
+### What platform is your computer?
+
+macOS Desktop
+
+### What issue are you seeing?
+
+In Codex Desktop on macOS, prompt submission hangs when a large pasted prompt is automatically converted into a file attachment.
+Normal text prompts submit successfully. If the prompt is long enough that Codex converts it into an attachment, pressing submit hangs and the prompt is not processed.
+If I shorten the same prompt enough that it remains inline text instead of becoming an attachment, it submits normally.
+This appears specific to the automatic large-prompt/attachment submission path rather than general prompt execution.
+
+### What steps can reproduce the bug?
+
+1. Confirmed normal and moderately sized text prompts submit successfully.
+2. Reproduced the failure with larger prompts that Codex automatically converts into an attachment.
+3. Shortened the same prompt until it remained inline text; it then submitted successfully.
+4. Repeated this with separate prompts and observed the same behavior.
+5. Confirmed the issue occurs at submission, before Codex begins processing the request.
+Current workaround: shorten/split large prompts so they remain inline text rather than being automatically attached.
+
+### What is the expected behavior?
+
+Large prompts should submit successfully regardless of whether Codex keeps them as inline text or automatically converts them into an attachment.
+If Codex automatically converts a large prompt into an attachment, pressing submit should upload/process the attachment and begin the Codex task normally, with no loss of the prompt or indefinite hang.
+
+### Additional information
+
+The issue appears specifically tied to the point where Codex automatically converts pasted text into an attachment.
+I initially thought this was a general submission issue, but testing isolated the behaviour:
+- Inline text prompt → submits normally.
+- Larger version of the prompt → automatically becomes an attachment → submission hangs.
+- Shorten the same prompt until it remains inline → submits normally.
+This has been reproducible enough that splitting larger instructions into smaller inline prompts is currently an effective workaround.
+I am using Codex Desktop on macOS.
+I can provide additional reproduction details, logs, or a screen recording if required.",26.825.41651,Business,macOS Desktop,"In Codex Desktop on macOS, prompt submission hangs when a large pasted prompt is automatically converted into a file attachment.
+Normal text prompts submit successfully. If the prompt is long enough that Codex converts it into an attachment, pressing submit hangs and the prompt is not processed.
+If I shorten the same prompt enough that it remains inline text instead of becoming an attachment, it submits normally.
+This appears specific to the automatic large-prompt/attachment submission path rather than general prompt execution.","1. Confirmed normal and moderately sized text prompts submit successfully.
+2. Reproduced the failure with larger prompts that Codex automatically converts into an attachment.
+3. Shortened the same prompt until it remained inline text; it then submitted successfully.
+4. Repeated this with separate prompts and observed the same behavior.
+5. Confirmed the issue occurs at submission, before Codex begins processing the request.
+Current workaround: shorten/split large prompts so they remain inline text rather than being automatically attached.","Large prompts should submit successfully regardless of whether Codex keeps them as inline text or automatically converts them into an attachment.
+If Codex automatically converts a large prompt into an attachment, pressing submit should upload/process the attachment and begin the Codex task normally, with no loss of the prompt or indefinite hang.","The issue appears specifically tied to the point where Codex automatically converts pasted text into an attachment.
+I initially thought this was a general submission issue, but testing isolated the behaviour:
+- Inline text prompt → submits normally.
+- Larger version of the prompt → automatically becomes an attachment → submission hangs.
+- Shorten the same prompt until it remains inline → submits normally.
+This has been reproducible enough that splitting larger instructions into smaller inline prompts is currently an effective workaround.
+I am using Codex Desktop on macOS.
+I can provide additional reproduction details, logs, or a screen recording if required.","bug, tool-calls, app"
+41587,make the 12-row inline diff preview limit configurable,,"### What version of Codex CLI is running?
+
+codex-cli 0.151.0
+
+### What subscription do you have?
+
+Pro 20x
+
+### Which model were you using?
+
+gpt-5.6-sol max
+
+### What platform is your computer?
+
+Linux
+
+### What terminal emulator and version are you using (if applicable)?
+
+screen
+
+### Codex doctor report
+
+```
+
+```
+
+### What issue are you seeing?
+
+### What issue are you seeing?
+
+PR #41143 / commit `a847c71` introduced a hard-coded limit of 12 rendered rows for inline diff previews:
+
+> … Diff preview limited (ctrl + t to view transcript).
+
+The performance protection is useful for very large or minified diffs, but there does not appear to be a configuration option for changing the limit or restoring the previous full inline presentation.
+
+The current limit is defined as:
+
+```
+pub(super) const PREVIEW_ROWS: usize = 12;
+```
+### Why this is a problem
+
+For workflows involving production systems, configuration files, source control, or security-sensitive changes, continuously seeing the actual patch is important for:
+
+- reviewing changes as Codex makes them;
+- noticing incorrect paths, values, or unintended edits immediately;
+- following multi-file changes without repeatedly opening and closing the transcript;
+- using the available terminal height on large terminals;
+- preserving an auditable conversation view;
+- avoiding interruption of the normal review workflow with repeated Ctrl+T navigation.
+
+Twelve rendered rows can represent only a very small portion of a patch, particularly on narrow terminals or when lines wrap.
+
+The transcript remains available, but it is a separate view. Requiring it for nearly every non-trivial patch makes continuous review significantly less convenient.
+
+The bounded default is reasonable for users who prefer compact output, but making the exact limit mandatory removes the previous presentation from users who deliberately monitor complete changes.
+
+### Steps to reproduce
+
+1. Run a Codex CLI version containing PR #41143.
+2. Ask Codex to make a change whose diff occupies more than 12 rendered terminal rows.
+3. Observe that the inline patch ends with:
+
+… Diff preview limited (ctrl + t to view transcript).
+
+4. Search the available config.toml options for a way to increase or disable the limit.
+5. Observe that no such option is available.
+
+### Actual behavior
+
+Inline diff content is limited to 12 rendered rows across all changed files.
+
+The limit is hard-coded and cannot be changed through config.toml. Complete content is available only through the transcript or raw view.
+
+### Expected behavior
+
+Provide a persistent TUI configuration option controlling the inline diff preview limit.
+
+For example:
+
+[tui]
+inline_diff_preview_rows = 100
+
+Possible behavior:
+
+- omitted: retain the current default of 12 rows;
+- positive integer: use that many rendered rows across changed files;
+- ""unlimited"": restore the complete pre-#41143 inline diff presentation;
+- finite limits should retain the existing bounded source-scanning protection;
+- the selected value should also apply when replaying conversation history.
+
+For example:
+
+[tui]
+inline_diff_preview_rows = ""unlimited""
+
+Ideally, there could also be an interactive toggle or slash command for expanding inline diffs without opening the separate transcript view.
+
+### Environment
+
+Codex CLI: <output of codex --version>
+Platform: Linux
+Interface: interactive terminal TUI
+Terminal: screen
+Behavior introduced by: PR #41143 / commit a847c71
+
+This request is not asking for the preview limit or its performance protections to be removed. It is asking for the presentation limit to be configurable so users can choose the appropriate tradeoff for their terminal and review
+workflow.
+
+### What steps can reproduce the bug?
+
+Make Codex produce a patch that requires more than 12 rendered terminal rows.
+
+### What is the expected behavior?
+
+Allow the 12-row inline diff preview limit to be increased or disabled through config.toml.
+
+### Additional information
+
+Related change: https://github.com/openai/codex/pull/41143
+
+
+### What steps can reproduce the bug?
+
+make 0.151.0 modify anything that produces a diff of >12 rows
+
+### What is the expected behavior?
+
+not hide the diff
+
+### Additional information
+
+_No response_",codex-cli 0.151.0,Pro 20x,Linux,"### What issue are you seeing?
+
+  PR #41143 / commit `a847c71` introduced a hard-coded limit of 12 rendered rows for inline diff previews:
+
+  > … Diff preview limited (ctrl + t to view transcript).
+
+  The performance protection is useful for very large or minified diffs, but there does not appear to be a configuration option for changing the limit or restoring the previous full inline presentation.
+
+  The current limit is defined as:
+
+  ```rust
+  pub(super) const PREVIEW_ROWS: usize = 12;
+```
+  ### Why this is a problem
+
+  For workflows involving production systems, configuration files, source control, or security-sensitive changes, continuously seeing the actual patch is important for:
+
+  - reviewing changes as Codex makes them;
+  - noticing incorrect paths, values, or unintended edits immediately;
+  - following multi-file changes without repeatedly opening and closing the transcript;
+  - using the available terminal height on large terminals;
+  - preserving an auditable conversation view;
+  - avoiding interruption of the normal review workflow with repeated Ctrl+T navigation.
+
+  Twelve rendered rows can represent only a very small portion of a patch, particularly on narrow terminals or when lines wrap.
+
+  The transcript remains available, but it is a separate view. Requiring it for nearly every non-trivial patch makes continuous review significantly less convenient.
+
+  The bounded default is reasonable for users who prefer compact output, but making the exact limit mandatory removes the previous presentation from users who deliberately monitor complete changes.
+
+  ### Steps to reproduce
+
+  1. Run a Codex CLI version containing PR #41143.
+  2. Ask Codex to make a change whose diff occupies more than 12 rendered terminal rows.
+  3. Observe that the inline patch ends with:
+
+     … Diff preview limited (ctrl + t to view transcript).
+
+  4. Search the available config.toml options for a way to increase or disable the limit.
+  5. Observe that no such option is available.
+
+  ### Actual behavior
+
+  Inline diff content is limited to 12 rendered rows across all changed files.
+
+  The limit is hard-coded and cannot be changed through config.toml. Complete content is available only through the transcript or raw view.
+
+  ### Expected behavior
+
+  Provide a persistent TUI configuration option controlling the inline diff preview limit.
+
+  For example:
+
+  [tui]
+  inline_diff_preview_rows = 100
+
+  Possible behavior:
+
+  - omitted: retain the current default of 12 rows;
+  - positive integer: use that many rendered rows across changed files;
+  - ""unlimited"": restore the complete pre-#41143 inline diff presentation;
+  - finite limits should retain the existing bounded source-scanning protection;
+  - the selected value should also apply when replaying conversation history.
+
+  For example:
+
+  [tui]
+  inline_diff_preview_rows = ""unlimited""
+
+  Ideally, there could also be an interactive toggle or slash command for expanding inline diffs without opening the separate transcript view.
+
+  ### Environment
+
+  Codex CLI: <output of codex --version>
+  Platform: Linux
+  Interface: interactive terminal TUI
+  Terminal: screen
+  Behavior introduced by: PR #41143 / commit a847c71
+
+  This request is not asking for the preview limit or its performance protections to be removed. It is asking for the presentation limit to be configurable so users can choose the appropriate tradeoff for their terminal and review
+  workflow.
+
+  ### What steps can reproduce the bug?
+
+  Make Codex produce a patch that requires more than 12 rendered terminal rows.
+
+  ### What is the expected behavior?
+
+  Allow the 12-row inline diff preview limit to be increased or disabled through config.toml.
+
+  ### Additional information
+
+  Related change: https://github.com/openai/codex/pull/41143",make 0.151.0 modify anything that produces a diff of >12 rows,not hide the diff,,"bug, enhancement, TUI, CLI, config"
+41822,"[Windows]PerformanceCUA runtime materializer retries 4,680 doomed encrypted copy operations, causing ~8-minute first launch after updates",,"### What version of the Codex App are you using (From “About Codex” dialog)?
+
+Codex Desktop 26.825.6671.0 Microsoft Store / MSIX installation
+
+### What subscription do you have?
+
+ChatGPT Plus
+
+### What platform is your computer?
+
+Windows 11 x64 Microsoft Store / MSIX installation
+
+### What issue are you seeing?
+
+<html>
+<body>
+<!--StartFragment--><p class=""isSelectedEnd""><span>After a Codex Desktop update, the first launch can remain headless for approximately 8 minutes before the Renderer appears.</span></p><p class=""isSelectedEnd""><span>I investigated the full startup timeline and then reproduced the CUA runtime materialization logic independently.</span></p><p class=""isSelectedEnd""><span>The delay is dominated by the Windows CUA Node runtime relocation step:</span></p><ul data-spread=""false""><li><span>AppX Stage: ~5.9 s</span></li><li><span>AppX Register: ~5.1 s</span></li><li><span>CUA runtime materialization: </span><strong><span>485 s</span></strong></li><li><span>Runtime completion → first Renderer: ~2 s</span></li><li><span>Renderer → app-server: ~2 s</span></li></ul><p class=""isSelectedEnd""><span>The runtime contains:</span></p><ul data-spread=""false""><li><span>4,680 files</span></li><li><span>833 subdirectories</span></li><li><span>334,374,010 bytes / 318.9 MiB</span></li></ul><p class=""isSelectedEnd""><span>The important finding is that the delay is not caused by the amount of data being copied.</span></p><p class=""isSelectedEnd""><span>The Electron main-process materializer performs a synchronous, serial, depth-first copy of every file.</span></p><p class=""isSelectedEnd""><span>For each file it first calls:</span></p><p class=""isSelectedEnd""><code dir=""ltr""><span>copyFileSync(source, destination)</span></code></p><p class=""isSelectedEnd""><span>The MSIX source files carry the Windows </span><code dir=""ltr""><span>Encrypted</span></code><span> / Application Protected attribute.</span></p><p class=""isSelectedEnd""><span>On this machine, every one of the 4,680 </span><code dir=""ltr""><span>copyFileSync</span></code><span> calls fails with the Windows encrypted-copy failure path (</span><code dir=""ltr""><span>errno=-4094</span></code><span>, </span><code dir=""ltr""><span>code=UNKNOWN</span></code><span>; corresponding behavior is consistent with </span><code dir=""ltr""><span>ERROR_ENCRYPTION_FAILED</span></code><span>).</span></p><p class=""isSelectedEnd""><span>The code then falls back to:</span></p><p class=""isSelectedEnd""><code dir=""ltr""><span>writeFileSync(destination, readFileSync(source))</span></code></p><p class=""isSelectedEnd""><span>This fallback succeeds.</span></p><p class=""isSelectedEnd""><span>However, the materializer does not remember that the native copy path has already failed for this source tree. It repeats the same doomed </span><code dir=""ltr""><span>copyFileSync</span></code><span> attempt for every subsequent file.</span></p><p class=""isSelectedEnd""><span>So the effective algorithm is:</span></p><pre dir=""ltr""><code dir=""ltr""><span>for each of 4,680 files:
+try copyFileSync()
+-&gt; fails on Application Protected / encrypted MSIX source
+readFileSync()
+writeFileSync()</span></code></pre><p class=""isSelectedEnd""><span>This happens synchronously on the Electron main process before the Renderer is created.</span></p><h2><span>Reproduction / benchmark</span></h2><p class=""isSelectedEnd""><span>I reproduced the same file tree outside the production runtime without modifying the installed Codex package or the real runtime.</span></p><p class=""isSelectedEnd""><span>All successful copies contained the same:</span></p><ul data-spread=""false""><li><span>4,680 files</span></li><li><span>833 directories</span></li><li><span>334,374,010 bytes</span></li></ul><p class=""isSelectedEnd""><span>Results:</span></p>
+Method | Time
+-- | --
+Real Codex first materialization | 485.0 s
+Exact reproduction of Codex materializer behavior | 429.685 s
+Node serial readFile + writeFile only | 19.195 s
+Node bounded parallel read/write, concurrency 32 | 9.075 s
+PowerShell/.NET serial read/write | 25.429 s
+
+<p class=""isSelectedEnd""><span>Native files account for about 72% of the bytes but less than 1% of the runtime.</span></p><p class=""isSelectedEnd""><span>This strongly indicates that the bottleneck is the </span><strong><span>number of failed copy operations</span></strong><span>, not disk throughput or total runtime size.</span></p><h2><span>Materializer implementation details</span></h2><p class=""isSelectedEnd""><span>The relevant materializer is in the Electron main-process bundle inside </span><code dir=""ltr""><span>app.asar</span></code><span>.</span></p><p class=""isSelectedEnd""><span>Observed behavior:</span></p><ol data-spread=""false"" start=""1""><li><span>Source: </span><code dir=""ltr""><span>process.resourcesPath\cua_node</span></code></li><li><span>Destination:</span><br><code dir=""ltr""><span>%LOCALAPPDATA%\OpenAI\Codex\runtimes\cua_node\&lt;16-hex-hash&gt;</span></code></li><li><span>A staging directory is created first.</span></li><li><span>The directory tree is traversed synchronously and serially.</span></li><li><span>For every file:</span><ul data-spread=""false""><li><code dir=""ltr""><span>copyFileSync</span></code></li><li><span>on the encrypted/Application Protected copy failure:</span><ul data-spread=""false""><li><code dir=""ltr""><span>readFileSync</span></code></li><li><code dir=""ltr""><span>writeFileSync</span></code></li></ul></li></ul></li><li><span>After completion, staging is renamed to the final runtime directory.</span></li><li><span>No full-tree SHA-256 verification is performed.</span></li><li><span>Only three identity files are hashed; this takes about 0.13 seconds.</span></li><li><span>No download or decompression occurs during this step.</span></li><li><span>The synchronous materialization blocks creation of the Renderer.</span></li></ol><p class=""isSelectedEnd""><span>The runtime hash calculated by this version is:</span></p><p class=""isSelectedEnd""><code dir=""ltr""><span>415ffebf3d576e9b</span></code></p><h2><span>Steps to reproduce</span></h2><ol data-spread=""false"" start=""1""><li><span>Install or update Codex Desktop through Microsoft Store/MSIX on Windows.</span></li><li><span>Ensure the new version requires a new </span><code dir=""ltr""><span>cua_node</span></code><span> runtime hash.</span></li><li><span>Launch Codex Desktop for the first time after the update.</span></li><li><span>Observe that the main process starts but no Renderer appears.</span></li><li><span>Monitor:</span><br><code dir=""ltr""><span>%LOCALAPPDATA%\OpenAI\Codex\runtimes\cua_node</span></code></li><li><span>Observe a staging runtime being populated for several minutes.</span></li><li><span>After the runtime is complete, the Renderer appears almost immediately.</span></li><li><span>A second launch is fast because the runtime is already present.</span></li></ol><h2><span>Expected behavior</span></h2><p class=""isSelectedEnd""><span>Preparing a 318.9 MiB runtime should not block the Codex Desktop UI for several minutes.</span></p><p class=""isSelectedEnd""><span>Once Codex detects that </span><code dir=""ltr""><span>copyFileSync</span></code><span> cannot copy Application Protected / encrypted files from this MSIX source tree, it should avoid repeating the same failing operation for every remaining file.</span></p><h2><span>Suggested minimal fix</span></h2><p class=""isSelectedEnd""><span>The lowest-risk fix appears to be:</span></p><ol data-spread=""false"" start=""1""><li><span>Attempt the normal copy operation.</span></li><li><span>On the first known encrypted/Application Protected copy failure (</span><code dir=""ltr""><span>ERROR_ENCRYPTION_FAILED</span></code><span> / equivalent Node error), switch the remainder of that runtime tree to the existing buffered read/write fallback.</span></li><li><span>Do not retry the known-failing native copy path for another 4,679 files.</span></li></ol><p class=""isSelectedEnd""><span>On this machine, simply skipping the repeated failing operations reduces the
+[truncated]",Codex Desktop 26.825.6671.0 Microsoft Store / MSIX installation,ChatGPT Plus,Windows 11 x64 Microsoft Store / MSIX installation,"<html>
+<body>
+<!--StartFragment--><p class=""isSelectedEnd""><span>After a Codex Desktop update, the first launch can remain headless for approximately 8 minutes before the Renderer appears.</span></p><p class=""isSelectedEnd""><span>I investigated the full startup timeline and then reproduced the CUA runtime materialization logic independently.</span></p><p class=""isSelectedEnd""><span>The delay is dominated by the Windows CUA Node runtime relocation step:</span></p><ul data-spread=""false""><li><span>AppX Stage: ~5.9 s</span></li><li><span>AppX Register: ~5.1 s</span></li><li><span>CUA runtime materialization: </span><strong><span>485 s</span></strong></li><li><span>Runtime completion → first Renderer: ~2 s</span></li><li><span>Renderer → app-server: ~2 s</span></li></ul><p class=""isSelectedEnd""><span>The runtime contains:</span></p><ul data-spread=""false""><li><span>4,680 files</span></li><li><span>833 subdirectories</span></li><li><span>334,374,010 bytes / 318.9 MiB</span></li></ul><p class=""isSelectedEnd""><span>The important finding is that the delay is not caused by the amount of data being copied.</span></p><p class=""isSelectedEnd""><span>The Electron main-process materializer performs a synchronous, serial, depth-first copy of every file.</span></p><p class=""isSelectedEnd""><span>For each file it first calls:</span></p><p class=""isSelectedEnd""><code dir=""ltr""><span>copyFileSync(source, destination)</span></code></p><p class=""isSelectedEnd""><span>The MSIX source files carry the Windows </span><code dir=""ltr""><span>Encrypted</span></code><span> / Application Protected attribute.</span></p><p class=""isSelectedEnd""><span>On this machine, every one of the 4,680 </span><code dir=""ltr""><span>copyFileSync</span></code><span> calls fails with the Windows encrypted-copy failure path (</span><code dir=""ltr""><span>errno=-4094</span></code><span>, </span><code dir=""ltr""><span>code=UNKNOWN</span></code><span>; corresponding behavior is consistent with </span><code dir=""ltr""><span>ERROR_ENCRYPTION_FAILED</span></code><span>).</span></p><p class=""isSelectedEnd""><span>The code then falls back to:</span></p><p class=""isSelectedEnd""><code dir=""ltr""><span>writeFileSync(destination, readFileSync(source))</span></code></p><p class=""isSelectedEnd""><span>This fallback succeeds.</span></p><p class=""isSelectedEnd""><span>However, the materializer does not remember that the native copy path has already failed for this source tree. It repeats the same doomed </span><code dir=""ltr""><span>copyFileSync</span></code><span> attempt for every subsequent file.</span></p><p class=""isSelectedEnd""><span>So the effective algorithm is:</span></p><pre dir=""ltr""><code dir=""ltr""><span>for each of 4,680 files:
+    try copyFileSync()
+        -&gt; fails on Application Protected / encrypted MSIX source
+    readFileSync()
+    writeFileSync()</span></code></pre><p class=""isSelectedEnd""><span>This happens synchronously on the Electron main process before the Renderer is created.</span></p><h2><span>Reproduction / benchmark</span></h2><p class=""isSelectedEnd""><span>I reproduced the same file tree outside the production runtime without modifying the installed Codex package or the real runtime.</span></p><p class=""isSelectedEnd""><span>All successful copies contained the same:</span></p><ul data-spread=""false""><li><span>4,680 files</span></li><li><span>833 directories</span></li><li><span>334,374,010 bytes</span></li></ul><p class=""isSelectedEnd""><span>Results:</span></p>
+Method | Time
+-- | --
+Real Codex first materialization | 485.0 s
+Exact reproduction of Codex materializer behavior | 429.685 s
+Node serial readFile + writeFile only | 19.195 s
+Node bounded parallel read/write, concurrency 32 | 9.075 s
+PowerShell/.NET serial read/write | 25.429 s
+
+<p class=""isSelectedEnd""><span>Native files account for about 72% of the bytes but less than 1% of the runtime.</span></p><p class=""isSelectedEnd""><span>This strongly indicates that the bottleneck is the </span><strong><span>number of failed copy operations</span></strong><span>, not disk throughput or total runtime size.</span></p><h2><span>Materializer implementation details</span></h2><p class=""isSelectedEnd""><span>The relevant materializer is in the Electron main-process bundle inside </span><code dir=""ltr""><span>app.asar</span></code><span>.</span></p><p class=""isSelectedEnd""><span>Observed behavior:</span></p><ol data-spread=""false"" start=""1""><li><span>Source: </span><code dir=""ltr""><span>process.resourcesPath\cua_node</span></code></li><li><span>Destination:</span><br><code dir=""ltr""><span>%LOCALAPPDATA%\OpenAI\Codex\runtimes\cua_node\&lt;16-hex-hash&gt;</span></code></li><li><span>A staging directory is created first.</span></li><li><span>The directory tree is traversed synchronously and serially.</span></li><li><span>For every file:</span><ul data-spread=""false""><li><code dir=""ltr""><span>copyFileSync</span></code></li><li><span>on the encrypted/Application Protected copy failure:</span><ul data-spread=""false""><li><code dir=""ltr""><span>readFileSync</span></code></li><li><code dir=""ltr""><span>writeFileSync</span></code></li></ul></li></ul></li><li><span>After completion, staging is renamed to the final runtime directory.</span></li><li><span>No full-tree SHA-256 verification is performed.</span></li><li><span>Only three identity files are hashed; this takes about 0.13 seconds.</span></li><li><span>No download or decompression occurs during this step.</span></li><li><span>The synchronous materialization blocks creation of the Renderer.</span></li></ol><p class=""isSelectedEnd""><span>The runtime hash calculated by this version is:</span></p><p class=""isSelectedEnd""><code dir=""ltr""><span>415ffebf3d576e9b</span></code></p><h2><span>Steps to reproduce</span></h2><ol data-spread=""false"" start=""1""><li><span>Install or update Codex Desktop through Microsoft Store/MSIX on Windows.</span></li><li><span>Ensure the new version requires a new </span><code dir=""ltr""><span>cua_node</span></code><span> runtime hash.</span></li><li><span>Launch Codex Desktop for the first time after the update.</span></li><li><span>Observe that the main process starts but no Renderer appears.</span></li><li><span>Monitor:</span><br><code dir=""ltr""><span>%LOCALAPPDATA%\OpenAI\Codex\runtimes\cua_node</span></code></li><li><span>Observe a staging runtime being populated for several minutes.</span></li><li><span>After the runtime is complete, the Renderer appears almost immediately.</span></li><li><span>A second launch is fast because the runtime is already present.</span></li></ol><h2><span>Expected behavior</span></h2><p class=""isSelectedEnd""><span>Preparing a 318.9 MiB runtime should not block the Codex Desktop UI for several minutes.</span></p><p class=""isSelectedEnd""><span>Once Codex detects that </span><code dir=""ltr""><span>copyFileSync</span></code><span> cannot copy Application Protected / encrypted files from this MSIX source tree, it should avoid repeating the same failing operation for every remaining file.</span></p><h2><span>Suggested minimal fix</span></h2><p class=""isSelectedEnd""><span>The lowest-risk fix appears to be:</span></p><ol data-spread=""false"" start=""1""><li><span>Attempt the normal copy operation.</span></li><li><span>On the first known encrypted/Application Protected copy failure (</span><code dir=""ltr""><span>ERROR_ENCRYPTION_FAILED</span></code><span> / equivalent Node error), switch the remainder of that runtime tree to the existing buffered read/write fallback.</span></li><li><span>Do not retry the known-failing native copy path for another 4,679 files.</span></li></ol><p class=""isSelectedEnd""><span>On this machine, simply skipping the repeated failing operations reduces the equivalent serial materialization benchmark from approximately:</span></p><p class=""isSelectedEnd""><strong><span>430 seconds → 19 seconds</span></strong></p><p class=""isSelectedEnd""><span>without changing the resulting file contents or runtime structure.</span></p><p class=""isSelectedEnd""><span>A later optimization could use bounded concurrent read/write operations. An equivalent 32-concurrency benchmark completed in approximately 9 seconds, although a lower concurrency may be preferable for production.</span></p><p class=""isSelectedEnd""><span>Another useful improvement would be a supported headless </span><code dir=""ltr""><span>prepare-cua-runtime</span></code><span> / bootstrap command so runtime preparation does not have to block the first interactive launch.</span></p><h2><span>Additional information</span></h2><p class=""isSelectedEnd""><span>No production Codex runtime, AppX package, </span><code dir=""ltr""><span>app.asar</span></code><span>, WindowsApps ACL, Defender configuration, registry entry, or encryption setting was modified during this investigation.</span></p><p class=""isSelectedEnd""><span>The production runtime remained intact.</span></p><p class=""isSelectedEnd""><span>Defender may still contribute some portion of the remaining difference between the 429.7-second reproduction and the 485-second real startup, but Defender is not required to explain the primary delay: reproducing Codex's own synchronous fail-then-fallback algorithm already reproduces 88.6% of the observed runtime.</span></p><p><span>This appears to be closely related to existing Windows MSIX / Application Protected runtime relocation reports, but this report adds a source-level performance root cause and quantitative reproduction showing that repeated failed copy attempts are responsible for most of the first-launch delay.</span></p><!--EndFragment-->
+</body>
+</html>","1. Install or update Codex Desktop through the Microsoft Store / MSIX package on Windows.
+
+2. Make sure the new Codex version requires a new CUA Node runtime hash under:
+
+   %LOCALAPPDATA%\OpenAI\Codex\runtimes\cua_node
+
+3. Launch Codex Desktop for the first time after the update.
+
+4. Observe that ChatGPT.exe starts, but no Codex window appears for several minutes.
+
+5. Monitor:
+
+   %LOCALAPPDATA%\OpenAI\Codex\runtimes\cua_node
+
+   A new .staging-<hash>-... directory is created and populated very slowly.
+
+6. On the affected system, the packaged files under:
+
+   <Codex MSIX install location>\app\resources\cua_node
+
+   have the Windows Application Protected / Encrypted attribute.
+
+7. The Electron main-process materializer attempts copyFileSync() for every file.
+
+   Each copy attempt fails with the encrypted-copy error path
+   (Node errno -4094 / code UNKNOWN, consistent with Windows
+   ERROR_ENCRYPTION_FAILED), then falls back to:
+
+   readFileSync(source)
+   writeFileSync(destination)
+
+8. This failed copy attempt is repeated independently for all 4,680 files.
+
+9. The runtime takes approximately 485 seconds to materialize.
+
+10. Once the runtime finishes, the Renderer appears about 2 seconds later
+    and Codex starts normally.
+
+11. Close and reopen Codex without updating it.
+
+    The second launch is fast because the valid CUA runtime already exists.","Codex Desktop should not block the first interactive launch for several minutes while preparing a ~319 MiB CUA runtime.
+
+Once the application detects that the normal copy path cannot copy Application Protected / encrypted MSIX files, it should avoid retrying the same known-failing copy operation for every remaining file.
+
+A minimal expected behavior would be:
+
+1. Attempt the normal copy operation.
+2. If the first file fails with the known encrypted/Application Protected copy error, switch the remaining runtime tree to the existing buffered read/write fallback.
+3. Continue preparing the runtime without repeating thousands of identical failed copy attempts.
+4. Show the Codex window promptly after runtime preparation completes.
+
+On this machine:
+
+- Current behavior: ~485 seconds
+- Exact reproduction of current materializer logic: ~429.7 seconds
+- Serial read/write fallback only: ~19.2 seconds
+- Bounded parallel read/write: ~9.1 seconds
+
+So the same runtime can be prepared in tens of seconds rather than several minutes without changing its contents or structure.
+
+Ideally, runtime preparation should also either:
+- happen asynchronously after the main window is shown, or
+- have a supported headless/preparation path so first launch does not appear frozen.","Additional diagnostics:
+
+- Codex Desktop version: 26.825.6671.0
+- Windows x64, Microsoft Store / MSIX installation
+- AppX Stage/Register complete successfully in ~11 seconds total
+- The long delay is isolated to CUA runtime materialization
+
+Observed startup timeline:
+
+- Codex main process starts
+- New cua_node runtime staging begins ~10 seconds later
+- Runtime materialization takes ~485 seconds
+- Renderer appears ~2 seconds after materialization completes
+- app-server starts ~2 seconds after Renderer
+
+The runtime contains:
+
+- 4,680 files
+- 833 subdirectories
+- 334,374,010 bytes (318.9 MiB)
+
+Source and materialized runtime have matching file counts, directory counts and total bytes. The runtime identity hash is derived from manifest.json, bin/node.exe and bin/node_repl.exe.
+
+The materializer is implemented in the Electron main-process bundle inside app.asar and performs synchronous, depth-first, serial file processing.
+
+Exact reproduction of the same fail-then-fallback logic completed in ~429.7 seconds, reproducing 88.6% of the real startup delay.
+
+Equivalent copy benchmarks:
+
+- Serial Node read/write: ~19.2 seconds
+- PowerShell/.NET serial read/write: ~25.4 seconds
+- Bounded parallel Node read/write (32 concurrency): ~9.1 seconds
+
+The bottleneck scales with file count, not data size:
+native binaries contain ~72% of the bytes but account for less than 1% of the reproduced materialization time.
+
+No production AppX files, app.asar, WindowsApps ACLs, Defender settings, encryption attributes, or the existing CUA runtime were modified during testing.
+
+Defender may contribute some additional latency, but it is not required to explain the primary issue: reproducing Codex's own synchronous copyFileSync-fail-then-read/write fallback path already reproduces most of the observed delay.
+
+Possibly related issues:
+- #41170
+- #41540
+The most important observation is that the fallback itself is fast; the expensive part is retrying a copy operation that is already known to fail on this source tree.","bug, windows-os, app, computer-use, performance"
+42007,CLI: 5h rate limit went 0% -> 100% in 23 minutes while the weekly limit moved 1pp,,"### What version of Codex CLI is running?
+
+0.151.0
+
+### What subscription do you have?
+
+ChatGPT Plus
+
+### Which model were you using?
+
+gpt-5.6-sol
+
+### What platform is your computer?
+
+Linux 6.8.0-138-generic x86_64 x86_64
+
+### What terminal emulator and version are you using (if applicable)?
+
+_No response_
+
+### Codex doctor report
+
+```
+
+```
+
+### What issue are you seeing?
+
+The 5h (""primary"") rate-limit window went from 0% to 100% in 23 minutes, while the
+weekly (""secondary"") window moved only 55% -> 56% over the same period. The two
+counters disagree by roughly two orders of magnitude for identical traffic, which
+is what makes me think this is a metering bug rather than just heavy usage.
+
+Numbers are taken from the `rate_limits` snapshots recorded in the session
+rollout files under `~/.codex/sessions`:
+
+| Timestamp (UTC)  | primary used_percent | secondary used_percent |
+|------------------|----------------------|------------------------|
+| 2026-09-01 07:22:07 | 0%                | 55%                    |
+| 2026-09-01 07:45:43 | 100%              | 56%                    |
+
+primary:   window_minutes=300,   resets_at=1788265323
+secondary: window_minutes=10080, resets_at=1788765541
+plan_type: plus
+
+Actual traffic in that 23m41s window, summed across both sessions:
+
+- 209 API calls
+- 26,689,078 input tokens, of which 26,217,472 were cached (98.2%)
+- 471,606 uncached input tokens
+- 99,680 output tokens (34,237 reasoning)
+
+So ~470k uncached input tokens and ~100k output tokens consumed the entire 5h
+allowance, but only 1 percentage point of the weekly allowance.
+
+I do not know how the primary window is weighted, but if cached input is being
+billed against the 5h bucket at or near the uncached rate, that would explain
+both the speed of the burn and the divergence from the weekly counter.
+
+### What steps can reproduce the bug?
+
+1. Start two Codex CLI sessions concurrently, both on `gpt-5.6-sol`, each with a
+large accumulated context (~20M cumulative input tokens, ~96% cache hit rate).
+2. Send one prompt to each and let them run agentic tool loops for ~20 minutes.
+3. Watch the `rate_limits` values in the session rollout JSONL (or the limit
+display in the TUI).
+
+Thread / session IDs:
+- 01a056db-e496-7460-8eca-cdb640bf4dda
+- 01a059ab-aa44-7720-8839-354309ccb041
+
+Both sessions were still mid-task when the limit hit 100%.
+
+### What is the expected behavior?
+
+Two ~20-minute sessions should not exhaust a full 5h Plus allowance, and the 5h
+and weekly counters should move in proportion to each other for the same traffic.
+A 100pp move in one and a 1pp move in the other suggests one of the two is
+computed incorrectly.
+
+### Additional information
+
+_No response_",0.151.0,ChatGPT Plus,Linux 6.8.0-138-generic x86_64 x86_64,"The 5h (""primary"") rate-limit window went from 0% to 100% in 23 minutes, while the
+weekly (""secondary"") window moved only 55% -> 56% over the same period. The two
+counters disagree by roughly two orders of magnitude for identical traffic, which
+is what makes me think this is a metering bug rather than just heavy usage.
+
+Numbers are taken from the `rate_limits` snapshots recorded in the session
+rollout files under `~/.codex/sessions`:
+
+| Timestamp (UTC)  | primary used_percent | secondary used_percent |
+|------------------|----------------------|------------------------|
+| 2026-09-01 07:22:07 | 0%                | 55%                    |
+| 2026-09-01 07:45:43 | 100%              | 56%                    |
+
+primary:   window_minutes=300,   resets_at=1788265323
+secondary: window_minutes=10080, resets_at=1788765541
+plan_type: plus
+
+Actual traffic in that 23m41s window, summed across both sessions:
+
+- 209 API calls
+- 26,689,078 input tokens, of which 26,217,472 were cached (98.2%)
+- 471,606 uncached input tokens
+- 99,680 output tokens (34,237 reasoning)
+
+So ~470k uncached input tokens and ~100k output tokens consumed the entire 5h
+allowance, but only 1 percentage point of the weekly allowance.
+
+I do not know how the primary window is weighted, but if cached input is being
+billed against the 5h bucket at or near the uncached rate, that would explain
+both the speed of the burn and the divergence from the weekly counter.","1. Start two Codex CLI sessions concurrently, both on `gpt-5.6-sol`, each with a
+   large accumulated context (~20M cumulative input tokens, ~96% cache hit rate).
+2. Send one prompt to each and let them run agentic tool loops for ~20 minutes.
+3. Watch the `rate_limits` values in the session rollout JSONL (or the limit
+   display in the TUI).
+
+Thread / session IDs:
+- 01a056db-e496-7460-8eca-cdb640bf4dda
+- 01a059ab-aa44-7720-8839-354309ccb041
+
+Both sessions were still mid-task when the limit hit 100%.","Two ~20-minute sessions should not exhaust a full 5h Plus allowance, and the 5h
+and weekly counters should move in proportion to each other for the same traffic.
+A 100pp move in one and a 1pp move in the other suggests one of the two is
+computed incorrectly.",,"bug, rate-limits, CLI"
+42037,"[Regression] ""Open in"" submenu now takes several seconds to load available apps",,"### What version of the Codex App are you using (From “About Codex” dialog)?
+
+Version 26.825.51511
+
+### What subscription do you have?
+
+Plus
+
+### What platform is your computer?
+
+Microsoft Windows NT 10.0.26200.0 x64
+
+### What issue are you seeing?
+
+### Description
+
+The ""Open in"" submenu has become significantly slower compared to previous versions.
+
+Previously, selecting the ""Open in"" menu immediately displayed the available applications. The submenu displayed the available applications immediately, with no visible loading state.
+
+Now, opening the submenu initially displays:
+
+> Loading available apps...
+
+and takes several seconds before the available applications appear.
+
+The absolute delay is only a few seconds, but this is a noticeable UI regression because this interaction was previously effectively instantaneous.
+
+### Steps to reproduce
+
+1. Open the context menu containing ""Open in"".
+2. Hover over or select ""Open in"".
+3. Observe the ""Loading available apps..."" state.
+4. Wait several seconds for the available applications to appear.
+
+### Expected behavior
+
+The available ""Open in"" targets should already be cached/preloaded so that the submenu can be displayed immediately, as it was previously.
+
+### Actual behavior
+
+The submenu enters a loading state and blocks selection for several seconds while discovering/loading the available applications.
+
+### Regression
+
+Yes. Previous versions displayed the available applications essentially instantly.
+
+### What steps can reproduce the bug?
+
+1. Open any Codex conversation in the Codex App.
+2. Open the conversation context menu.
+3. Hover over or select **Open in**.
+4. Observe that the submenu initially displays **“Loading available apps…”**.
+5. Wait several seconds for the available applications to appear.
+
+### What is the expected behavior?
+
+Selecting or hovering over Open in should display the available applications immediately, without a visible loading delay.
+
+This was the behavior in previous versions of the Codex App. The available applications appeared effectively instantaneously.
+
+### Additional information
+
+This appears to be a regression rather than a long-standing performance issue.
+
+Previously, the Open in submenu displayed its entries immediately. The current version introduces a visible “Loading available apps…” state and a delay of several seconds.
+
+The delay itself is relatively short in absolute terms, but it is very noticeable for a frequently used menu interaction that previously had effectively zero perceived latency.
+
+Screenshot attached showing the loading state.",Version 26.825.51511,Plus,Microsoft Windows NT 10.0.26200.0 x64,,"1. Open the context menu containing ""Open in"".
+2. Hover over or select ""Open in"".
+3. Observe the ""Loading available apps..."" state.
+4. Wait several seconds for the available applications to appear.","The available ""Open in"" targets should already be cached/preloaded so that the submenu can be displayed immediately, as it was previously.","This appears to be a regression rather than a long-standing performance issue.
+
+Previously, the Open in submenu displayed its entries immediately. The current version introduces a visible “Loading available apps…” state and a delay of several seconds.
+
+The delay itself is relatively short in absolute terms, but it is very noticeable for a frequently used menu interaction that previously had effectively zero perceived latency.
+
+Screenshot attached showing the loading state.","bug, windows-os, app, performance"
+42119,Sites source repository write credential is already expired when issued,,"### What issue are you seeing?
+
+A Sites project cannot be published because create_source_repository_write_credential returns a source write credential whose token_expires_at is already in the past when it is issued. Git push then fails with: 403 Invalid or expired token.
+
+### What steps can reproduce the bug?
+
+1. Use an existing active public Sites project as the owner.
+2. Call create_source_repository_write_credential for the project.
+3. Observe that token_expires_at is earlier than the local current time at issuance.
+4. Push the current HEAD to the returned remote using the documented HTTP extra-header authentication mode.
+5. The server rejects the push with HTTP 403 and ""Invalid or expired token"".
+
+I also re-authenticated in the ChatGPT desktop app and obtained a new credential. The replacement credential had the same already-expired timestamp behavior.
+
+### What is the expected behavior?
+
+The returned short-lived credential should be valid at the time of issuance and allow the owner to push the current source branch so a Site version can be saved and deployed.
+
+### Additional information
+
+No source code, site URL, project ID, user data, photos, logs, or credentials are included in this report. Local system time was checked and was correct.",,,,A Sites project cannot be published because create_source_repository_write_credential returns a source write credential whose token_expires_at is already in the past when it is issued. Git push then fails with: 403 Invalid or expired token.,"1. Use an existing active public Sites project as the owner.
+2. Call create_source_repository_write_credential for the project.
+3. Observe that token_expires_at is earlier than the local current time at issuance.
+4. Push the current HEAD to the returned remote using the documented HTTP extra-header authentication mode.
+5. The server rejects the push with HTTP 403 and ""Invalid or expired token"".
+
+I also re-authenticated in the ChatGPT desktop app and obtained a new credential. The replacement credential had the same already-expired timestamp behavior.",The returned short-lived credential should be valid at the time of issuance and allow the owner to push the current source branch so a Site version can be saved and deployed.,"No source code, site URL, project ID, user data, photos, logs, or credentials are included in this report. Local system time was checked and was correct.","bug, auth, app"
+42130,Codex GitHub review and repair task can enter an unbounded new-commit loop,,"### What issue are you seeing?
+
+A managed Codex GitHub review and a separate Codex repair task can form this loop:
+
+`review finding → task fixes and pushes → “New commits” review → another finding → repeat`
+
+There is no visible shared round limit, scope or usage checkpoint, or owner-approval gate.
+
+I observed this in my own public repo:
+
+- [Token Ledger PR #70](https://github.com/jskoiz/token-ledger/pull/70): 44 Codex reviews and 66 review threads; the latest review was again triggered by **New commits**.
+
+Not every commit or finding was caused by Codex, and some reviews were manually requested. The bug is the missing stop condition when these two Codex features are used together.
+
+### What steps can reproduce the bug?
+
+1. Enable managed Codex review for new PR commits.
+2. Ask a separate Codex task to fix the PR review findings, push, and monitor until clean.
+3. The task fixes a finding and pushes.
+4. The push triggers another review with **Review trigger: New commits**.
+5. If that review finds something else, the cycle repeats without a product-level limit.
+
+### What is the expected behavior?
+
+After one repair round and one verification review, Codex should pause if findings remain and require owner approval before continuing. It should deduplicate reviews for the same head and warn when repeated rounds materially increase PR scope or usage.
+
+### Additional information
+
+Related, but distinct:
+
+- #37964 involves two tagged review bots reacting to each other. This case needs only one managed reviewer plus a separate Codex repair task.
+- #19112 requests an intentional persistent repair loop; this is an accidental loop without safeguards.
+- #5547 concerns findings per review, not repeated new-commit reviews.
+- #40721 concerns trigger coverage, not termination.
+- #35816, #35892, #38375, and #38989 cover broader local, subagent, or non-convergence behavior without this specific hosted GitHub review → repair → push topology.
+
+Environment: Codex desktop `26.825.51511`, bundled CLI `0.151.0-alpha.7.2`, macOS 27.0 arm64.",,,,"A managed Codex GitHub review and a separate Codex repair task can form this loop:
+
+`review finding → task fixes and pushes → “New commits” review → another finding → repeat`
+
+There is no visible shared round limit, scope or usage checkpoint, or owner-approval gate.
+
+I observed this in my own public repo:
+
+- [Token Ledger PR #70](https://github.com/jskoiz/token-ledger/pull/70): 44 Codex reviews and 66 review threads; the latest review was again triggered by **New commits**.
+
+Not every commit or finding was caused by Codex, and some reviews were manually requested. The bug is the missing stop condition when these two Codex features are used together.","1. Enable managed Codex review for new PR commits.
+2. Ask a separate Codex task to fix the PR review findings, push, and monitor until clean.
+3. The task fixes a finding and pushes.
+4. The push triggers another review with **Review trigger: New commits**.
+5. If that review finds something else, the cycle repeats without a product-level limit.","After one repair round and one verification review, Codex should pause if findings remain and require owner approval before continuing. It should deduplicate reviews for the same head and warn when repeated rounds materially increase PR scope or usage.","Related, but distinct:
+
+- #37964 involves two tagged review bots reacting to each other. This case needs only one managed reviewer plus a separate Codex repair task.
+- #19112 requests an intentional persistent repair loop; this is an accidental loop without safeguards.
+- #5547 concerns findings per review, not repeated new-commit reviews.
+- #40721 concerns trigger coverage, not termination.
+- #35816, #35892, #38375, and #38989 cover broader local, subagent, or non-convergence behavior without this specific hosted GitHub review → repair → push topology.
+
+Environment: Codex desktop `26.825.51511`, bundled CLI `0.151.0-alpha.7.2`, macOS 27.0 arm64.","bug, code-review, codex-web"
+42170,App-server: expose managed integration policy before optional startup,,"### What variant of Codex are you using?
+
+Codex CLI / app-server on Windows 11. The behavior was traced against CLI 0.151.0 (`rust-v0.151.0`, commit `78c290807ce710180111df227df3b7a4fe845452`). The consumer is non-interactive repository review automation using the maintained CLI, not a replacement model host.
+
+### What feature would you like to see?
+
+Please add a supported, invocation-scoped way to inspect and bind the complete effective integration policy **before app-server or `exec` starts optional plugin, marketplace, remote-control, MCP discovery, or MCP transport work**.
+
+The surface could be a metadata-only CLI command, a pre-start handshake mode, or an equivalent supported API. It should:
+
+1. Load the same authoritative local, project, managed/MDM, and authenticated cloud-policy layers that the eventual invocation will use.
+2. Return redacted structured metadata sufficient to decide admission: exact effective MCP and plugin identities, enabled state, required/locked policy, normalized feature pins (including plugins/apps), and whether any optional startup is required by policy.
+3. Guarantee that optional marketplace Git sync, remote plugin bundle fetch, persisted remote-control startup, MCP OAuth/auth discovery, and MCP transport startup have not occurred before that result. Necessary Codex authentication and managed-policy retrieval can remain explicit control-plane activity; this is not a request for an offline reviewer.
+4. Fail before optional startup when managed policy conflicts with a caller's local-only integration boundary. Managed requirements must not be overridden merely to make the check pass.
+5. Let the caller bind the inspected configuration to the subsequent `exec`/`review` launch (for example with an opaque config/policy digest or an atomic inspect-and-run mode), so policy cannot change between admission and execution.
+6. Work through the normal npm launcher and one-off CLI overrides without modifying global configuration, copying credentials, disabling authentication, changing model/effort, or using internal environment markers.
+
+The intended fail-closed flow is: inspect authoritative policy without optional integration startup; reject required/unknown integrations; derive invocation-only disables for every optional integration; verify the exact effective launch configuration; then start the unchanged requested model operation.
+
+### Additional information
+
+Current public surfaces cannot establish this boundary:
+
+- Official documentation says [`configRequirements/read`](https://learn.chatgpt.com/docs/app-server) returns managed configuration, allowlists, pinned feature requirements, and network requirements. But a client reaches it only after app-server initialization, while app-server constructs the message processor and schedules plugin startup tasks during startup ([0.151.0 source](https://github.com/openai/codex/blob/78c290807ce710180111df227df3b7a4fe845452/codex-rs/app-server/src/message_processor.rs#L505-L535)). A post-start refusal cannot prove that optional startup never happened.
+- `codex mcp list --json` has no policy-only mode. It builds effective servers and computes auth statuses before rendering JSON ([source](https://github.com/openai/codex/blob/78c290807ce710180111df227df3b7a4fe845452/codex-rs/cli/src/mcp_cmd.rs#L671-L711)); for enabled HTTP servers that can include optional OAuth metadata discovery. Its JSON also does not expose complete required-policy metadata.
+- `codex plugin list --json` is useful local inventory, but is not a complete authoritative pre-start view of managed/remote requirements. Passing `features.plugins=false` makes the view empty, so an empty post-disable inventory is not evidence of identity stability.
+- `codex features list` reports feature name/stage/enabled, not complete integration identities or requirement provenance. Managed feature normalization can apply pinned values before runtime config is constructed ([source](https://github.com/openai/codex/blob/78c290807ce710180111df227df3b7a4fe845452/codex-rs/core/src/config/managed_features.rs#L149-L166)), so a CLI `features.plugins=false` override cannot be assumed to defeat a managed requirement.
+- `app-server --strict-config` rejects unknown config fields; it does not freeze optional startup or provide a pre-start policy receipt.
+
+A useful acceptance test would configure a synthetic local stdio MCP sentinel outside the user config and assert that metadata-only inspection reports it without starting it; an enabled/required managed case should fail admission before the sentinel or any optional startup runs. The same fixture can verify that the subsequent bound launch uses the inspected identity set and that removing the guard makes the sentinel start. No model request or real provider/VPS integration is needed for that test.
+
+Related but distinct issues:
+
+- #17622 demonstrates plugin startup Git/SSH work occurring without an explicit user action.
+- #39682 documents remote plugin download/initialization despite a narrower remote-plugin feature setting.
+- #38401 describes the existing marketplace auto-upgrade startup behavior.
+
+Those issues concern particular startup effects or update behavior. This request is for a general supported admission contract for automation that must preserve managed policy while proving optional integrations have not started.","Codex CLI / app-server on Windows 11. The behavior was traced against CLI 0.151.0 (`rust-v0.151.0`, commit `78c290807ce710180111df227df3b7a4fe845452`). The consumer is non-interactive repository review automation using the maintained CLI, not a replacement model host.",,,"Please add a supported, invocation-scoped way to inspect and bind the complete effective integration policy **before app-server or `exec` starts optional plugin, marketplace, remote-control, MCP discovery, or MCP transport work**.
+
+The surface could be a metadata-only CLI command, a pre-start handshake mode, or an equivalent supported API. It should:
+
+1. Load the same authoritative local, project, managed/MDM, and authenticated cloud-policy layers that the eventual invocation will use.
+2. Return redacted structured metadata sufficient to decide admission: exact effective MCP and plugin identities, enabled state, required/locked policy, normalized feature pins (including plugins/apps), and whether any optional startup is required by policy.
+3. Guarantee that optional marketplace Git sync, remote plugin bundle fetch, persisted remote-control startup, MCP OAuth/auth discovery, and MCP transport startup have not occurred before that result. Necessary Codex authentication and managed-policy retrieval can remain explicit control-plane activity; this is not a request for an offline reviewer.
+4. Fail before optional startup when managed policy conflicts with a caller's local-only integration boundary. Managed requirements must not be overridden merely to make the check pass.
+5. Let the caller bind the inspected configuration to the subsequent `exec`/`review` launch (for example with an opaque config/policy digest or an atomic inspect-and-run mode), so policy cannot change between admission and execution.
+6. Work through the normal npm launcher and one-off CLI overrides without modifying global configuration, copying credentials, disabling authentication, changing model/effort, or using internal environment markers.
+
+The intended fail-closed flow is: inspect authoritative policy without optional integration startup; reject required/unknown integrations; derive invocation-only disables for every optional integration; verify the exact effective launch configuration; then start the unchanged requested model operation.",,,"Current public surfaces cannot establish this boundary:
+
+- Official documentation says [`configRequirements/read`](https://learn.chatgpt.com/docs/app-server) returns managed configuration, allowlists, pinned feature requirements, and network requirements. But a client reaches it only after app-server initialization, while app-server constructs the message processor and schedules plugin startup tasks during startup ([0.151.0 source](https://github.com/openai/codex/blob/78c290807ce710180111df227df3b7a4fe845452/codex-rs/app-server/src/message_processor.rs#L505-L535)). A post-start refusal cannot prove that optional startup never happened.
+- `codex mcp list --json` has no policy-only mode. It builds effective servers and computes auth statuses before rendering JSON ([source](https://github.com/openai/codex/blob/78c290807ce710180111df227df3b7a4fe845452/codex-rs/cli/src/mcp_cmd.rs#L671-L711)); for enabled HTTP servers that can include optional OAuth metadata discovery. Its JSON also does not expose complete required-policy metadata.
+- `codex plugin list --json` is useful local inventory, but is not a complete authoritative pre-start view of managed/remote requirements. Passing `features.plugins=false` makes the view empty, so an empty post-disable inventory is not evidence of identity stability.
+- `codex features list` reports feature name/stage/enabled, not complete integration identities or requirement provenance. Managed feature normalization can apply pinned values before runtime config is constructed ([source](https://github.com/openai/codex/blob/78c290807ce710180111df227df3b7a4fe845452/codex-rs/core/src/config/managed_features.rs#L149-L166)), so a CLI `features.plugins=false` override cannot be assumed to defeat a managed requirement.
+- `app-server --strict-config` rejects unknown config fields; it does not freeze optional startup or provide a pre-start policy receipt.
+
+A useful acceptance test would configure a synthetic local stdio MCP sentinel outside the user config and assert that metadata-only inspection reports it without starting it; an enabled/required managed case should fail admission before the sentinel or any optional startup runs. The same fixture can verify that the subsequent bound launch uses the inspected identity set and that removing the guard makes the sentinel start. No model request or real provider/VPS integration is needed for that test.
+
+Related but distinct issues:
+
+- #17622 demonstrates plugin startup Git/SSH work occurring without an explicit user action.
+- #39682 documents remote plugin download/initialization despite a narrower remote-plugin feature setting.
+- #38401 describes the existing marketplace auto-upgrade startup behavior.
+
+Those issues concern particular startup effects or update behavior. This request is for a general supported admission contract for automation that must preserve managed policy while proving optional integrations have not started.","enhancement, CLI, app-server"
+42379,Follow up questions block text,,"### What version of the Codex App are you using (From “About Codex” dialog)?
+
+Version 26.831.20005
+
+### What subscription do you have?
+
+Pro
+
+### What platform is your computer?
+
+Darwin 25.6.0 arm64 arm
+
+### What issue are you seeing?
+
+
+Clarifying questions block text underneath (scrolled to the bottom). Especially an issue if I ask it to ask again in a different way, it blocks its explanation.
+
+<img width=""818"" height=""442"" alt=""Image"" src=""https://github.com/user-attachments/assets/93492a76-344a-46a9-ae00-86e54d92cb97"" />
+
+### What steps can reproduce the bug?
+
+Get Codex to ask questions, ask it to clarify and ask again.
+
+### What is the expected behavior?
+
+Doesn't block Codex's response.
+
+### Additional information
+
+_No response_",Version 26.831.20005,Pro,Darwin 25.6.0 arm64 arm,"Clarifying questions block text underneath (scrolled to the bottom). Especially an issue if I ask it to ask again in a different way, it blocks its explanation. 
+
+<img width=""818"" height=""442"" alt=""Image"" src=""https://github.com/user-attachments/assets/93492a76-344a-46a9-ae00-86e54d92cb97"" />","Get Codex to ask questions, ask it to clarify and ask again.",Doesn't block Codex's response.,,"bug, app"
+42509,Side Chat cannot be opened because the desktop reports “unknown conversation” despite an existing local session,,"### What version of the Codex App are you using (From “About Codex” dialog)?
+
+26.825.51511 (build 7377）
+
+### What subscription do you have?
+
+PRO 20x
+
+### What platform is your computer?
+
+macOS Darwin 24.5.0 arm64 arm
+
+### What issue are you seeing?
+
+### Summary
+
+Some Side Chats cannot be opened from the Codex desktop UI. The corresponding subagent session exists on disk and in the Codex state database, but the desktop renderer reports that the conversation is unknown.
+
+### Environment
+
+- OS: macOS
+- Codex desktop app: `26.825.51511` (build `7377`)
+- Bundled Codex version: `0.151.0-alpha.7.2`
+- History mode: `paginated`
+- Project type: local project
+- Parent conversation type: normal user thread
+- Child conversation type: Side Chat/subagent thread
+
+
+
+### Current behavior
+
+The Side Chat does not open or displays no conversation.
+
+The desktop log reports messages such as:
+
+```
+Received item/started for unknown conversation conversationId=<redacted>
+Received item/completed for unknown conversation conversationId=<redacted>
+Conversation state not found conversationId=<redacted>
+```
+
+These errors can occur repeatedly for the same Side Chat ID.
+
+### Diagnostic observations
+
+For affected Side Chats, I verified that:
+
+- the corresponding JSONL session file exists;
+- the session JSONL is valid;
+- the child thread has a record in `state_5.sqlite`;
+- the parent-child spawn edge exists;
+- the child is still marked as `open`;
+- the conversation is not present in the desktop application's normal local conversation catalog.
+
+In one affected parent thread, 106 child spawn records remained in the `open` state. Another affected thread contained 26 open child records. This may contribute to the synchronization problem, but I have not established it as the root cause.
+
+### Root-cause hypothesis
+
+The backend/session layer appears to know about the subagent conversation, but the desktop renderer has not registered the corresponding conversation state before receiving its events.
+
+As a result, the renderer receives valid child events associated with a conversation ID it cannot resolve.
+
+This is a hypothesis based on the local state and logs, not a confirmed implementation-level root cause.
+
+### Impact
+
+- Side Chat results can become inaccessible from the UI.
+- Users cannot reliably inspect work performed by subagents.
+- Restarting the desktop application does not consistently restore access.
+- The raw conversation still exists locally, creating a discrepancy between stored data and visible history.
+
+### Potential approaches
+
+Maybe we can consider:
+1. registering Side Chat conversation state before dispatching child events;
+2. reconstructing missing Side Chat state from the local session and spawn-edge records;
+3. reconciling orphaned `open` child records after startup;
+4. showing a recoverable error when a Side Chat cannot be resolved;
+5. adding a supported way to reopen or export an existing Side Chat transcript.
+
+I can provide sanitized desktop log excerpts and metadata for affected conversation IDs if needed.
+
+### What steps can reproduce the bug?
+
+### Steps to reproduce
+
+1. Open a normal thread in a local Codex project.
+2. Start work that creates one or more Side Chats/subagent conversations.
+3. Allow a Side Chat to produce events or finish a turn.
+4. Navigate to another thread in the same project.
+5. Return to the parent thread.
+6. Click the Side Chat entry or card to open its conversation.
+
+The failure becomes more frequent in parent threads containing many Side Chat children.
+
+
+### What is the expected behavior?
+
+### Expected behavior
+
+Clicking a visible Side Chat should open its transcript.
+
+If Side Chats are intentionally excluded from the normal top-level thread list, the parent thread should still be able to resolve and render their conversation state.
+
+### Additional information
+
+## Thanks",26.825.51511 (build 7377）,PRO 20x,macOS Darwin 24.5.0 arm64 arm,,"1. Open a normal thread in a local Codex project.
+2. Start work that creates one or more Side Chats/subagent conversations.
+3. Allow a Side Chat to produce events or finish a turn.
+4. Navigate to another thread in the same project.
+5. Return to the parent thread.
+6. Click the Side Chat entry or card to open its conversation.
+
+The failure becomes more frequent in parent threads containing many Side Chat children.","Clicking a visible Side Chat should open its transcript.
+
+If Side Chats are intentionally excluded from the normal top-level thread list, the parent thread should still be able to resolve and render their conversation state.",## Thanks,"bug, app, subagent, session"
+42539,404 error,,"### What version of the Codex App are you using (From “About Codex” dialog)?
+
+idk
+
+### What subscription do you have?
+
+plus
+
+### What platform is your computer?
+
+Windows
+
+### What issue are you seeing?
+
+Tira essa bosta de limite de 5 horas que com 2 rodada de prompt ja acaba a gasolina do meu cavalo
+
+### What steps can reproduce the bug?
+
+To rodando no sol leve e ele n dura tasks que eu ja reduzi
+
+### What is the expected behavior?
+
+Rodar vários
+
+### Additional information
+
+Let my horse run",idk,plus,Windows,Tira essa bosta de limite de 5 horas que com 2 rodada de prompt ja acaba a gasolina do meu cavalo,To rodando no sol leve e ele n dura tasks que eu ja reduzi,Rodar vários,Let my horse run,"bug, rate-limits, app"
+42772,[BUG] Cannot click secondary windows created by the built-in browser,,"### What version of the Codex App are you using (From “About Codex” dialog)?
+
+26.903.11726
+
+### What subscription do you have?
+
+Pro
+
+### What platform is your computer?
+
+Linux 6.18.48-1-lts x86_64 unknown
+
+### What issue are you seeing?
+
+When an external window is created and you try to click anywhere inside of it, it switches back to the codex desktop app instead. It makes it impossible to actually interact with it or even just exit out of the window by clicking the X button.
+
+All clicks and interactions are forwarded to the main codex desktop app.
+
+<img width=""1912"" height=""1030"" alt=""Image"" src=""https://github.com/user-attachments/assets/6b22d9c0-52d0-4d76-b13c-5520bc343beb"" />
+
+### What steps can reproduce the bug?
+
+1. Go to https://crates.io inside the codex desktop app's browser on a Linux computer
+2. Click ""Log in with Github"" in the top right
+3. A window will pop up
+4. You will be unable to interact with this window and attempting to do so will just pop up with the desktop app.
+
+### What is the expected behavior?
+
+_No response_
+
+### Additional information
+
+_No response_",26.903.11726,Pro,Linux 6.18.48-1-lts x86_64 unknown,"When an external window is created and you try to click anywhere inside of it, it switches back to the codex desktop app instead. It makes it impossible to actually interact with it or even just exit out of the window by clicking the X button.
+
+All clicks and interactions are forwarded to the main codex desktop app.
+
+<img width=""1912"" height=""1030"" alt=""Image"" src=""https://github.com/user-attachments/assets/6b22d9c0-52d0-4d76-b13c-5520bc343beb"" />","1. Go to https://crates.io inside the codex desktop app's browser on a Linux computer
+2. Click ""Log in with Github"" in the top right
+3. A window will pop up
+4. You will be unable to interact with this window and attempting to do so will just pop up with the desktop app.",,,"bug, app, browser"
+42778,Codex repeatedly drifts from explicit visual references and falsely passes UI work,,"# Bug report: Codex repeatedly drifts from explicit visual references and falsely passes UI work
+
+Status: draft prepared for submission to `openai/codex`
+
+## Summary
+
+Codex repeatedly revised and weakened a simple static-webpage requirement even though the user
+provided both an explicit information architecture and multiple visual prototype images. Across
+roughly ten plan revisions and staged acceptance gates, Codex prioritized data, source, DOM,
+interaction and accessibility checks while losing the primary visual objective. It then declared
+multiple gates PASS although the deployed page still looked substantially unchanged to the user.
+
+This is not a missing-image-ingestion report. Codex had access to the visual prototypes and quoted
+their purpose correctly. The failure was persistent requirement drift and false visual acceptance.
+
+## Time observed
+
+- Main incident: 2026-09-04, approximately 16:15-21:32 Asia/Singapore (UTC+08:00)
+- User-visible diagnosis and report preparation: 2026-09-04, approximately 21:32-22:03
+Asia/Singapore (UTC+08:00)
+
+## Environment
+
+- Codex CLI: `0.153.2`
+- Model: `gpt-5.6-sol`
+- Reasoning effort: `low`
+- OS: WSL2 on Windows, Linux `6.18.33.2-microsoft-standard-WSL2`, x86_64
+- Workspace type: an existing static HTML dashboard backed by read-only JSON APIs
+- GitHub reporting identity: project-bound account `parker-pitt`, email `pittzhang0@gmail.com`
+
+## User's explicit requirement
+
+The user supplied a written visual optimization plan and five prototype/reference images. The
+core requirement was stable and simple:
+
+1. The primary dashboard should be dominated by a small set of core visual modules.
+2. Five named visual modules must all appear at the first level: path overview, endpoint health
+matrix, decision timeline, trend and endpoint explorer.
+3. Existing explanatory text must be preserved in full but moved into lower-level menus,
+accordions, drawers, modals or other drill-down containers.
+4. Long explanatory text must remain hidden until the user clicks.
+5. The first screen and first two desktop screens should be at least 70 percent graphics, status,
+trends, matrices and interactive cards.
+6. The reference images were visual targets, not production data or static image assets to embed.
+Their layout, hierarchy, palette and interaction logic should be implemented with real API data.
+7. The existing data pipeline and production control logic must remain unchanged.
+8. Final acceptance required a full-page screenshot, five module screenshots and screenshots of
+the hidden text after expansion.
+
+## What Codex changed or weakened
+
+Despite those constraints, Codex introduced the following deviations while repeatedly revising
+the plan:
+
+1. It changed the requirement to reuse the prototypes' layout, hierarchy, palette and interaction
+into preserving the old dark-blue glass visual style with only local blue/orange accents.
+2. It allowed the old summary-card structure to continue dominating the top of the page instead
+of making the five visuals the primary page sequence.
+3. It accepted Endpoint Explorer inside a collapsed details area even though the approved desktop
+information architecture made it the fifth first-level visual module.
+4. It focused each gate on field provenance, aggregation semantics, DOM placement, keyboard input,
+ARIA, i18n and HTTP health. Those checks were useful but did not validate the requested visual
+result.
+5. It marked the ""Visual Polish"" gate PASS after checking keyboard focus and reduced-motion CSS,
+without comparing the rendered page against the supplied prototypes.
+6. It later marked regression work substantially passed based on source searches and API data,
+again without completing the required full-page and five-module visual comparison.
+7. When the user reported that the page looked unchanged, Codex first made another incorrect
+inference: it claimed the prototype images should have been inserted into the page. The plan
+explicitly said the opposite. Codex then had to retract that diagnosis.
+
+## Actual behavior
+
+- Backend aggregation and interactive DOM features were implemented and technically functional.
+- The deployed HTML contained the names and code for the five modules.
+- The page nevertheless retained almost the same first-level visual impression and information
+hierarchy as the old version.
+- The user opened the production URL and immediately reported that it appeared unchanged and asked
+where the promised images/visuals were.
+- Codex had already issued repeated PASS decisions, so the staged gate process amplified rather
+than caught the drift.
+
+## Expected behavior
+
+1. Treat explicit visual references and the user's stable information hierarchy as hard
+requirements, not suggestions that may be weakened by agent preference.
+2. Preserve the original requirement verbatim through every plan revision and gate.
+3. Distinguish functional acceptance from visual acceptance.
+4. Never declare a visual gate PASS from source, DOM, API, build or accessibility evidence alone.
+5. Before visual PASS, render the target page and directly compare it with the supplied references
+at the specified viewports.
+6. Confirm that first-level visibility, ordering, visual area and drill-down behavior match the
+approved design, not merely that matching element IDs exist.
+7. If rendered screenshot evidence is missing or cannot be inspected, report the visual gate as
+unverified instead of PASS.
+8. Do not reinterpret reference images as static assets when the specification explicitly defines
+them as layout/style targets.
+
+## Reproduction pattern
+
+1. Provide Codex an existing static dashboard, a precise graphics-first information architecture,
+and several visual prototype images.
+2. State that the prototypes define layout, hierarchy, palette and interaction, while values must
+come from real data.
+3. Require explanatory text to be retained but hidden behind lower-level interactions clicks.
+4. Ask Codex to revise a plan and review another agent's implementation through staged gates.
+5. Observe Codex gradually insert its own design preference, weaken the first-level visual goal,
+and validate technical implementation details instead of the rendered result.
+6. Observe it declare visual/functional gates PASS without the required screenshot comparison.
+7. Open the page manually and observe that the intended visual transformation is not apparent.
+
+## Impact
+
+- Approximately ten plan revisions did not protect a requirement that was explicit from the start.
+- Another implementation agent followed the weakened plan, creating avoidable rework.
+- The user had to perform the most basic visual acceptance manually.
+- Repeated false PASS decisions made the gate process misleading and reduced trust in Codex for
+simpler frontend tasks, even though it performed more complex infrastructure reviews correctly.
+- The behavior is especially serious because the task was a bounded static-page modification, not
+an ambiguous greenfield design problem.
+
+## Suggested safeguards
+
+- Store a compact, immutable list of user-authored visual invariants separately from agent-authored
+implementation suggestions.
+- On every plan revision, diff new requirements against those invariants and flag any weakening.
+- Make visual gates require an inspectable rendered artifact when reference images are supplied.
+- Label evidence by class: data, source, runtime interaction, accessibility and visual parity.
+Evidence from one class must not automatically satisfy another.
+- Require an explicit `UNVERIFIED_VISUAL` result when screenshots were not captured or inspected.
+- For delegated implementation, compare the implementer's screenshots to the original user
+references rather than only reviewing implementation claims and DOM structure.
+
+## Privacy
+
+This report intentionally omits the production domain, server names, IP addresses, private
+repository paths, source code, customer data, credentials and screenshots containing private
+infrastructure details.",,,,,,,,"bug, model-behavior, CLI, plan"
+42862,"Windows voice orb snaps to a fixed position, cannot be dragged, and desktop/taskbar clicks stop working",,"## Environment
+- Windows desktop app, installed package version: 26.901.4073.0 (verified from the running executable path).
+- Observed on September 4, 2026; the user reports this has persisted for several days.
+
+## User-observed behavior
+During an active voice conversation, opening the Codex main window makes the floating voice orb return to its default position or jump toward the middle of the screen. It then cannot be dragged. At times, desktop icons and other applications' taskbar icons also stop responding to clicks, while the Codex taskbar icon remains usable. The user also reported unresponsive voice controls.
+
+Using Windows Show desktop restores clicking on other applications, but the voice orb still cannot be dragged.
+
+## Reproduction observed by the user
+1. Start a voice conversation in the Windows desktop app.
+2. Open or bring up the Codex main window.
+3. Observe the voice orb reposition itself and attempt to drag it.
+4. When desktop/taskbar clicking becomes affected, use Show desktop: other applications become clickable again, but dragging the orb remains broken.
+
+## Troubleshooting already tried
+- Exiting and reopening the application did not resolve the problem.
+- Pressing Esc did not restore desktop/taskbar interaction.
+- Exiting a third-party desktop assistant did not resolve the issue.
+- Show desktop only partially restores interaction as described above.
+
+## Read-only diagnostic findings
+The desktop logs for the affected voice session show that the avatar overlay loaded successfully. They also contain repeated directory-read failures while starting visualization diff snapshots and two primary-window ResizeObserver loop errors. These are observations only; no causal connection to dragging has been established. A targeted search did not find direct drag/hit-test failure records or a corresponding application crash. No raw logs, account identifiers, conversation contents, or private local paths are attached.
+
+## Expected behavior
+The voice orb should be movable and its overlay should not prevent clicking desktop or taskbar icons.
+
+## Related reports
+- #41262: voice orb cannot be dragged over Shadow PC. This report does not require that remote/fullscreen setup.
+- #41465: floating pet is click-through. This report also includes blocked clicks on other applications, so an identical root cause has not been established.
+
+Please investigate overlay positioning and mouse-input routing when activating the main window during voice. Is there a known workaround or a fixed desktop version?",,,,,,,,"bug, windows-os, app"
+42942,[macOS] Appshots cannot capture the ChatGPT app itself,,"## Problem
+
+I cannot take an Appshot of the ChatGPT desktop app itself. The target I want to capture is the ChatGPT window, so I can provide its visible UI as context in a conversation.
+
+## Reproduction scenario
+
+1. Open the ChatGPT desktop app on macOS.
+2. Bring the ChatGPT window you want to capture to the foreground.
+3. Attempt to take an Appshot of that window.
+
+## Actual behavior
+
+I cannot obtain an Appshot of the ChatGPT app itself.
+
+## Expected behavior
+
+I should be able to explicitly capture the ChatGPT app window and attach it as context. If capturing the app itself is intentionally unsupported, please make that limitation clear in the UI and consider supporting this use case.
+
+## Environment
+
+- ChatGPT desktop: 26.901.41600 (build 7982)
+- Bundle identifier: `com.openai.codex`
+- macOS: 27.0
+- Architecture: arm64
+
+## Additional context
+
+This report describes the user's observed behavior; no independent reproduction or root-cause diagnosis has been performed. The exact failure message and whether other apps capture successfully have not been established.
+
+I searched existing open and closed issues for Appshot/Appshots, ChatGPT, and self-capture terms and did not find a matching report. #34788 concerns Work mode versus Chat mode capture reliability after switching away, rather than capturing the ChatGPT window itself.",,,,,,,,"bug, app"

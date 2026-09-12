@@ -1,0 +1,16 @@
+﻿github_issue_number,product_scope,issue_type,category,surface,platform,severity
+41585,codex_core,bug,Reliability,Codex App,macOS,high
+41587,codex_core,feature_request,App / UI / UX,CLI,Linux,medium
+41822,codex_core,bug,Performance,Codex App,Windows,high
+42007,codex_core,bug,Usage & Credits,CLI,Linux,high
+42037,codex_core,bug,Performance,Codex App,Windows,medium
+42119,codex_core,bug,Authentication & Account,Codex App,Unknown,high
+42130,codex_core,bug,Reliability,Web,macOS,critical
+42170,codex_core,feature_request,CLI,CLI,Windows,medium
+42379,codex_core,bug,App / UI / UX,Codex App,macOS,medium
+42509,codex_core,bug,Reliability,Codex App,macOS,high
+42539,codex_core,bug,Usage & Credits,Codex App,Windows,medium
+42772,codex_core,bug,App / UI / UX,Codex App,Linux,high
+42778,codex_core,bug,Model Quality,CLI,Linux,high
+42862,codex_core,bug,App / UI / UX,Codex App,Windows,high
+42942,codex_core,bug,App / UI / UX,Codex App,macOS,medium

@@ -1,0 +1,258 @@
+{
+  "provenance": {
+    "evaluation_set": "holdout_v0.3.4",
+    "sample_size": 50,
+    "analysis_version": "v0.3.4",
+    "reference_label_source": "independent_codex",
+    "reference_labeling_mode": "blind",
+    "holdout_used_for_model_tuning": false,
+    "notes": "The 50-item holdout was excluded from model tuning (dev 100, workload pilot 50 and dev diagnostic audit 20 were all excluded). Codex produced the reference labels blind, with no access to MiMo predictions. Reference labels are AI-generated and therefore are NOT human ground truth."
+  },
+  "join_validation": {
+    "reference_rows": 50,
+    "matching_successful_v034_predictions": 50,
+    "missing_joins": 0,
+    "duplicate_issue_numbers": 0,
+    "reference_csv_structure_unchanged": true,
+    "mimo_rerun": false
+  },
+  "field_agreement": {
+    "product_scope": {
+      "exact_agreement": 47,
+      "exact_agreement_pct": 94.0,
+      "disagreement_count": 3,
+      "cohen_kappa": 0.725,
+      "confusion_mimo_x_reference": {
+        "codex_adjacent -> codex_adjacent": 3,
+        "codex_adjacent -> codex_core": 1,
+        "codex_adjacent -> out_of_scope": 1,
+        "codex_core -> codex_core": 43,
+        "out_of_scope -> codex_core": 1,
+        "out_of_scope -> out_of_scope": 1
+      },
+      "full_50": {
+        "exact_agreement": 47,
+        "n": 50,
+        "exact_agreement_pct": 94.0,
+        "disagreement_count": 3,
+        "cohen_kappa": 0.725
+      },
+      "reference_in_scope_subset": {
+        "exact_agreement": 46,
+        "n": 48,
+        "exact_agreement_pct": 95.8,
+        "disagreement_count": 2,
+        "cohen_kappa": 0.731
+      }
+    },
+    "issue_type": {
+      "exact_agreement": 47,
+      "exact_agreement_pct": 94.0,
+      "disagreement_count": 3,
+      "cohen_kappa": 0.785,
+      "confusion_mimo_x_reference": {
+        "bug -> bug": 41,
+        "bug -> feature_request": 1,
+        "documentation -> documentation": 1,
+        "feature_request -> feature_request": 5,
+        "feature_request -> other": 1,
+        "other -> bug": 1
+      }
+    },
+    "category": {
+      "exact_agreement": 35,
+      "exact_agreement_pct": 70.0,
+      "disagreement_count": 15,
+      "cohen_kappa": 0.659,
+      "confusion_mimo_x_reference": {
+        "App / UI / UX -> App / UI / UX": 7,
+        "CLI -> Installation & Updates": 1,
+        "Context & Memory -> Context & Memory": 3,
+        "MCP & Integrations -> Authentication & Account": 1,
+        "MCP & Integrations -> MCP & Integrations": 2,
+        "Model Quality -> Context & Memory": 1,
+        "Onboarding & Documentation -> Onboarding & Documentation": 1,
+        "Other -> Other": 2,
+        "Performance -> Performance": 4,
+        "Performance -> Usage & Credits": 1,
+        "Reliability -> App / UI / UX": 3,
+        "Reliability -> Authentication & Account": 1,
+        "Reliability -> IDE Integration": 1,
+        "Reliability -> Installation & Updates": 2,
+        "Reliability -> Performance": 1,
+        "Reliability -> Reliability": 6,
+        "Reliability -> Tool Execution": 1,
+        "Safety & Permissions -> Safety & Permissions": 1,
+        "Tool Execution -> Model Quality": 1,
+        "Tool Execution -> Safety & Permissions": 1,
+        "Tool Execution -> Tool Execution": 8,
+        "Usage & Credits -> Usage & Credits": 1
+      },
+      "all_50": {
+        "exact_agreement": 35,
+        "n": 50,
+        "exact_agreement_pct": 70.0,
+        "disagreement_count": 15,
+        "cohen_kappa": 0.659
+      },
+      "reference_in_scope_subset": {
+        "exact_agreement": 33,
+        "n": 48,
+        "exact_agreement_pct": 68.8,
+        "disagreement_count": 15,
+        "cohen_kappa": 0.641
+      }
+    },
+    "surface": {
+      "exact_agreement": 47,
+      "exact_agreement_pct": 94.0,
+      "disagreement_count": 3,
+      "cohen_kappa": 0.864,
+      "confusion_mimo_x_reference": {
+        "CLI -> CLI": 9,
+        "Codex App -> Codex App": 35,
+        "Codex App -> Web": 1,
+        "IDE Extension -> IDE Extension": 1,
+        "Unknown -> Unknown": 2,
+        "Web -> CLI": 1,
+        "Web -> Codex App": 1
+      }
+    },
+    "platform": {
+      "exact_agreement": 48,
+      "exact_agreement_pct": 96.0,
+      "disagreement_count": 2,
+      "cohen_kappa": 0.946,
+      "confusion_mimo_x_reference": {
+        "Android -> Android": 1,
+        "Linux -> Linux": 6,
+        "Unknown -> Unknown": 8,
+        "Windows -> Windows": 17,
+        "Windows -> iOS": 1,
+        "iOS -> iOS": 2,
+        "macOS -> Unknown": 1,
+        "macOS -> macOS": 14
+      }
+    },
+    "severity": {
+      "exact_agreement": 32,
+      "exact_agreement_pct": 64.0,
+      "disagreement_count": 18,
+      "cohen_kappa": 0.429,
+      "confusion_mimo_x_reference": {
+        "critical -> critical": 1,
+        "critical -> high": 1,
+        "critical -> medium": 1,
+        "high -> high": 22,
+        "high -> low": 1,
+        "high -> medium": 7,
+        "low -> low": 3,
+        "medium -> low": 8,
+        "medium -> medium": 6
+      },
+      "reference_in_scope_subset": {
+        "exact_agreement": 31,
+        "n": 48,
+        "exact_agreement_pct": 64.6,
+        "disagreement_count": 17,
+        "cohen_kappa": 0.421
+      }
+    }
+  },
+  "platform_analysis": {
+    "all_50": {
+      "exact_agreement": 48,
+      "n": 50,
+      "kappa": 0.946
+    },
+    "known_reference_platform_subset": {
+      "exact_agreement": 40,
+      "n": 41,
+      "numerator": 40,
+      "denominator": 41,
+      "kappa": 0.964
+    }
+  },
+  "severity_analysis": {
+    "exact_agreement": 32,
+    "within_one_level": 48,
+    "weighted_kappa_linear": 0.532,
+    "ordinal_distance_distribution": {
+      "0": 32,
+      "1": 16,
+      "2": 2
+    },
+    "ai_one_level_overestimate": 16,
+    "ai_one_level_underestimate": 0,
+    "errors_at_or_above_2_levels": 2,
+    "cohen_kappa_unweighted": 0.429
+  },
+  "category_analysis": {},
+  "strict_compound_metric": {
+    "all_six_fields_exact": 17,
+    "of": 50,
+    "label": "strict compound agreement — NOT overall model accuracy",
+    "per_row_distribution": {
+      "6/6": 17,
+      "5/6": 23,
+      "4/6": 9,
+      "3/6": 1,
+      "<=2/6": 0
+    }
+  },
+  "needs_review_analysis": {
+    "needs_review_true": {
+      "n": 1,
+      "any_field_disagreement_rate": 100.0,
+      "mean_disagreed_fields": 2.0,
+      "per_field_disagreement": {
+        "product_scope": 1,
+        "issue_type": 1,
+        "category": 0,
+        "surface": 0,
+        "platform": 0,
+        "severity": 0
+      }
+    },
+    "needs_review_false": {
+      "n": 49,
+      "any_field_disagreement_rate": 65.3,
+      "mean_disagreed_fields": 0.86,
+      "per_field_disagreement": {
+        "product_scope": 2,
+        "issue_type": 2,
+        "category": 15,
+        "surface": 3,
+        "platform": 2,
+        "severity": 18
+      }
+    },
+    "stability_note": "Estimates unstable if subgroup n is small — interpret with care."
+  },
+  "confidence_analysis": {
+    "min": 0.6,
+    "median": 0.88,
+    "mean": 0.876,
+    "buckets_avg_disagreed_fields": {
+      "<0.80": {
+        "n": 1,
+        "avg_disagreed_fields": 2.0
+      },
+      "0.80-0.90": {
+        "n": 25,
+        "avg_disagreed_fields": 1.04
+      },
+      ">=0.90": {
+        "n": 24,
+        "avg_disagreed_fields": 0.67
+      }
+    },
+    "spearman_conf_vs_disagreed_fields": -0.25,
+    "n": 50,
+    "caution": "n=50; descriptive only; threshold NOT recalibrated."
+  },
+  "p95_reference": {
+    "mimo_confidence_p95": 0.92,
+    "note": "P95 used for provisional emerging score normalization elsewhere; recorded here for provenance."
+  }
+}
