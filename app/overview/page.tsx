@@ -1,10 +1,9 @@
-import { EmptyState } from "@/components/empty-state";
-import { StatCard } from "@/components/stat-card";
+import Link from "next/link";
 import {
   getDataSummary,
   getDistributions,
+  getEntityCount,
   getInsights,
-  getTrendStatus,
 } from "@/lib/supabase/queries";
 
 export const dynamic = "force-dynamic";
@@ -15,42 +14,34 @@ function formatNumber(value: number | null): string {
   return value === null ? "—" : value.toLocaleString("zh-CN");
 }
 
-function DistributionList({
-  title,
-  slices,
-}: {
-  title: string;
-  slices: { label: string; count: number; pct: number }[];
-}) {
-  const top = slices.slice(0, 6);
-  return (
-    <div>
-      <p className="text-xs font-medium uppercase tracking-wide text-muted-foreground">
-        {title}
-      </p>
-      <ul className="mt-2 space-y-1 text-xs">
-        {top.map((slice) => (
-          <li key={slice.label} className="flex items-center gap-2">
-            <span className="w-40 truncate">{slice.label}</span>
-            <span className="h-1.5 flex-1 overflow-hidden rounded-full bg-muted">
-              <span
-                className="block h-full rounded-full bg-foreground/60"
-                style={{ width: `${slice.pct}%` }}
-              />
-            </span>
-            <span className="w-16 text-right tabular-nums text-muted-foreground">
-              {slice.count}（{slice.pct}%）
-            </span>
-          </li>
-        ))}
-      </ul>
-    </div>
-  );
+function trendDirection(
+  current: number,
+  previous: number
+): { arrow: string; pct: string; color: string } {
+  if (previous === 0 && current === 0)
+    return { arrow: "—", pct: "0%", color: "text-muted-foreground" };
+  if (previous === 0)
+    return { arrow: "↑", pct: "新增", color: "text-foreground" };
+  const change = Math.round(((current - previous) / previous) * 100);
+  if (change > 5)
+    return { arrow: "↑", pct: `+${change}%`, color: "text-foreground" };
+  if (change < -5)
+    return { arrow: "↓", pct: `${change}%`, color: "text-destructive" };
+  return { arrow: "→", pct: `${change > 0 ? "+" : ""}${change}%`, color: "text-muted-foreground" };
+}
+
+function severityInfo(score: number | null): { label: string; color: string } {
+  if (score === null) return { label: "—", color: "text-muted-foreground" };
+  if (score >= 3.5) return { label: "严重", color: "text-destructive" };
+  if (score >= 2.5) return { label: "高", color: "text-foreground" };
+  if (score >= 1.5) return { label: "中", color: "text-muted-foreground" };
+  return { label: "低", color: "text-muted-foreground" };
 }
 
 export default async function OverviewPage() {
   const caseStudy = process.env.NEXT_PUBLIC_CASE_STUDY ?? "OpenAI Codex";
   const version = process.env.SIGNAL_ANALYSIS_VERSION ?? "v0.3.4";
+
   const summary = await getDataSummary();
   const hasData =
     summary.configured &&
@@ -58,154 +49,311 @@ export default async function OverviewPage() {
     (summary.totalIssues ?? 0) > 0;
 
   const distributions = hasData ? await getDistributions(version) : null;
-  const topClusters = hasData ? await getInsights(version, 5) : null;
-  const trend = hasData ? await getTrendStatus(version) : null;
+  const topClusters = hasData ? await getInsights(version, 20) : null;
+  const clusterCount = hasData ? await getEntityCount("clusters") : null;
+  const opportunityCount = hasData ? await getEntityCount("opportunities") : null;
+
+  const top3 = (topClusters?.rows ?? [])
+    .slice(0, 3)
+    .map((c) => ({
+      id: c.id,
+      name: c.name,
+      category: c.category,
+      issueCount: c.issueCount,
+      problemStatement: c.problemStatement,
+      isEmerging: c.isEmerging,
+      growthRate: c.growthRate,
+      currentPeriodCount: c.currentPeriodCount,
+      previousPeriodCount: c.previousPeriodCount,
+      avgSeverityScore: c.avgSeverityScore,
+    }));
+
+  const topSurfaces = (distributions?.data?.surface ?? []).slice(0, 5);
+  const topCategories = (distributions?.data?.category ?? []).slice(0, 5);
 
   return (
-    <div className="space-y-10">
-      <header className="space-y-3">
-        <p className="text-xs font-medium uppercase tracking-widest text-muted-foreground">
-          总览
-        </p>
-        <h1 className="text-3xl font-semibold tracking-tight">
-          最近发生了什么？
+    <div className="space-y-16">
+      {/* Hero */}
+      <section className="max-w-2xl">
+        <h1 className="text-2xl font-bold tracking-tight text-foreground">
+          {caseStudy === "OpenAI Codex" ? "Signal" : "Signal"} · AI
+          产品运营智能系统
         </h1>
-        <p className="max-w-2xl text-sm leading-6 text-muted-foreground">
-          {caseStudy} 案例的用户反馈最新变化趋势。本页所有数字均来自真实采集
-          的 GitHub Issues，Signal 不生成或模拟任何反馈数据。
+        <p className="mt-4 text-[15px] leading-7 text-muted-foreground">
+          从 {formatNumber(summary.totalIssues)} 条真实 {caseStudy}{" "}
+          用户反馈中，发现正在出现的问题、识别变化信号，并将证据转化为可执行的产品运营机会。
         </p>
-      </header>
+        <div className="mt-6 flex flex-wrap items-center gap-3">
+          <Link
+            href="/insights"
+            className="inline-flex h-9 items-center rounded-md bg-foreground px-4 text-sm font-medium text-background transition-colors hover:bg-foreground/90"
+          >
+            查看关键洞察
+          </Link>
+          <Link
+            href="/opportunities"
+            className="inline-flex h-9 items-center rounded-md border border-border px-4 text-sm font-medium text-foreground transition-colors hover:bg-secondary"
+          >
+            查看产品机会
+          </Link>
+        </div>
+        <p className="mt-4 text-xs text-muted-foreground">
+          14 个完整日历日 · 真实 GitHub Issues
+        </p>
+      </section>
 
-      {!summary.configured ? (
-        <EmptyState
-          title="数据库未配置"
-          description="Signal 从 Supabase 读取全部数据。请从 .env.example 创建 .env.local，填入 Supabase URL 和 anon key，然后在项目中执行 supabase/schema.sql。"
-          hint="NEXT_PUBLIC_SUPABASE_URL · SUPABASE_ANON_KEY"
-        />
-      ) : summary.error ? (
-        <EmptyState
-          title="数据库查询失败"
-          description={`已尝试读取数据库但查询未成功。请检查配置或 Schema 后重试。(${summary.error})`}
-          hint="在 Supabase 项目中执行 supabase/schema.sql"
-        />
-      ) : !hasData ? (
-        <EmptyState
-          title="尚未导入反馈数据"
-          description="管道尚未采集任何 GitHub Issues。完成数据采集和 AI 分析（Prompts 01–02）后，本页将展示基于真实数据的反馈量、新兴信号和高严重度条目。"
-          hint="prompts/01_DATA_INGESTION.md"
-        />
-      ) : (
-        <>
-          <section className="grid grid-cols-2 gap-4 lg:grid-cols-4">
-            <StatCard
-              label="已采集 Issues"
-              value={formatNumber(summary.totalIssues)}
-              hint="真实 GitHub Issues（已过滤 PR）"
-            />
-            <StatCard
-              label="结构化分析"
-              value={formatNumber(summary.analyzedIssues)}
-              hint={`分析版本 ${version}`}
-            />
-            <StatCard
-              label="有效反馈"
-              value={formatNumber(distributions?.data?.inScopeTotal ?? null)}
-              hint="核心 + 邻接"
-            />
-            <StatCard
-              label="高严重度条目"
-              value={formatNumber(summary.highSeverityIssues)}
-              hint="AI 估算严重度：高 / 严重"
-            />
-          </section>
+      {/* Metric Strip */}
+      {hasData ? (
+        <section>
+          <div className="flex flex-wrap gap-x-10 gap-y-4 text-sm">
+            <div>
+              <span className="font-semibold tabular-nums text-foreground">
+                {formatNumber(summary.totalIssues)}
+              </span>
+              <span className="ml-1.5 text-muted-foreground">真实反馈</span>
+            </div>
+            <div>
+              <span className="font-semibold tabular-nums text-foreground">
+                {formatNumber(distributions?.data?.inScopeTotal ?? null)}
+              </span>
+              <span className="ml-1.5 text-muted-foreground">有效反馈</span>
+            </div>
+            <div>
+              <span className="font-semibold tabular-nums text-foreground">
+                {formatNumber(clusterCount?.count ?? null)}
+              </span>
+              <span className="ml-1.5 text-muted-foreground">问题簇</span>
+            </div>
+            <div>
+              <span className="font-semibold tabular-nums text-foreground">
+                {formatNumber(opportunityCount?.count ?? null)}
+              </span>
+              <span className="ml-1.5 text-muted-foreground">产品机会</span>
+            </div>
+          </div>
+        </section>
+      ) : null}
 
-          <section className="space-y-3">
-            <h2 className="text-sm font-medium">本周变化</h2>
-            {trend?.status &&
-            trend.status.state === "insufficient_history" ? (
-              <div className="rounded-lg border border-dashed p-5">
-                <p className="text-sm font-medium">
-                  历史数据不足，暂无法计算可靠的周环比变化。
-                </p>
-                <p className="mt-2 text-xs leading-5 text-muted-foreground">
-                  当前开发数据集最早覆盖{" "}
-                  {trend.status.earliestObservation?.slice(0, 10) ?? "—"}，
-                  上一周期仅有 {trend.status.previousPeriod.count} 条观测
-                  （最少需要 10 条）。Signal 不会基于缺失基线编造增长百分比。
-                </p>
-              </div>
-            ) : trend?.status ? (
-              <p className="text-sm text-muted-foreground">
-                当前周期 {trend.status.currentPeriod.count} 条观测；上一周期{" "}
-                {trend.status.previousPeriod.count} 条。符合新兴信号阈值
-                的条目已在洞察页标注。
-              </p>
-            ) : (
-              <p className="text-sm text-muted-foreground">
-                趋势状态不可用。
-              </p>
-            )}
-          </section>
+      {/* Divider */}
+      <hr className="border-border" />
 
-          <section className="space-y-3">
-            <h2 className="text-sm font-medium">核心痛点问题簇</h2>
-            {topClusters && topClusters.rows.length > 0 ? (
-              <ul className="space-y-2">
-                {topClusters.rows.map((cluster) => (
-                  <li
-                    key={cluster.id}
-                    className="flex items-center justify-between gap-4 rounded-lg border px-4 py-3 text-sm"
-                  >
-                    <span className="min-w-0 truncate">
-                      {cluster.name}
-                      <span className="ml-2 text-xs text-muted-foreground">
-                        {cluster.category}
+      {/* Top Signals */}
+      {top3.length > 0 ? (
+        <section>
+          <h2 className="text-lg font-semibold tracking-tight text-foreground">
+            现在最值得关注什么？
+          </h2>
+          <p className="mt-1 text-sm text-muted-foreground">
+            基于反馈频次、严重度和趋势信号，当前最值得优先调查的问题簇。
+          </p>
+          <div className="mt-6 space-y-1">
+            {top3.map((signal, index) => {
+              const trend = trendDirection(
+                signal.currentPeriodCount ?? 0,
+                signal.previousPeriodCount ?? 0
+              );
+              const sev = severityInfo(signal.avgSeverityScore);
+              return (
+                <div
+                  key={signal.id}
+                  className="flex flex-col gap-3 rounded-lg border border-border px-5 py-4 sm:flex-row sm:items-start sm:justify-between"
+                >
+                  <div className="min-w-0 flex-1">
+                    <div className="flex flex-wrap items-center gap-2">
+                      <span className="text-xs tabular-nums text-muted-foreground">
+                        {index + 1}.
                       </span>
+                      <span className="text-sm font-medium text-foreground">
+                        {signal.name}
+                      </span>
+                      <span className="rounded bg-secondary px-1.5 py-0.5 text-[11px] text-muted-foreground">
+                        {signal.category}
+                      </span>
+                      {signal.isEmerging ? (
+                        <span className="rounded bg-primary/10 px-1.5 py-0.5 text-[11px] font-medium text-primary">
+                          新兴
+                        </span>
+                      ) : null}
+                    </div>
+                    {signal.problemStatement ? (
+                      <p className="mt-1.5 text-[13px] leading-6 text-muted-foreground">
+                        {signal.problemStatement}
+                      </p>
+                    ) : null}
+                    <div className="mt-2 flex flex-wrap items-center gap-3 text-xs text-muted-foreground">
+                      <span>
+                        {signal.issueCount} 条反馈
+                      </span>
+                      <span className={sev.color}>
+                        严重度 {sev.label}
+                      </span>
+                    </div>
+                  </div>
+                  <div className="flex shrink-0 items-center gap-2 text-sm sm:flex-col sm:items-end sm:gap-1">
+                    <span className={`font-medium tabular-nums ${trend.color}`}>
+                      {trend.arrow} {trend.pct}
                     </span>
-                    <span className="shrink-0 tabular-nums text-muted-foreground">
-                      {cluster.issueCount} 条
+                    <span className="text-xs tabular-nums text-muted-foreground">
+                      {signal.currentPeriodCount ?? 0} vs{" "}
+                      {signal.previousPeriodCount ?? 0}
                     </span>
-                  </li>
-                ))}
-              </ul>
-            ) : (
-              <p className="text-sm text-muted-foreground">
-                尚未生成问题簇——请运行{" "}
-                <code className="font-mono text-xs">
-                  python -m pipeline.cluster_issues
-                </code>
-                。
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+          <div className="mt-4">
+            <Link
+              href="/insights"
+              className="text-sm text-primary underline-offset-4 hover:underline"
+            >
+              查看全部 {topClusters?.rows.length ?? 0} 个洞察 →
+            </Link>
+          </div>
+        </section>
+      ) : null}
+
+      {/* Feedback Structure */}
+      {distributions?.data ? (
+        <section>
+          <h2 className="text-lg font-semibold tracking-tight text-foreground">
+            反馈结构
+          </h2>
+          <p className="mt-1 text-sm text-muted-foreground">
+            {formatNumber(distributions.data.inScopeTotal)} 条有效反馈的分布。
+          </p>
+          <div className="mt-6 grid gap-8 md:grid-cols-2">
+            <div>
+              <p className="mb-3 text-xs font-medium tracking-wide text-muted-foreground">
+                使用端
               </p>
-            )}
-          </section>
-
-          {distributions?.data ? (
-            <section className="space-y-4">
-              <h2 className="text-sm font-medium">有效反馈分布</h2>
-              <div className="grid gap-6 md:grid-cols-3">
-                <DistributionList
-                  title="使用端"
-                  slices={distributions.data.surface}
-                />
-                <DistributionList
-                  title="平台"
-                  slices={distributions.data.platform}
-                />
-                <DistributionList
-                  title="问题类别"
-                  slices={distributions.data.category}
-                />
+              <div className="space-y-2">
+                {topSurfaces.map((slice) => (
+                  <div
+                    key={slice.label}
+                    className="flex items-center gap-3 text-sm"
+                  >
+                    <span className="w-20 shrink-0 truncate text-muted-foreground">
+                      {slice.label}
+                    </span>
+                    <span className="relative h-2 flex-1 overflow-hidden rounded-full bg-secondary">
+                      <span
+                        className="absolute inset-y-0 left-0 rounded-full bg-foreground/20"
+                        style={{ width: `${Math.max(slice.pct, 2)}%` }}
+                      />
+                    </span>
+                    <span className="w-16 shrink-0 text-right text-xs tabular-nums text-muted-foreground">
+                      {slice.count}（{slice.pct}%）
+                    </span>
+                  </div>
+                ))}
               </div>
-            </section>
-          ) : null}
+            </div>
+            <div>
+              <p className="mb-3 text-xs font-medium tracking-wide text-muted-foreground">
+                问题类别
+              </p>
+              <div className="space-y-2">
+                {topCategories.map((slice) => (
+                  <div
+                    key={slice.label}
+                    className="flex items-center gap-3 text-sm"
+                  >
+                    <span className="w-24 shrink-0 truncate text-muted-foreground">
+                      {slice.label}
+                    </span>
+                    <span className="relative h-2 flex-1 overflow-hidden rounded-full bg-secondary">
+                      <span
+                        className="absolute inset-y-0 left-0 rounded-full bg-foreground/20"
+                        style={{ width: `${Math.max(slice.pct, 2)}%` }}
+                      />
+                    </span>
+                    <span className="w-16 shrink-0 text-right text-xs tabular-nums text-muted-foreground">
+                      {slice.count}（{slice.pct}%）
+                    </span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        </section>
+      ) : null}
 
-          {summary.latestIssueAt ? (
-            <p className="text-xs text-muted-foreground">
-              最新采集 Issue：{summary.latestIssueAt.slice(0, 10)}
+      {/* How It Works */}
+      <section>
+        <h2 className="text-lg font-semibold tracking-tight text-foreground">
+          Signal 如何工作
+        </h2>
+        <p className="mt-1 text-sm text-muted-foreground">
+          从原始反馈到可执行建议的四步流程。
+        </p>
+        <div className="mt-6 flex flex-wrap items-start gap-3 text-sm">
+          <div className="rounded-lg border border-border px-4 py-3">
+            <p className="font-medium text-foreground">发现</p>
+            <p className="mt-0.5 text-xs text-muted-foreground">
+              从 GitHub Issues 采集真实用户反馈
             </p>
-          ) : null}
-        </>
-      )}
+          </div>
+          <span className="self-center text-muted-foreground">→</span>
+          <div className="rounded-lg border border-border px-4 py-3">
+            <p className="font-medium text-foreground">解释</p>
+            <p className="mt-0.5 text-xs text-muted-foreground">
+              AI 结构化分析类别、严重度、场景
+            </p>
+          </div>
+          <span className="self-center text-muted-foreground">→</span>
+          <div className="rounded-lg border border-border px-4 py-3">
+            <p className="font-medium text-foreground">排序</p>
+            <p className="mt-0.5 text-xs text-muted-foreground">
+              确定性评分计算调查优先级
+            </p>
+          </div>
+          <span className="self-center text-muted-foreground">→</span>
+          <div className="rounded-lg border border-border px-4 py-3">
+            <p className="font-medium text-foreground">行动</p>
+            <p className="mt-0.5 text-xs text-muted-foreground">
+              生成基于证据的行动简报
+            </p>
+          </div>
+        </div>
+      </section>
+
+      {/* Methodology Disclosure */}
+      {hasData ? (
+        <details className="text-xs text-muted-foreground">
+          <summary className="cursor-pointer hover:text-foreground">
+            方法说明
+          </summary>
+          <div className="mt-3 space-y-1 pl-4">
+            <p>分析版本：{version}</p>
+            <p>
+              聚类算法：确定性语义聚类 · distance_threshold=0.45
+            </p>
+            <p>
+              机会评分权重：频次 30% · 严重度 25% · 信号强度 25% · 互动度 20%
+            </p>
+            <p>
+              趋势窗口：最近 7 天 vs 前 7 天 · 最小观测量 10 条
+            </p>
+            <p>
+              数据集：codex-14d-2026-09-06 · 14 个完整日历日 · 仅真实 GitHub
+              Issues（PR 已过滤）
+            </p>
+          </div>
+        </details>
+      ) : null}
+
+      {/* Empty state */}
+      {!hasData ? (
+        <div className="rounded-lg border border-dashed border-border p-10 text-center">
+          <h2 className="text-sm font-medium text-foreground">
+            数据库未配置
+          </h2>
+          <p className="mx-auto mt-2 max-w-md text-sm leading-6 text-muted-foreground">
+            请配置 Supabase 连接以查看数据。
+          </p>
+        </div>
+      ) : null}
     </div>
   );
 }
