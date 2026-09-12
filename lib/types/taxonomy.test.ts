@@ -5,6 +5,7 @@ import {
   CATEGORIES,
   ISSUE_TYPES,
   PLATFORMS,
+  PRODUCT_SCOPES,
   SEVERITIES,
   SURFACES,
   TAXONOMY_VERSION,
@@ -13,6 +14,7 @@ import {
 describe("taxonomy mirror", () => {
   it("keeps lib/types/taxonomy.ts in sync with config/taxonomy.json", () => {
     expect([...ISSUE_TYPES]).toEqual(taxonomy.issue_types);
+    expect([...PRODUCT_SCOPES]).toEqual(taxonomy.product_scopes);
     expect([...CATEGORIES]).toEqual(taxonomy.categories);
     expect([...SURFACES]).toEqual(taxonomy.surfaces);
     expect([...PLATFORMS]).toEqual(taxonomy.platforms);

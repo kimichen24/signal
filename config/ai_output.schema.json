@@ -15,9 +15,29 @@
     "sentiment",
     "summary",
     "confidence",
-    "needs_review"
+    "needs_review",
+    "product_scope",
+    "scope_confidence",
+    "scope_reason"
   ],
   "properties": {
+    "product_scope": {
+      "type": "string",
+      "enum": [
+        "codex_core",
+        "codex_adjacent",
+        "out_of_scope"
+      ]
+    },
+    "scope_confidence": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 1
+    },
+    "scope_reason": {
+      "type": "string",
+      "maxLength": 500
+    },
     "issue_type": {
       "type": "string",
       "enum": [

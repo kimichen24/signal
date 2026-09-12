@@ -1,11 +1,16 @@
 {
-  "version": "0.2.0",
+  "version": "0.3.0",
   "issue_types": [
     "bug",
     "feature_request",
     "ux_issue",
     "documentation",
     "other"
+  ],
+  "product_scopes": [
+    "codex_core",
+    "codex_adjacent",
+    "out_of_scope"
   ],
   "categories": [
     "Reliability",

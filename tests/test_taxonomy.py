@@ -40,10 +40,18 @@ def test_schema_enums_match_taxonomy():
     props = schema["properties"]
 
     assert props["issue_type"]["enum"] == taxonomy["issue_types"]
+    assert props["product_scope"]["enum"] == taxonomy["product_scopes"]
     assert props["category"]["enum"] == taxonomy["categories"]
     assert props["surface"]["enum"] == taxonomy["surfaces"]
     assert props["platform"]["enum"] == taxonomy["platforms"]
     assert props["severity"]["enum"] == taxonomy["severities"]
+
+
+def test_scope_fields_are_required_in_schema():
+    schema = _load("config/ai_output.schema.json")
+    for field in ("product_scope", "scope_confidence", "scope_reason"):
+        assert field in schema["required"], f"{field} must be required"
+        assert field in schema["properties"], f"{field} must be defined"
 
 
 def test_schema_required_fields_are_all_defined():

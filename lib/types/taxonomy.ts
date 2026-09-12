@@ -2,7 +2,7 @@
 // The stable top-level taxonomy is locked (docs/DECISIONS.md #7);
 // subtopics are discovered dynamically by the AI extraction step.
 
-export const TAXONOMY_VERSION = "0.2.0";
+export const TAXONOMY_VERSION = "0.3.0";
 
 export const ISSUE_TYPES = [
   "bug",
@@ -10,6 +10,12 @@ export const ISSUE_TYPES = [
   "ux_issue",
   "documentation",
   "other",
+] as const;
+
+export const PRODUCT_SCOPES = [
+  "codex_core",
+  "codex_adjacent",
+  "out_of_scope",
 ] as const;
 
 export const CATEGORIES = [
@@ -59,6 +65,7 @@ export const ACTION_TYPES = [
 ] as const;
 
 export type IssueType = (typeof ISSUE_TYPES)[number];
+export type ProductScope = (typeof PRODUCT_SCOPES)[number];
 export type Category = (typeof CATEGORIES)[number];
 export type Surface = (typeof SURFACES)[number];
 export type Platform = (typeof PLATFORMS)[number];

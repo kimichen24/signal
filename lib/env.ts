@@ -25,17 +25,40 @@ export const serverEnvSchema = z.object({
     .regex(/^[A-Za-z0-9_.-]+\/[A-Za-z0-9_.-]+$/, 'must be "owner/repo"')
     .default("openai/codex"),
 
-  // OpenAI (Prompt 02) — model IDs come from env, never from code.
+  // AI provider layer (Prompt 02). 'mimo' today; 'openai' can be added
+  // later in pipeline/ai/ without rewriting the analysis pipeline.
+  AI_PROVIDER: z.enum(["mimo", "openai"]).default("mimo"),
+  MIMO_API_KEY: z.string().optional(),
+  MIMO_BASE_URL: z.string().url().default("https://api.xiaomimimo.com/v1"),
+  MIMO_CLASSIFICATION_MODEL: z.string().default("mimo-v2.5-pro"),
+  MIMO_EMBEDDING_MODEL: z.string().optional(),
+
+  // Embedding layer — independent of the classification provider.
+  // 'local' runs sentence-transformers in-process; 'none' skips embeddings.
+  EMBEDDING_PROVIDER: z.enum(["local", "mimo", "none"]).default("local"),
+  LOCAL_EMBEDDING_MODEL: z
+    .string()
+    .default("intfloat/multilingual-e5-small"),
+  EMBEDDING_DIMENSION: z.coerce.number().int().positive().default(384),
+  LOCAL_EMBEDDING_PREFIX: z.string().default("passage:"),
+
+  // OpenAI (kept for the future openai provider — never used for MiMo).
   OPENAI_API_KEY: z.string().optional(),
   OPENAI_CLASSIFICATION_MODEL: z.string().optional(),
   OPENAI_EMBEDDING_MODEL: z.string().optional(),
 
   // Deterministic pipeline thresholds
-  SIGNAL_ANALYSIS_VERSION: z.string().default("v0.2.0"),
+  SIGNAL_ANALYSIS_VERSION: z.string().default("v0.3.0"),
   SIGNAL_MIN_CONFIDENCE: z.coerce.number().min(0).max(1).default(0.6),
   SIGNAL_MIN_CLUSTER_SIZE: z.coerce.number().int().min(1).default(5),
   SIGNAL_EMERGING_MIN_VOLUME: z.coerce.number().int().min(1).default(5),
   SIGNAL_EMERGING_MIN_GROWTH: z.coerce.number().default(0.5),
+  SIGNAL_CLUSTER_DISTANCE_THRESHOLD: z.coerce
+    .number()
+    .min(0)
+    .max(2)
+    .default(0.45),
+  SIGNAL_TREND_MIN_PERIOD_VOLUME: z.coerce.number().int().min(0).default(10),
 
   // Public app copy
   NEXT_PUBLIC_APP_NAME: z.string().default("Signal"),

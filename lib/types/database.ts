@@ -5,6 +5,7 @@ import type {
   Category,
   IssueType,
   Platform,
+  ProductScope,
   Severity,
   Surface,
 } from "./taxonomy";
@@ -51,6 +52,9 @@ export interface IssueAnalysisRow {
   summary: string;
   confidence: number;
   needs_review: boolean;
+  product_scope: ProductScope;
+  scope_confidence: number;
+  scope_reason: string | null;
   analysis_version: string;
   model_name: string | null;
   analysis_error: string | null;
@@ -75,4 +79,28 @@ export interface ClusterRow {
   is_emerging: boolean;
   representative_issue_ids: string[];
   generated_at: string;
+}
+
+export type AnalysisRunType =
+  | "ingestion"
+  | "analysis"
+  | "embedding"
+  | "clustering"
+  | "trends"
+  | "release_impact"
+  | "opportunities"
+  | "eval";
+
+export interface AnalysisRunRow {
+  id: string;
+  run_type: AnalysisRunType;
+  analysis_version: string | null;
+  repo: string | null;
+  model_name: string | null;
+  start_date: string | null;
+  snapshot_at: string;
+  item_count: number;
+  params: Record<string, unknown>;
+  error_summary: string | null;
+  created_at: string;
 }
