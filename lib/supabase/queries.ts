@@ -16,7 +16,9 @@ export interface DataSummary {
   latestIssueAt: string | null;
 }
 
-export async function getDataSummary(): Promise<DataSummary> {
+export async function getDataSummary(
+  version?: string
+): Promise<DataSummary> {
   const base: DataSummary = {
     configured: isSupabaseConfigured(),
     error: null,
@@ -32,25 +34,51 @@ export async function getDataSummary(): Promise<DataSummary> {
   if (!client) return base;
 
   try {
+    // issues table is version-independent (raw ingestion).
+    const issuesQuery = client
+      .from("issues")
+      .select("id", { count: "exact", head: true });
+
+    // issue_analysis and clusters are scoped to a specific analysis version
+    // when a version is provided. Without a version filter, counts sum across
+    // all versions and can exceed the issue count (UNIQUE(issue_id, version)).
+    const analyzedBase = client
+      .from("issue_analysis")
+      .select("issue_id", { count: "exact", head: true })
+      .is("analysis_error", null);
+    const analyzedFinal = version
+      ? analyzedBase.eq("analysis_version", version)
+      : analyzedBase;
+
+    const emergingBase = client
+      .from("clusters")
+      .select("id", { count: "exact", head: true })
+      .eq("is_emerging", true);
+    const emergingFinal = version
+      ? emergingBase.eq("analysis_version", version)
+      : emergingBase;
+
+    const highSeverityBase = client
+      .from("issue_analysis")
+      .select("issue_id", { count: "exact", head: true })
+      .in("severity", ["high", "critical"]);
+    const highSeverityFinal = version
+      ? highSeverityBase.eq("analysis_version", version)
+      : highSeverityBase;
+
+    const latestQuery = client
+      .from("issues")
+      .select("github_created_at")
+      .order("github_created_at", { ascending: false })
+      .limit(1);
+
     const [issues, analyzed, emerging, highSeverity, latest] =
       await Promise.all([
-        client.from("issues").select("id", { count: "exact", head: true }),
-        client
-          .from("issue_analysis")
-          .select("issue_id", { count: "exact", head: true }),
-        client
-          .from("clusters")
-          .select("id", { count: "exact", head: true })
-          .eq("is_emerging", true),
-        client
-          .from("issue_analysis")
-          .select("issue_id", { count: "exact", head: true })
-          .in("severity", ["high", "critical"]),
-        client
-          .from("issues")
-          .select("github_created_at")
-          .order("github_created_at", { ascending: false })
-          .limit(1),
+        issuesQuery,
+        analyzedFinal,
+        emergingFinal,
+        highSeverityFinal,
+        latestQuery,
       ]);
 
     const firstError =
@@ -361,21 +389,31 @@ export async function getDistributions(
   const client = getSupabaseAdmin();
   if (!client) return { configured: false, error: null, data: null };
   try {
-    const { data, error } = await client
-      .from("issue_analysis")
-      .select("surface,platform,category")
-      .eq("analysis_version", version)
-      .neq("product_scope", "out_of_scope");
-    if (error) return { configured: true, error: error.message, data: null };
+    // Paginated fetch — PostgREST defaults to 1000 rows per request.
+    type DistRow = { surface: string; platform: string; category: string };
+    const allRows: DistRow[] = [];
+    for (let offset = 0; ; ) {
+      const { data: batch, error } = await client
+        .from("issue_analysis")
+        .select("surface,platform,category")
+        .eq("analysis_version", version)
+        .neq("product_scope", "out_of_scope")
+        .range(offset, offset + 999);
+      if (error) return { configured: true, error: error.message, data: null };
+      const rows = (batch ?? []) as DistRow[];
+      allRows.push(...rows);
+      if (rows.length < 1000) break;
+      offset += 1000;
+    }
     const surface = new Map<string, number>();
     const platform = new Map<string, number>();
     const category = new Map<string, number>();
-    for (const row of data ?? []) {
+    for (const row of allRows) {
       surface.set(row.surface, (surface.get(row.surface) ?? 0) + 1);
       platform.set(row.platform, (platform.get(row.platform) ?? 0) + 1);
       category.set(row.category, (category.get(row.category) ?? 0) + 1);
     }
-    const inScopeTotal = (data ?? []).length;
+    const inScopeTotal = allRows.length;
     return {
       configured: true,
       error: null,
@@ -510,7 +548,8 @@ export interface EntityCount {
 }
 
 export async function getEntityCount(
-  table: "clusters" | "releases" | "opportunities"
+  table: "clusters" | "releases" | "opportunities",
+  version?: string
 ): Promise<EntityCount> {
   if (!isSupabaseConfigured()) {
     return { configured: false, error: null, count: null };
@@ -519,9 +558,17 @@ export async function getEntityCount(
   if (!client) return { configured: false, error: null, count: null };
 
   try {
-    const { count, error } = await client
+    let query = client
       .from(table)
       .select("id", { count: "exact", head: true });
+    // Scope to analysis_version where the column exists on the table.
+    // clusters and releases have analysis_version directly.
+    // opportunities is linked via cluster_id — version scoping happens
+    // at the page level through getOpportunities(version).
+    if (version && table !== "opportunities") {
+      query = query.eq("analysis_version", version);
+    }
+    const { count, error } = await query;
     if (error) return { configured: true, error: error.message, count: null };
     return { configured: true, error: null, count: count ?? 0 };
   } catch (e) {

@@ -1,5 +1,13 @@
 @import "tailwindcss";
 
+/* Force light color scheme — Signal is a light-theme editorial product.
+   color-scheme: light tells the browser not to apply UA dark-mode defaults.
+   The @media override below re-asserts our light variables in case Tailwind v4
+   auto-generates prefers-color-scheme: dark overrides for --color-* tokens. */
+html {
+  color-scheme: light;
+}
+
 :root {
   --radius: 0.5rem;
   --background: oklch(0.975 0.004 75);
@@ -23,6 +31,34 @@
   --border: oklch(0.88 0.006 75);
   --input: oklch(0.88 0.006 75);
   --ring: oklch(0.42 0.15 265);
+}
+
+/* Re-assert light variables under dark media query so they cannot be
+   overridden by Tailwind v4 auto-generated dark mode. */
+@media (prefers-color-scheme: dark) {
+  :root {
+    --background: oklch(0.975 0.004 75);
+    --foreground: oklch(0.16 0.01 260);
+    --card: oklch(0.99 0.003 75);
+    --card-foreground: oklch(0.16 0.01 260);
+    --popover: oklch(0.99 0.003 75);
+    --popover-foreground: oklch(0.16 0.01 260);
+    --primary: oklch(0.42 0.15 265);
+    --primary-foreground: oklch(0.99 0.003 75);
+    --secondary: oklch(0.94 0.006 75);
+    --secondary-foreground: oklch(0.25 0.01 260);
+    --muted: oklch(0.94 0.006 75);
+    --muted-foreground: oklch(0.48 0.015 260);
+    --accent: oklch(0.94 0.006 75);
+    --accent-foreground: oklch(0.25 0.01 260);
+    --destructive: oklch(0.58 0.20 25);
+    --destructive-foreground: oklch(0.99 0.003 75);
+    --success: oklch(0.52 0.14 155);
+    --warning: oklch(0.62 0.15 75);
+    --border: oklch(0.88 0.006 75);
+    --input: oklch(0.88 0.006 75);
+    --ring: oklch(0.42 0.15 265);
+  }
 }
 
 @theme inline {

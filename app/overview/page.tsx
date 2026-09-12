@@ -42,7 +42,7 @@ export default async function OverviewPage() {
   const caseStudy = process.env.NEXT_PUBLIC_CASE_STUDY ?? "OpenAI Codex";
   const version = process.env.SIGNAL_ANALYSIS_VERSION ?? "v0.3.4";
 
-  const summary = await getDataSummary();
+  const summary = await getDataSummary(version);
   const hasData =
     summary.configured &&
     summary.error === null &&
@@ -50,7 +50,7 @@ export default async function OverviewPage() {
 
   const distributions = hasData ? await getDistributions(version) : null;
   const topClusters = hasData ? await getInsights(version, 20) : null;
-  const clusterCount = hasData ? await getEntityCount("clusters") : null;
+  const clusterCount = hasData ? await getEntityCount("clusters", version) : null;
   const opportunityCount = hasData ? await getEntityCount("opportunities") : null;
 
   const top3 = (topClusters?.rows ?? [])
