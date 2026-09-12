@@ -1,0 +1,32 @@
+[
+  {
+    "issue_number": 43066,
+    "title": "Restore the \u201cNew Remote chat\u201d widget shortcut on Android",
+    "expected_scope": "codex_adjacent",
+    "reason": "Widget explicitly starts a new remote Codex chat — a ChatGPT/OpenAI surface used specifically to access/control a Codex workflow (Codex Remote). Regression case: previously misclassified as out_of_scope."
+  },
+  {
+    "issue_number": 43067,
+    "title": "[macOS] ChatGPT mode missing / selector stuck on Codex in 26.901.41600 while web works",
+    "expected_scope": "codex_adjacent",
+    "reason": "ChatGPT desktop surface interacting with the Codex mode selector — cross-surface behavior around a Codex workflow."
+  },
+  {
+    "issue_number": 43065,
+    "title": "Codex app: per-thread inbox of unread turn results for queued tasks",
+    "expected_scope": "codex_core",
+    "reason": "Directly concerns Codex App functionality (queued-task result management)."
+  },
+  {
+    "issue_number": 43064,
+    "title": "Cant open codex",
+    "expected_scope": "codex_core",
+    "reason": "The Codex application itself cannot launch — core product functionality."
+  },
+  {
+    "issue_number": 43063,
+    "title": "[macOS desktop] Chat citation-adjacent code/math delimiters swallow subsequent content; same conversation renders correctly on web",
+    "expected_scope": "out_of_scope",
+    "reason": "Affected workflow is chatting in Chat conversations — not a Codex workflow. Locked principle: the unified desktop app's bundle ID (com.openai.codex) and repository location do not by themselves promote the issue to codex_core."
+  }
+]
