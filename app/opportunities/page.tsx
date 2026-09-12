@@ -1,13 +1,14 @@
 import { EmptyState } from "@/components/empty-state";
-import { StatCard } from "@/components/stat-card";
-import { getEntityCount } from "@/lib/supabase/queries";
+import { OpportunityCard } from "@/components/opportunity-card";
+import { getOpportunities } from "@/lib/supabase/queries";
 
 export const dynamic = "force-dynamic";
 
 export const metadata = { title: "Opportunities" };
 
 export default async function OpportunitiesPage() {
-  const { configured, error, count } = await getEntityCount("opportunities");
+  const version = process.env.SIGNAL_ANALYSIS_VERSION ?? "v0.3.4";
+  const { configured, error, rows } = await getOpportunities(version, 50);
 
   return (
     <div className="space-y-8">
@@ -19,39 +20,42 @@ export default async function OpportunitiesPage() {
           Opportunities
         </h1>
         <p className="max-w-2xl text-sm leading-6 text-muted-foreground">
-          Investigation Priority — not roadmap priority and not a P0/P1 scale.
-          Each opportunity combines frequency (30%), severity (25%), growth
-          (25%) and engagement (20%) into a transparent score computed by
-          deterministic, testable code, with a reason and recommended action.
+          Investigation Priority — not roadmap priority and not a P0/P1
+          scale. Transparent components: 30% frequency · 25% AI-estimated
+          severity · 25% growth/signal strength · 20% engagement (real
+          GitHub comments + reactions). Statuses are mapped
+          deterministically before any generated prose. Analysis version{" "}
+          {version}.
         </p>
       </header>
 
       {!configured ? (
         <EmptyState
           title="Database not configured"
-          description="Create .env.local from .env.example and set the Supabase URL and service-role key, then run supabase/schema.sql."
+          description="Create .env.local from .env.example and set the Supabase URL and service-role key."
           hint="NEXT_PUBLIC_SUPABASE_URL · SUPABASE_SERVICE_ROLE_KEY"
         />
       ) : error ? (
         <EmptyState
           title="Database query failed"
           description={`The opportunities table could not be read. (${error})`}
-          hint="Run supabase/schema.sql against your Supabase project"
+          hint="Run python -m pipeline.opportunities to populate this page"
         />
-      ) : count ? (
-        <section className="grid grid-cols-2 gap-4">
-          <StatCard
-            label="Opportunities scored"
-            value={count.toLocaleString("en-US")}
-            hint="Priority detail and action briefs arrive with Prompt 04"
-          />
-        </section>
-      ) : (
+      ) : rows.length === 0 ? (
         <EmptyState
-          title="Investigation Priority not computed yet"
-          description="Opportunities are scored from clusters once insights exist. The deterministic priority formula and grounded action briefs are delivered with Prompt 04."
-          hint="prompts/04_RELEASES_ACTIONS.md"
+          title="No opportunities computed yet"
+          description="Opportunities are scored from production clusters after the trend engine has run. Execute the scoring pipeline to populate this page."
+          hint="python -m pipeline.opportunities"
         />
+      ) : (
+        <section className="space-y-4">
+          {rows.map((opportunity) => (
+            <OpportunityCard
+              key={opportunity.id}
+              opportunity={opportunity}
+            />
+          ))}
+        </section>
       )}
     </div>
   );

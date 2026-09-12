@@ -83,6 +83,7 @@ export interface RecentIssue {
   title: string;
   github_url: string;
   state: string | null;
+  parsed_platform: string | null;
   github_created_at: string;
 }
 
@@ -103,7 +104,7 @@ export async function getRecentIssues(limit = 10): Promise<RecentIssuesResult> {
     const { data, error } = await client
       .from("issues")
       .select(
-        "id, github_issue_number, title, github_url, state, github_created_at"
+        "id, github_issue_number, title, github_url, state, parsed_platform, github_created_at"
       )
       .order("github_created_at", { ascending: false })
       .limit(limit);
@@ -114,6 +115,390 @@ export async function getRecentIssues(limit = 10): Promise<RecentIssuesResult> {
       configured: true,
       error: e instanceof Error ? e.message : "Unknown database error",
       rows: [],
+    };
+  }
+}
+
+export interface RecentAnalysis {
+  issueNumber: number;
+  title: string;
+  githubUrl: string;
+  issueType: string;
+  surface: string;
+  platform: string;
+  category: string;
+  subtopic: string;
+  severity: string;
+  confidence: number;
+  needsReview: boolean;
+  summary: string;
+  userScenario: string | null;
+  userImpact: string | null;
+  productScope: string;
+  scopeReason: string | null;
+  analysisVersion: string;
+  analyzedAt: string;
+}
+
+export interface RecentAnalysesResult {
+  configured: boolean;
+  error: string | null;
+  rows: RecentAnalysis[];
+}
+
+export async function getRecentAnalyses(
+  limit = 10
+): Promise<RecentAnalysesResult> {
+  if (!isSupabaseConfigured()) {
+    return { configured: false, error: null, rows: [] };
+  }
+  const client = getSupabaseAdmin();
+  if (!client) return { configured: false, error: null, rows: [] };
+
+  try {
+    const { data, error } = await client
+      .from("issue_analysis")
+      .select(
+        `issue_type, surface, platform, category, subtopic, severity,
+         confidence, needs_review, summary, user_scenario, user_impact,
+         product_scope, scope_reason, analysis_version, analyzed_at,
+         issues(github_issue_number, title, github_url)`
+      )
+      .order("analyzed_at", { ascending: false })
+      .limit(limit);
+    if (error) return { configured: true, error: error.message, rows: [] };
+    const rows = (data ?? []).map((row: Record<string, unknown>) => {
+      const issue = row.issues as
+        | { github_issue_number: number; title: string; github_url: string }
+        | null;
+      return {
+        issueNumber: issue?.github_issue_number ?? 0,
+        title: issue?.title ?? "(deleted issue)",
+        githubUrl: issue?.github_url ?? "",
+        issueType: row.issue_type as string,
+        surface: row.surface as string,
+        platform: row.platform as string,
+        category: row.category as string,
+        subtopic: row.subtopic as string,
+        severity: row.severity as string,
+        confidence: Number(row.confidence),
+        needsReview: Boolean(row.needs_review),
+        summary: row.summary as string,
+        userScenario: (row.user_scenario as string | null) ?? null,
+        userImpact: (row.user_impact as string | null) ?? null,
+        productScope: (row.product_scope as string) ?? "codex_core",
+        scopeReason: (row.scope_reason as string | null) ?? null,
+        analysisVersion: row.analysis_version as string,
+        analyzedAt: row.analyzed_at as string,
+      };
+    });
+    return { configured: true, error: null, rows };
+  } catch (e) {
+    return {
+      configured: true,
+      error: e instanceof Error ? e.message : "Unknown database error",
+      rows: [],
+    };
+  }
+}
+
+export interface InsightEvidence {
+  issueNumber: number;
+  title: string;
+  githubUrl: string;
+  state: string | null;
+}
+
+export interface Insight {
+  id: string;
+  clusterKey: string;
+  name: string;
+  category: string;
+  summary: string | null;
+  problemStatement: string | null;
+  issueCount: number;
+  primarySurface: string | null;
+  primaryPlatform: string | null;
+  avgSeverityScore: number | null;
+  needsRefinement: boolean;
+  isEmerging: boolean;
+  growthRate: number | null;
+  currentPeriodCount: number | null;
+  previousPeriodCount: number | null;
+  clusteringParams: Record<string, unknown> | null;
+  representatives: InsightEvidence[];
+}
+
+export interface InsightsResult {
+  configured: boolean;
+  error: string | null;
+  rows: Insight[];
+}
+
+export async function getInsights(
+  version: string,
+  limit = 20
+): Promise<InsightsResult> {
+  if (!isSupabaseConfigured()) {
+    return { configured: false, error: null, rows: [] };
+  }
+  const client = getSupabaseAdmin();
+  if (!client) return { configured: false, error: null, rows: [] };
+
+  try {
+    const clusters = await client
+      .from("clusters")
+      .select(
+        "id,cluster_key,cluster_name,category,summary,problem_statement,issue_count,primary_surface,primary_platform,avg_severity_score,is_emerging,growth_rate,current_period_count,previous_period_count,clustering_params"
+      )
+      .eq("analysis_version", version)
+      .order("issue_count", { ascending: false })
+      .limit(limit);
+    if (clusters.error) return { configured: true, error: clusters.error.message, rows: [] };
+
+    const ids = (clusters.data ?? []).map((c) => c.id as string);
+    const evidenceByCluster = new Map<string, InsightEvidence[]>();
+    if (ids.length > 0) {
+      const members = await client
+        .from("cluster_members")
+        .select(
+          "cluster_id,issues(github_issue_number,title,github_url,state)"
+        )
+        .eq("is_representative", true)
+        .in("cluster_id", ids);
+      if (members.error)
+        return { configured: true, error: members.error.message, rows: [] };
+      for (const member of members.data ?? []) {
+        const issue = member.issues as unknown as
+          | {
+              github_issue_number: number;
+              title: string;
+              github_url: string;
+              state: string | null;
+            }
+          | null;
+        if (!issue) continue;
+        const list = evidenceByCluster.get(member.cluster_id) ?? [];
+        list.push({
+          issueNumber: issue.github_issue_number,
+          title: issue.title,
+          githubUrl: issue.github_url,
+          state: issue.state,
+        });
+        evidenceByCluster.set(member.cluster_id, list);
+      }
+    }
+
+    const rows: Insight[] = (clusters.data ?? []).map((c) => {
+      const params =
+        (c.clustering_params as Record<string, unknown> | null) ?? null;
+      return {
+        id: c.id as string,
+        clusterKey: c.cluster_key as string,
+        name: (c.cluster_name as string) ?? (c.cluster_key as string),
+        category: c.category as string,
+        summary: (c.summary as string | null) ?? null,
+        problemStatement: (c.problem_statement as string | null) ?? null,
+        issueCount: Number(c.issue_count),
+        primarySurface: (c.primary_surface as string | null) ?? null,
+        primaryPlatform: (c.primary_platform as string | null) ?? null,
+        avgSeverityScore:
+          c.avg_severity_score === null
+            ? null
+            : Number(c.avg_severity_score),
+        needsRefinement: Boolean(params?.needs_refinement),
+        isEmerging: Boolean(c.is_emerging),
+        growthRate: c.growth_rate === null ? null : Number(c.growth_rate),
+        currentPeriodCount:
+          c.current_period_count === null
+            ? null
+            : Number(c.current_period_count),
+        previousPeriodCount:
+          c.previous_period_count === null
+            ? null
+            : Number(c.previous_period_count),
+        clusteringParams: params,
+        representatives: evidenceByCluster.get(c.id as string) ?? [],
+      };
+    });
+    return { configured: true, error: null, rows };
+  } catch (e) {
+    return {
+      configured: true,
+      error: e instanceof Error ? e.message : "Unknown database error",
+      rows: [],
+    };
+  }
+}
+
+export interface DistributionSlice {
+  label: string;
+  count: number;
+  pct: number;
+}
+
+export interface Distributions {
+  surface: DistributionSlice[];
+  platform: DistributionSlice[];
+  category: DistributionSlice[];
+  inScopeTotal: number;
+}
+
+function toSlices(counter: Map<string, number>, total: number): DistributionSlice[] {
+  return [...counter.entries()]
+    .map(([label, count]) => ({
+      label,
+      count,
+      pct: total ? Math.round((100 * count) / total) : 0,
+    }))
+    .sort((a, b) => b.count - a.count);
+}
+
+export async function getDistributions(
+  version: string
+): Promise<{ configured: boolean; error: string | null; data: Distributions | null }> {
+  if (!isSupabaseConfigured()) return { configured: false, error: null, data: null };
+  const client = getSupabaseAdmin();
+  if (!client) return { configured: false, error: null, data: null };
+  try {
+    const { data, error } = await client
+      .from("issue_analysis")
+      .select("surface,platform,category")
+      .eq("analysis_version", version)
+      .neq("product_scope", "out_of_scope");
+    if (error) return { configured: true, error: error.message, data: null };
+    const surface = new Map<string, number>();
+    const platform = new Map<string, number>();
+    const category = new Map<string, number>();
+    for (const row of data ?? []) {
+      surface.set(row.surface, (surface.get(row.surface) ?? 0) + 1);
+      platform.set(row.platform, (platform.get(row.platform) ?? 0) + 1);
+      category.set(row.category, (category.get(row.category) ?? 0) + 1);
+    }
+    const inScopeTotal = (data ?? []).length;
+    return {
+      configured: true,
+      error: null,
+      data: {
+        surface: toSlices(surface, inScopeTotal),
+        platform: toSlices(platform, inScopeTotal),
+        category: toSlices(category, inScopeTotal),
+        inScopeTotal,
+      },
+    };
+  } catch (e) {
+    return {
+      configured: true,
+      error: e instanceof Error ? e.message : "Unknown database error",
+      data: null,
+    };
+  }
+}
+
+export interface TrendStatus {
+  state: "ok" | "insufficient_history";
+  reason: string | null;
+  earliestObservation: string | null;
+  currentPeriod: { start: string; end: string; count: number };
+  previousPeriod: { start: string; end: string; count: number };
+}
+
+function utcDayStart(date: Date): Date {
+  return new Date(
+    Date.UTC(date.getUTCFullYear(), date.getUTCMonth(), date.getUTCDate())
+  );
+}
+
+/** Mirrors pipeline/compute_trends.py: complete UTC days, half-open periods. */
+export async function getTrendStatus(
+  version: string,
+  minPeriodVolume = Number(process.env.SIGNAL_TREND_MIN_PERIOD_VOLUME ?? 10)
+): Promise<{ configured: boolean; error: string | null; status: TrendStatus | null }> {
+  if (!isSupabaseConfigured())
+    return { configured: false, error: null, status: null };
+  const client = getSupabaseAdmin();
+  if (!client) return { configured: false, error: null, status: null };
+  try {
+    // Paged fetch: a single request silently truncates (default 1000 rows).
+    type CreatedRow = {
+      issues: { github_created_at?: string } | { github_created_at?: string }[] | null;
+    };
+    const data: CreatedRow[] = [];
+    let offset = 0;
+    for (;;) {
+      const { data: batch, error } = await client
+        .from("issue_analysis")
+        .select("issues(github_created_at)")
+        .eq("analysis_version", version)
+        .neq("product_scope", "out_of_scope")
+        .range(offset, offset + 999);
+      if (error) return { configured: true, error: error.message, status: null };
+      const rows = (batch ?? []) as CreatedRow[];
+      data.push(...rows);
+      if (rows.length < 1000) break;
+      offset += 1000;
+    }
+
+    const todayStart = utcDayStart(new Date());
+    const currentStart = new Date(todayStart);
+    currentStart.setUTCDate(currentStart.getUTCDate() - 7);
+    const previousStart = new Date(currentStart);
+    previousStart.setUTCDate(previousStart.getUTCDate() - 7);
+
+    let current = 0;
+    let previous = 0;
+    let earliest: Date | null = null;
+    for (const row of data ?? []) {
+      // supabase-js cannot infer relation cardinality without generated
+      // types — `issues` may be typed as an object or a 1-element array.
+      const issue = row.issues as
+        | { github_created_at?: string }
+        | { github_created_at?: string }[]
+        | null;
+      const raw = Array.isArray(issue)
+        ? issue[0]?.github_created_at
+        : issue?.github_created_at;
+      if (!raw) continue;
+      const ts = new Date(raw);
+      if (!earliest || ts < earliest) earliest = ts;
+      if (ts >= currentStart && ts < todayStart) current += 1;
+      else if (ts >= previousStart && ts < currentStart) previous += 1;
+    }
+
+    let state: TrendStatus["state"] = "ok";
+    let reason: string | null = null;
+    if (!earliest || earliest >= previousStart) {
+      state = "insufficient_history";
+      reason = "dataset does not cover the previous comparison period";
+    } else if (previous < minPeriodVolume || current < minPeriodVolume) {
+      state = "insufficient_history";
+      reason = `a comparison period has fewer than ${minPeriodVolume} observations`;
+    }
+
+    return {
+      configured: true,
+      error: null,
+      status: {
+        state,
+        reason,
+        earliestObservation: earliest ? earliest.toISOString() : null,
+        currentPeriod: {
+          start: currentStart.toISOString(),
+          end: todayStart.toISOString(),
+          count: current,
+        },
+        previousPeriod: {
+          start: previousStart.toISOString(),
+          end: currentStart.toISOString(),
+          count: previous,
+        },
+      },
+    };
+  } catch (e) {
+    return {
+      configured: true,
+      error: e instanceof Error ? e.message : "Unknown database error",
+      status: null,
     };
   }
 }
@@ -144,6 +529,268 @@ export async function getEntityCount(
       configured: true,
       error: e instanceof Error ? e.message : "Unknown database error",
       count: null,
+    };
+  }
+}
+
+export interface Brief {
+  what_changed?: string;
+  affected_workflow?: string;
+  affected_surface_platform?: string;
+  evidence_summary?: string;
+  product_hypothesis?: string;
+  recommended_investigation?: string;
+  suggested_validation?: string;
+  metrics_to_monitor?: string[];
+}
+
+export interface OpportunityBase {
+  name: string;
+  category: string;
+  size: number;
+  current: number;
+  previous: number;
+  priority: number;
+  components: Record<string, number>;
+  weights: Record<string, number>;
+  action: string;
+  trendState: string | null;
+  signalScore: number | null;
+  isEmerging: boolean;
+  growthRate: number | null;
+  shareDeltaPp: number | null;
+  needsRefinement: boolean;
+  engagement: number;
+  engagementAvailable: boolean;
+  brief: Brief | null;
+  representatives: InsightEvidence[];
+}
+
+export interface Opportunity
+  extends OpportunityBase {
+  id: string;
+  name: string;
+  category: string;
+  size: number;
+  current: number;
+  previous: number;
+  priority: number;
+  components: Record<string, number>;
+  weights: Record<string, number>;
+  action: string;
+  trendState: string | null;
+  signalScore: number | null;
+  isEmerging: boolean;
+  growthRate: number | null;
+  shareDeltaPp: number | null;
+  needsRefinement: boolean;
+  engagement: number;
+  engagementAvailable: boolean;
+  brief: Brief | null;
+  representatives: InsightEvidence[];
+}
+
+export interface Opportunity
+  extends Omit<OpportunityBase, never> {
+  clusterId: string;
+}
+
+export async function getOpportunities(
+  version: string,
+  limit = 50
+): Promise<{ configured: boolean; error: string | null; rows: Opportunity[] }> {
+  if (!isSupabaseConfigured())
+    return { configured: false, error: null, rows: [] };
+  const client = getSupabaseAdmin();
+  if (!client) return { configured: false, error: null, rows: [] };
+  try {
+    const { data, error } = await client
+      .from("opportunities")
+      .select(
+        `id,action_type,priority_score,frequency_score,severity_score,growth_score,engagement_score,priority_reason,product_hypothesis,action_brief,
+         clusters!inner(id,cluster_name,category,issue_count,current_period_count,previous_period_count,growth_rate,is_emerging,clustering_params,analysis_version)`
+      )
+      .eq("clusters.analysis_version", version)
+      .order("priority_score", { ascending: false })
+      .limit(limit);
+    if (error) return { configured: true, error: error.message, rows: [] };
+
+    type RawRow = {
+      id: string;
+      action_type: string;
+      priority_score: number;
+      priority_reason: string | null;
+      product_hypothesis: string | null;
+      action_brief: Brief | null;
+      engagement_score: number | null;
+      clusters: {
+        id: string;
+        cluster_name: string;
+        category: string;
+        issue_count: number;
+        current_period_count: number;
+        previous_period_count: number;
+        growth_rate: number | null;
+        is_emerging: boolean;
+        clustering_params: Record<string, unknown> | null;
+      } | null;
+    };
+
+    const evidenceByCluster = new Map<string, InsightEvidence[]>();
+    const clusterIds = (data ?? [])
+      .map((r) => (r as unknown as RawRow).clusters?.id)
+      .filter((v): v is string => Boolean(v));
+    if (clusterIds.length) {
+      for (let offset = 0; ; offset += 999) {
+        const { data: members, error: mErr } = await client
+          .from("cluster_members")
+          .select(
+            "cluster_id,is_representative,issues(github_issue_number,title,github_url,state)"
+          )
+          .eq("is_representative", true)
+          .in("cluster_id", clusterIds)
+          .range(offset, offset + 999);
+        if (mErr) break;
+        const list = (members ?? []) as unknown as {
+          cluster_id: string;
+          issues: {
+            github_issue_number: number;
+            title: string;
+            github_url: string;
+            state: string | null;
+          } | null;
+        }[];
+        for (const m of list) {
+          if (!m.issues) continue;
+          const arr = evidenceByCluster.get(m.cluster_id) ?? [];
+          arr.push({
+            issueNumber: m.issues.github_issue_number,
+            title: m.issues.title,
+            githubUrl: m.issues.github_url,
+            state: m.issues.state,
+          });
+          evidenceByCluster.set(m.cluster_id, arr);
+        }
+        if ((members ?? []).length < 1000) break;
+        offset += 1000;
+      }
+    }
+
+    const rows: Opportunity[] = ((data ?? []) as unknown[]).map(
+      (raw): Opportunity => {
+      const r = raw as unknown as RawRow;
+      const cluster = r.clusters;
+      const params =
+        (cluster?.clustering_params as Record<string, unknown> | null) ?? {};
+      const trend = (params.trend as Record<string, number | string> | null) ?? {};
+      const reason = (() => {
+        try {
+          return JSON.parse(r.priority_reason || "{}");
+        } catch {
+          return {};
+        }
+      })();
+      return {
+        id: r.id,
+        clusterId: cluster?.id ?? "",
+        name: cluster?.cluster_name ?? "",
+        category: cluster?.category ?? "",
+        size: Number(cluster?.issue_count ?? 0),
+        current: Number(cluster?.current_period_count ?? 0),
+        previous: Number(cluster?.previous_period_count ?? 0),
+        priority: Number(r.priority_score),
+        components: (reason.components ?? {}) as Record<string, number>,
+        weights: (reason.weights ?? {}) as Record<string, number>,
+        action: r.action_type,
+        trendState: (reason.signal_state as string) ?? null,
+        signalScore:
+          reason.signal_score === null || reason.signal_score === undefined
+            ? null
+            : Number(reason.signal_score),
+        isEmerging: Boolean(cluster?.is_emerging),
+        growthRate:
+          cluster?.growth_rate === null || cluster?.growth_rate === undefined
+            ? null
+            : Number(cluster.growth_rate),
+        shareDeltaPp:
+          trend.share_delta_pp === null || trend.share_delta_pp === undefined
+            ? null
+            : Number(trend.share_delta_pp),
+        needsRefinement: Boolean(params.needs_refinement),
+        engagement: Number(r.engagement_score ?? 0),
+        engagementAvailable: Boolean(reason.engagement_available),
+        brief: (r.action_brief as Brief | null) ?? null,
+        representatives: evidenceByCluster.get(cluster?.id ?? "") ?? [],
+      };
+      },
+    );
+    return { configured: true, error: null, rows };
+  } catch (e) {
+    return {
+      configured: true,
+      error: e instanceof Error ? e.message : "Unknown database error",
+      rows: [],
+    };
+  }
+}
+
+export interface ReleaseRow {
+  id: string;
+  name: string;
+  releaseDate: string;
+  sourceUrl: string;
+  beforeTotal: number;
+  afterTotal: number;
+  clustersImpacted: number;
+  hasImpact: boolean;
+}
+
+export async function getReleases(): Promise<{
+  configured: boolean;
+  error: string | null;
+  rows: ReleaseRow[];
+}> {
+  if (!isSupabaseConfigured())
+    return { configured: false, error: null, rows: [] };
+  const client = getSupabaseAdmin();
+  if (!client) return { configured: false, error: null, rows: [] };
+  try {
+    const { data: releases, error } = await client
+      .from("releases")
+      .select("id,name,release_date,source_url,description")
+      .order("release_date", { ascending: false });
+    if (error) return { configured: true, error: error.message, rows: [] };
+    const { data: impacts, error: impErr } = await client
+      .from("release_impacts")
+      .select("release_id,before_count,after_count");
+    if (impErr) return { configured: true, error: impErr.message, rows: [] };
+    const agg = new Map<string, { before: number; after: number; clusters: number }>();
+    for (const r of impacts ?? []) {
+      const cur = agg.get(r.release_id) ?? { before: 0, after: 0, clusters: 0 };
+      cur.before += Number(r.before_count);
+      cur.after += Number(r.after_count);
+      cur.clusters += 1;
+      agg.set(r.release_id, cur);
+    }
+    const rows: ReleaseRow[] = (releases ?? []).map((r) => {
+      const a = agg.get(r.id) ?? { before: 0, after: 0, clusters: 0 };
+      return {
+        id: r.id,
+        name: r.name,
+        releaseDate: r.release_date,
+        sourceUrl: r.source_url,
+        beforeTotal: a.before,
+        afterTotal: a.after,
+        clustersImpacted: a.clusters,
+        hasImpact: a.clusters > 0,
+      };
+    });
+    return { configured: true, error: null, rows };
+  } catch (e) {
+    return {
+      configured: true,
+      error: e instanceof Error ? e.message : "Unknown database error",
+      rows: [],
     };
   }
 }
