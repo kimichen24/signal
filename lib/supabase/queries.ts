@@ -44,8 +44,7 @@ export async function getDataSummary(
     // all versions and can exceed the issue count (UNIQUE(issue_id, version)).
     const analyzedBase = client
       .from("issue_analysis")
-      .select("issue_id", { count: "exact", head: true })
-      .is("analysis_error", null);
+      .select("issue_id", { count: "exact", head: true });
     const analyzedFinal = version
       ? analyzedBase.eq("analysis_version", version)
       : analyzedBase;

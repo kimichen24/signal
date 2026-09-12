@@ -5,6 +5,7 @@ import {
   getEntityCount,
   getInsights,
 } from "@/lib/supabase/queries";
+import { CATEGORY } from "@/lib/labels";
 
 export const dynamic = "force-dynamic";
 
@@ -167,7 +168,7 @@ export default async function OverviewPage() {
                         {signal.name}
                       </span>
                       <span className="rounded bg-secondary px-1.5 py-0.5 text-[11px] text-muted-foreground">
-                        {signal.category}
+                        {CATEGORY[signal.category] ?? signal.category}
                       </span>
                       {signal.isEmerging ? (
                         <span className="rounded bg-primary/10 px-1.5 py-0.5 text-[11px] font-medium text-primary">
