@@ -67,17 +67,24 @@ class SupabaseRest:
         )
 
     @classmethod
-    def from_env(cls) -> "SupabaseRest":
+    def from_env(cls, *, allow_anon: bool = False) -> "SupabaseRest":
+        """Create client from environment.
+
+        allow_anon: if True, fall back to SUPABASE_ANON_KEY when
+        SUPABASE_SERVICE_ROLE_KEY is absent.  Only safe for read-only
+        paths (snapshot generation).  Write-capable pipelines must NOT
+        pass allow_anon=True — the anon key has RLS SELECT-only.
+        """
         load_env()
         url = os.environ.get("NEXT_PUBLIC_SUPABASE_URL", "").strip()
         key = os.environ.get("SUPABASE_SERVICE_ROLE_KEY", "").strip()
-        if not key:
-            # Fallback to anon key (RLS SELECT-only; sufficient for reads)
+        if not key and allow_anon:
             key = os.environ.get("SUPABASE_ANON_KEY", "").strip()
         if not url or not key:
             raise SupabaseConfigError(
                 "Supabase is not configured: set NEXT_PUBLIC_SUPABASE_URL "
-                "and SUPABASE_SERVICE_ROLE_KEY or SUPABASE_ANON_KEY in .env.local"
+                "and SUPABASE_SERVICE_ROLE_KEY in .env.local"
+                + (" (anon fallback also failed)" if allow_anon else "")
             )
         return cls(url, key)
 

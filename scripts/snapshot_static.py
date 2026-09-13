@@ -15,9 +15,6 @@ import sys
 import time
 from pathlib import Path
 
-# Increase recursion limit for large paginated fetches
-sys.setrecursionlimit(5000)
-
 # Ensure project root is on sys.path for pipeline imports
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
@@ -52,7 +49,7 @@ def main() -> int:
 
     from pipeline.supabase_client import SupabaseRest
 
-    with SupabaseRest.from_env() as sb:
+    with SupabaseRest.from_env(allow_anon=True) as sb:
         VERSION = "v0.3.4"
         report = {}
 
