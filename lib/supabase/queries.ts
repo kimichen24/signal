@@ -992,3 +992,115 @@ export async function getReleases(): Promise<{
     };
   }
 }
+
+/* ── Release Timeline ───────────────────────────────────────────── */
+
+export interface ReleaseTimelineCluster {
+  clusterId: string;
+  clusterName: string;
+  beforeCount: number;
+  afterCount: number;
+  signalType: string;
+}
+
+export interface ReleaseTimelineEntry {
+  id: string;
+  name: string;
+  releaseDate: string;
+  sourceUrl: string;
+  description: string | null;
+  hasImpact: boolean;
+  totalBefore: number;
+  totalAfter: number;
+  impactedClusters: number;
+  topClusters: ReleaseTimelineCluster[];
+}
+
+export async function getReleaseTimeline(): Promise<{
+  configured: boolean;
+  error: string | null;
+  rows: ReleaseTimelineEntry[];
+}> {
+  if (!isSupabaseConfigured())
+    return { configured: false, error: null, rows: [] };
+  const client = getSupabaseAdmin();
+  if (!client) return { configured: false, error: null, rows: [] };
+
+  try {
+    const { data: releases, error } = await client
+      .from("releases")
+      .select("id,name,release_date,source_url,description")
+      .order("release_date", { ascending: false });
+    if (error) return { configured: true, error: error.message, rows: [] };
+
+    type ImpactRow = {
+      release_id: string;
+      cluster_id: string;
+      before_count: number;
+      after_count: number;
+      signal_type: string;
+      clusters: { cluster_name: string } | null;
+    };
+    const allImpacts: ImpactRow[] = [];
+    for (let offset = 0; ; ) {
+      const { data: batch, error: impErr } = await client
+        .from("release_impacts")
+        .select(
+          "release_id,cluster_id,before_count,after_count,signal_type,clusters(cluster_name)"
+        )
+        .order("after_count", { ascending: false })
+        .range(offset, offset + 999);
+      if (impErr)
+        return { configured: true, error: impErr.message, rows: [] };
+      const rows = (batch ?? []) as unknown as ImpactRow[];
+      allImpacts.push(...rows);
+      if (rows.length < 1000) break;
+      offset += 1000;
+    }
+
+    const byRelease = new Map<string, ImpactRow[]>();
+    for (const imp of allImpacts) {
+      const list = byRelease.get(imp.release_id) ?? [];
+      list.push(imp);
+      byRelease.set(imp.release_id, list);
+    }
+
+    const timeline: ReleaseTimelineEntry[] = (releases ?? []).map((r) => {
+      const impacts = byRelease.get(r.id) ?? [];
+      let totalBefore = 0;
+      let totalAfter = 0;
+      const clusters: ReleaseTimelineCluster[] = impacts.map((imp) => {
+        totalBefore += imp.before_count;
+        totalAfter += imp.after_count;
+        return {
+          clusterId: imp.cluster_id,
+          clusterName: imp.clusters?.cluster_name ?? "",
+          beforeCount: imp.before_count,
+          afterCount: imp.after_count,
+          signalType: imp.signal_type,
+        };
+      });
+
+      return {
+        id: r.id,
+        name: r.name,
+        releaseDate: r.release_date,
+        sourceUrl: r.source_url,
+        description: r.description as string | null,
+        hasImpact: impacts.length > 0,
+        totalBefore,
+        totalAfter,
+        impactedClusters: impacts.length,
+        topClusters: clusters.slice(0, 5),
+      };
+    });
+
+    return { configured: true, error: null, rows: timeline };
+  } catch (e) {
+    return {
+      configured: true,
+      error: e instanceof Error ? e.message : "Unknown database error",
+      rows: [],
+    };
+  }
+}
