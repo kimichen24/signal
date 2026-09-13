@@ -1,14 +1,9 @@
 import Link from "next/link";
-import {
-  getDataSummary,
-  getDistributions,
-  getEntityCount,
-  getOpportunities,
-} from "@/lib/supabase/queries";
+import { getOverviewData } from "@/lib/data-adapter";
 import { CATEGORY, SURFACE, SEVERITY, ACTION } from "@/lib/labels";
 import { getClusterDisplayName } from "@/lib/cluster-labels";
 
-export const dynamic = "force-dynamic";
+export { dynamic } from "@/lib/page-config";
 
 export const metadata = { title: "总览" };
 
@@ -48,25 +43,17 @@ export default async function OverviewPage() {
   const caseStudy = process.env.NEXT_PUBLIC_CASE_STUDY ?? "OpenAI Codex";
   const version = process.env.SIGNAL_ANALYSIS_VERSION ?? "v0.3.4";
 
-  const summary = await getDataSummary(version);
+  const data = await getOverviewData();
+  const summary = data.summary;
   const hasData =
     summary.configured &&
     summary.error === null &&
     (summary.totalIssues ?? 0) > 0;
 
-  const distributions = hasData ? await getDistributions(version) : null;
-  const opportunities = hasData ? await getOpportunities(version, 50) : null;
-  const clusterCount = hasData
-    ? await getEntityCount("clusters", version)
-    : null;
-  const opportunityCount = hasData
-    ? await getEntityCount("opportunities")
-    : null;
-
-  const top3 = (opportunities?.rows ?? []).slice(0, 3);
-
-  const topSurfaces = (distributions?.data?.surface ?? []).slice(0, 5);
-  const topCategories = (distributions?.data?.category ?? []).slice(0, 5);
+  const distributions = data.distributions;
+  const top3 = (data.topOpportunities ?? []).slice(0, 3);
+  const topSurfaces = (distributions?.surface ?? []).slice(0, 5);
+  const topCategories = (distributions?.category ?? []).slice(0, 5);
 
   return (
     <div className="space-y-16">
@@ -113,21 +100,21 @@ export default async function OverviewPage() {
             <div className="hidden h-5 w-px bg-border sm:block" />
             <div className="flex items-baseline gap-2">
               <span className="text-2xl font-bold tabular-nums text-foreground">
-                {formatNumber(distributions?.data?.inScopeTotal ?? null)}
+                {formatNumber(distributions?.inScopeTotal ?? null)}
               </span>
               <span className="text-xs text-muted-foreground">有效反馈</span>
             </div>
             <div className="hidden h-5 w-px bg-border sm:block" />
             <div className="flex items-baseline gap-2">
               <span className="text-2xl font-bold tabular-nums text-foreground">
-                {formatNumber(clusterCount?.count ?? null)}
+                {formatNumber(data.clusterCount ?? null)}
               </span>
               <span className="text-xs text-muted-foreground">问题簇</span>
             </div>
             <div className="hidden h-5 w-px bg-border sm:block" />
             <div className="flex items-baseline gap-2">
               <span className="text-2xl font-bold tabular-nums text-foreground">
-                {formatNumber(opportunityCount?.count ?? null)}
+                {formatNumber(data.opportunityCount ?? null)}
               </span>
               <span className="text-xs text-muted-foreground">产品机会</span>
             </div>
@@ -218,20 +205,20 @@ export default async function OverviewPage() {
               href="/opportunities"
               className="text-sm text-primary underline-offset-4 hover:underline"
             >
-              查看全部 {opportunityCount?.count ?? 0} 个产品机会 →
+              查看全部 {data.opportunityCount ?? 0} 个产品机会 →
             </Link>
           </div>
         </section>
       ) : null}
 
       {/* ── Feedback Structure ────────────────────────────────────── */}
-      {distributions?.data ? (
+      {distributions ? (
         <section>
           <h2 className="text-lg font-semibold tracking-tight text-foreground">
             反馈结构
           </h2>
           <p className="mt-1 text-sm text-muted-foreground">
-            {formatNumber(distributions.data.inScopeTotal)} 条有效反馈的分布。
+            {formatNumber(distributions?.inScopeTotal ?? null)} 条有效反馈的分布。
           </p>
           <div className="mt-6 grid gap-8 md:grid-cols-2">
             <div>

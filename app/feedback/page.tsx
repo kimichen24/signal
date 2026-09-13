@@ -1,13 +1,13 @@
 import { EmptyState } from "@/components/empty-state";
 import { FeedbackInbox } from "@/components/feedback-inbox";
-import { getFeedbackInbox } from "@/lib/supabase/queries";
+import { getFeedbackData } from "@/lib/data-adapter";
 
-export const dynamic = "force-dynamic";
+export { dynamic } from "@/lib/page-config";
 
 export const metadata = { title: "反馈" };
 
 export default async function FeedbackPage() {
-  const { configured, error, rows } = await getFeedbackInbox(20);
+  const { configured, error, rows } = await getFeedbackData();
 
   return (
     <div className="space-y-6">

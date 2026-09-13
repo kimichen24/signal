@@ -1,0 +1,86 @@
+name: Deploy to GitHub Pages
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: "pages"
+  cancel-in-progress: false
+
+jobs:
+  build-and-deploy:
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install Python dependencies
+        run: pip install requests
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: "npm"
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Generate frozen data snapshot
+        env:
+          NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.NEXT_PUBLIC_SUPABASE_URL }}
+          SUPABASE_ANON_KEY: ${{ secrets.SUPABASE_ANON_KEY }}
+        run: python scripts/snapshot_static.py
+
+      - name: Exclude API routes for static export
+        run: mv app/api app/api.disabled
+
+      - name: Build static export
+        env:
+          DEPLOY_TARGET: github-pages
+        run: npx next build
+
+      - name: Restore API routes
+        if: always()
+        run: mv app/api.disabled app/api 2>/dev/null || true
+
+      - name: Verify static output
+        run: |
+          test -d out/overview
+          test -d out/feedback
+          test -d out/insights
+          test -d out/releases
+          test -d out/opportunities
+          test -d out/action-briefs
+          echo "All six pages present in out/"
+
+      - name: Secret scan
+        run: |
+          ! grep -r "sb_secret_\|SUPABASE_SERVICE_ROLE_KEY\|MIMO_API_KEY" out/ && echo "No secrets found"
+
+      - name: Setup Pages
+        uses: actions/configure-pages@v5
+
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: ./out
+
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4

@@ -1,8 +1,8 @@
 import { EmptyState } from "@/components/empty-state";
-import { getReleaseTimeline } from "@/lib/supabase/queries";
+import { getReleasesData } from "@/lib/data-adapter";
 import { getClusterDisplayName } from "@/lib/cluster-labels";
 
-export const dynamic = "force-dynamic";
+export { dynamic } from "@/lib/page-config";
 
 export const metadata = { title: "版本影响" };
 
@@ -53,7 +53,7 @@ function BarComparison({
 }
 
 export default async function ReleasesPage() {
-  const { configured, error, rows } = await getReleaseTimeline();
+  const { configured, error, rows } = await getReleasesData();
 
   const sufficientCount = rows.filter((r) => r.sufficientHistory).length;
   const insufficientCount = rows.filter((r) => !r.sufficientHistory).length;

@@ -10,7 +10,9 @@
     "typecheck": "tsc --noEmit",
     "test": "vitest run",
     "test:watch": "vitest",
-    "test:python": "python -m pytest tests -q"
+    "test:python": "python -m pytest tests -q",
+    "snapshot:static": "python scripts/snapshot_static.py",
+    "build:github-pages": "mv app/api app/api.disabled; DEPLOY_TARGET=github-pages npx next build; mv app/api.disabled app/api"
   },
   "dependencies": {
     "@supabase/ssr": "^0.6.1",

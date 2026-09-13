@@ -1,11 +1,11 @@
 import { EmptyState } from "@/components/empty-state";
 import { Badge } from "@/components/ui/badge";
-import { getOpportunities } from "@/lib/supabase/queries";
+import { getOpportunitiesData } from "@/lib/data-adapter";
 import { getClusterDisplayName } from "@/lib/cluster-labels";
 import { CATEGORY, SEVERITY, ACTION } from "@/lib/labels";
 import type { Opportunity } from "@/lib/supabase/queries";
 
-export const dynamic = "force-dynamic";
+export { dynamic } from "@/lib/page-config";
 
 export const metadata = { title: "机会" };
 
@@ -239,8 +239,7 @@ function StatusSection({
 /* ── Page ──────────────────────────────────────────────────────── */
 
 export default async function OpportunitiesPage() {
-  const version = process.env.SIGNAL_ANALYSIS_VERSION ?? "v0.3.4";
-  const { configured, error, rows } = await getOpportunities(version, 50);
+  const { configured, error, rows } = await getOpportunitiesData();
 
   /* Group by persisted action_type */
   const investigateNow = rows.filter((r) => r.action === "investigate_now");

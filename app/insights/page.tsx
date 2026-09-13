@@ -1,13 +1,10 @@
 import { EmptyState } from "@/components/empty-state";
-import {
-  getInsights,
-  getClusterInsightCounts,
-} from "@/lib/supabase/queries";
+import { getInsightsData } from "@/lib/data-adapter";
 import { CATEGORY, SEVERITY } from "@/lib/labels";
 import { getClusterDisplayName } from "@/lib/cluster-labels";
 import type { Insight } from "@/lib/supabase/queries";
 
-export const dynamic = "force-dynamic";
+export { dynamic } from "@/lib/page-config";
 
 export const metadata = { title: "洞察" };
 
@@ -126,8 +123,10 @@ function InsightRow({ insight, rank }: { insight: Insight; rank: number }) {
 
 export default async function InsightsPage() {
   const version = process.env.SIGNAL_ANALYSIS_VERSION ?? "v0.3.4";
-  const { configured, error, rows } = await getInsights(version, 50);
-  const counts = configured ? await getClusterInsightCounts(version) : null;
+  const data = await getInsightsData();
+  const { configured, error } = data;
+  const rows = data.insights;
+  const counts = data.counts;
 
   /* Grouping by existing stored states:
      1. 新兴信号: isEmerging, sorted by emergingScore desc (frozen Prompt 04 ranking)
@@ -143,9 +142,9 @@ export default async function InsightsPage() {
     .filter((r) => !r.isEmerging && !r.needsRefinement)
     .sort((a, b) => b.issueCount - a.issueCount);
 
-  const totalClusters = counts?.counts?.total ?? null;
-  const emergingCount = counts?.counts?.emerging ?? null;
-  const refinementCount = counts?.counts?.needsRefinement ?? null;
+  const totalClusters = counts?.total ?? null;
+  const emergingCount = counts?.emerging ?? null;
+  const refinementCount = counts?.needsRefinement ?? null;
 
   return (
     <div className="space-y-12">

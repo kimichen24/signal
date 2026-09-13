@@ -1,11 +1,11 @@
 import { EmptyState } from "@/components/empty-state";
 import { Badge } from "@/components/ui/badge";
-import { getOpportunities } from "@/lib/supabase/queries";
+import { getActionBriefsData } from "@/lib/data-adapter";
 import { getClusterDisplayName } from "@/lib/cluster-labels";
 import { ACTION } from "@/lib/labels";
 import type { Opportunity } from "@/lib/supabase/queries";
 
-export const dynamic = "force-dynamic";
+export { dynamic } from "@/lib/page-config";
 
 export const metadata = { title: "行动简报" };
 
@@ -191,8 +191,7 @@ function BriefMemo({ opportunity }: { opportunity: Opportunity }) {
 /* ── Page ──────────────────────────────────────────────────────── */
 
 export default async function ActionBriefsPage() {
-  const version = process.env.SIGNAL_ANALYSIS_VERSION ?? "v0.3.4";
-  const { configured, error, rows } = await getOpportunities(version, 50);
+  const { configured, error, rows } = await getActionBriefsData();
   const briefed = rows.filter(
     (r) => r.brief && Object.keys(r.brief).length > 0
   );

@@ -39,3 +39,6 @@ eval/codex_agent_benchmark_timing.json
 
 .vercel
 .env*
+
+# generated static data snapshot (rebuilt in CI)
+/generated/
