@@ -12,12 +12,29 @@ Fails if any integrity check fails.
 import json
 import os
 import sys
+import time
 from pathlib import Path
 
 # Ensure project root is on sys.path for pipeline imports
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
 OUT_DIR = Path(__file__).resolve().parent.parent / "generated" / "static-data"
+
+
+def select_with_retry(sb, table, *, columns="*", filters=None, order=None, page_size=500, max_rows=20000):
+    """select_paged with retry on transient errors (504, 429, 503)."""
+    for attempt in range(3):
+        try:
+            return select_with_retry(sb, 
+                table, columns=columns, filters=filters, order=order,
+                page_size=page_size, max_rows=max_rows,
+            )
+        except RuntimeError as e:
+            if "504" in str(e) or "429" in str(e) or "503" in str(e):
+                if attempt < 2:
+                    time.sleep(5 * (attempt + 1))
+                    continue
+            raise
 
 
 def main() -> int:
@@ -37,10 +54,10 @@ def main() -> int:
         report = {}
 
         # ── Overview data ──────────────────────────────────────────
-        issues = sb.select_paged("issues", columns="id")
+        issues = select_with_retry(sb, "issues", columns="id")
         total_issues = len(issues)
 
-        analyses = sb.select_paged(
+        analyses = select_with_retry(sb, 
             "issue_analysis",
             columns="issue_id,product_scope",
             filters={"analysis_version": f"eq.{VERSION}"},
@@ -49,7 +66,7 @@ def main() -> int:
         in_scope = [a for a in analyses if a["product_scope"] != "out_of_scope"]
         in_scope_count = len(in_scope)
 
-        high_sev = sb.select_paged(
+        high_sev = select_with_retry(sb, 
             "issue_analysis",
             columns="issue_id",
             filters={
@@ -58,7 +75,7 @@ def main() -> int:
             },
         )
 
-        clusters = sb.select_paged(
+        clusters = select_with_retry(sb, 
             "clusters",
             columns="id,cluster_key,cluster_name,category,summary,problem_statement,"
             "issue_count,primary_surface,primary_platform,avg_severity_score,"
@@ -75,7 +92,7 @@ def main() -> int:
         ]
 
         # Distributions (in-scope, paginated)
-        dist_rows = sb.select_paged(
+        dist_rows = select_with_retry(sb, 
             "issue_analysis",
             columns="surface,platform,category",
             filters={
@@ -120,7 +137,7 @@ def main() -> int:
         }
 
         # ── Feedback data ──────────────────────────────────────────
-        latest_issues = sb.select_paged(
+        latest_issues = select_with_retry(sb, 
             "issues",
             columns="id,github_issue_number,title,github_url,state,parsed_platform,github_created_at",
             order="github_created_at.desc",
@@ -128,7 +145,7 @@ def main() -> int:
             max_rows=20,
         )
         issue_ids = [i["id"] for i in latest_issues]
-        fb_analyses = sb.select_paged(
+        fb_analyses = select_with_retry(sb, 
             "issue_analysis",
             columns="issue_id,issue_type,surface,platform,category,subtopic,severity,"
             "confidence,needs_review,summary,user_scenario,user_impact,"
@@ -180,7 +197,7 @@ def main() -> int:
         # ── Insights data ──────────────────────────────────────────
         # Cluster members for representative evidence
         cluster_ids = [c["id"] for c in clusters]
-        member_rows = sb.select_paged(
+        member_rows = select_with_retry(sb, 
             "cluster_members",
             columns="cluster_id,issue_id,is_representative",
             filters={"is_representative": "eq.true"},
@@ -190,7 +207,7 @@ def main() -> int:
         if rep_issue_ids:
             for batch_start in range(0, len(rep_issue_ids), 500):
                 batch = rep_issue_ids[batch_start : batch_start + 500]
-                rows = sb.select_paged(
+                rows = select_with_retry(sb, 
                     "issues",
                     columns="id,github_issue_number,title,github_url,state",
                     filters={"id": f"in.({','.join(batch)})"},
@@ -274,12 +291,12 @@ def main() -> int:
         # ── Releases data ──────────────────────────────────────────
         from datetime import datetime, timedelta, timezone
 
-        releases = sb.select_paged(
+        releases = select_with_retry(sb, 
             "releases",
             columns="id,name,release_date,source_url,description",
             order="release_date.desc",
         )
-        release_impacts = sb.select_paged(
+        release_impacts = select_with_retry(sb, 
             "release_impacts",
             columns="release_id,cluster_id,before_count,after_count,signal_type",
         )
@@ -289,7 +306,7 @@ def main() -> int:
         if impact_cluster_ids:
             for batch_start in range(0, len(impact_cluster_ids), 500):
                 batch = impact_cluster_ids[batch_start : batch_start + 500]
-                rows = sb.select_paged(
+                rows = select_with_retry(sb, 
                     "clusters",
                     columns="id,cluster_key,cluster_name",
                     filters={"id": f"in.({','.join(batch)})"},
@@ -355,7 +372,7 @@ def main() -> int:
         report["releases"] = {"configured": True, "error": None, "rows": release_rows}
 
         # ── Opportunities data ─────────────────────────────────────
-        opps = sb.select_paged(
+        opps = select_with_retry(sb, 
             "opportunities",
             columns="id,cluster_id,action_type,priority_score,frequency_score,severity_score,"
             "growth_score,engagement_score,priority_reason,product_hypothesis,action_brief",
@@ -365,7 +382,7 @@ def main() -> int:
         if opp_cluster_ids:
             for batch_start in range(0, len(opp_cluster_ids), 500):
                 batch = opp_cluster_ids[batch_start : batch_start + 500]
-                rows = sb.select_paged(
+                rows = select_with_retry(sb, 
                     "clusters",
                     columns="id,cluster_key,cluster_name,category,issue_count,"
                     "current_period_count,previous_period_count,growth_rate,"
