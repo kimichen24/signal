@@ -1,5 +1,8 @@
 import { EmptyState } from "@/components/empty-state";
-import { getInsights, getEntityCount } from "@/lib/supabase/queries";
+import {
+  getInsights,
+  getClusterInsightCounts,
+} from "@/lib/supabase/queries";
 import { CATEGORY, SEVERITY } from "@/lib/labels";
 import type { Insight } from "@/lib/supabase/queries";
 
@@ -13,27 +16,6 @@ function severityLabel(score: number | null): string {
   if (score >= 2.5) return SEVERITY.high ?? "高";
   if (score >= 1.5) return SEVERITY.medium ?? "中";
   return SEVERITY.low ?? "低";
-}
-
-function trendArrow(
-  current: number | null,
-  previous: number | null
-): { arrow: string; pct: string; color: string } {
-  const c = current ?? 0;
-  const p = previous ?? 0;
-  if (p === 0 && c === 0)
-    return { arrow: "—", pct: "0%", color: "text-muted-foreground" };
-  if (p === 0) return { arrow: "↑", pct: "新增", color: "text-primary" };
-  const change = Math.round(((c - p) / p) * 100);
-  if (change > 5)
-    return { arrow: "↑", pct: `+${change}%`, color: "text-primary" };
-  if (change < -5)
-    return { arrow: "↓", pct: `${change}%`, color: "text-destructive" };
-  return {
-    arrow: "→",
-    pct: `${change > 0 ? "+" : ""}${change}%`,
-    color: "text-muted-foreground",
-  };
 }
 
 /* ── Chinese presentation copy for known top clusters ──────────── */
@@ -64,16 +46,25 @@ const CLUSTER_CN: Record<string, { name: string; statement: string }> = {
 
 function InsightRow({ insight, rank }: { insight: Insight; rank: number }) {
   const cn = CLUSTER_CN[insight.name];
-  const trend = trendArrow(
-    insight.currentPeriodCount,
-    insight.previousPeriodCount
-  );
   const category = CATEGORY[insight.category] ?? insight.category;
   const sev = severityLabel(insight.avgSeverityScore);
 
+  /* Display persisted growth_rate with explicit label.
+     growth_rate is stored as a decimal (e.g. 0.35 = 35%). */
+  const growthPct =
+    insight.growthRate !== null
+      ? Math.round(insight.growthRate * 100)
+      : null;
+  const growthColor =
+    growthPct !== null && growthPct > 5
+      ? "text-primary"
+      : growthPct !== null && growthPct < -5
+        ? "text-destructive"
+        : "text-muted-foreground";
+
   return (
     <div className="py-5 first:pt-0 last:pb-0">
-      {/* Row 1: rank + name + badges + trend */}
+      {/* Row 1: rank + name + badges + growth */}
       <div className="flex items-start justify-between gap-4">
         <div className="flex min-w-0 items-start gap-3">
           <span className="mt-0.5 shrink-0 text-sm font-semibold tabular-nums text-muted-foreground">
@@ -99,9 +90,13 @@ function InsightRow({ insight, rank }: { insight: Insight; rank: number }) {
               需细化
             </span>
           ) : null}
-          <span className={`text-sm font-medium tabular-nums ${trend.color}`}>
-            {trend.arrow} {trend.pct}
-          </span>
+          {growthPct !== null ? (
+            <span className={`text-sm font-medium tabular-nums ${growthColor}`}>
+              {growthPct > 0 ? "↑" : growthPct < 0 ? "↓" : "→"}{" "}
+              {growthPct > 0 ? "+" : ""}
+              {growthPct}%
+            </span>
+          ) : null}
         </div>
       </div>
 
@@ -110,13 +105,19 @@ function InsightRow({ insight, rank }: { insight: Insight; rank: number }) {
         {cn?.statement ?? insight.problemStatement ?? insight.summary ?? ""}
       </p>
 
-      {/* Row 3: metadata + evidence */}
+      {/* Row 3: metadata */}
       <div className="mt-2 flex flex-wrap items-center gap-x-4 gap-y-1 pl-7 text-xs text-muted-foreground">
-        <span className="tabular-nums">
-          上一周期 {insight.previousPeriodCount ?? 0} · 当前周期{" "}
-          {insight.currentPeriodCount ?? 0}
-        </span>
+        {insight.previousPeriodCount !== null ||
+        insight.currentPeriodCount !== null ? (
+          <span className="tabular-nums">
+            上一周期 {insight.previousPeriodCount ?? 0} · 当前周期{" "}
+            {insight.currentPeriodCount ?? 0}
+          </span>
+        ) : null}
         <span>AI 估算严重度：{sev}</span>
+        {growthPct !== null ? (
+          <span>增长率 {growthPct}%</span>
+        ) : null}
       </div>
 
       {/* Row 4: evidence */}
@@ -149,19 +150,25 @@ function InsightRow({ insight, rank }: { insight: Insight; rank: number }) {
 export default async function InsightsPage() {
   const version = process.env.SIGNAL_ANALYSIS_VERSION ?? "v0.3.4";
   const { configured, error, rows } = await getInsights(version, 50);
-  const clusterCount = configured ? await getEntityCount("clusters", version) : null;
+  const counts = configured ? await getClusterInsightCounts(version) : null;
 
-  /* Grouping: 新兴信号 / 重点问题 / 全部问题簇 */
+  /* Grouping by existing stored states:
+     1. 新兴信号: isEmerging, sorted by emergingScore desc (frozen Prompt 04 ranking)
+     2. 需进一步细化: needsRefinement && !isEmerging, sorted by issueCount desc
+     3. 其他问题簇: remaining, sorted by issueCount desc */
   const emerging = rows
     .filter((r) => r.isEmerging)
-    .sort((a, b) => (b.growthRate ?? 0) - (a.growthRate ?? 0));
-  const priority = rows
-    .filter((r) => !r.isEmerging && (r.needsRefinement || (r.avgSeverityScore ?? 0) >= 2.5))
+    .sort((a, b) => (b.emergingScore ?? 0) - (a.emergingScore ?? 0));
+  const needsRefinement = rows
+    .filter((r) => r.needsRefinement && !r.isEmerging)
     .sort((a, b) => b.issueCount - a.issueCount);
-  const all = rows
-    .filter((r) => !emerging.includes(r) && !priority.includes(r))
+  const other = rows
+    .filter((r) => !r.isEmerging && !r.needsRefinement)
     .sort((a, b) => b.issueCount - a.issueCount);
-  const needsRefinementCount = rows.filter((r) => r.needsRefinement).length;
+
+  const totalClusters = counts?.counts?.total ?? null;
+  const emergingCount = counts?.counts?.emerging ?? null;
+  const refinementCount = counts?.counts?.needsRefinement ?? null;
 
   return (
     <div className="space-y-12">
@@ -198,42 +205,44 @@ export default async function InsightsPage() {
         />
       ) : (
         <>
-          {/* Metric strip */}
+          {/* Metric strip — full-production counts, not page-limited */}
           <section>
             <div className="flex flex-wrap items-baseline gap-x-8 gap-y-4 text-sm sm:gap-x-12">
               <div className="flex items-baseline gap-2">
                 <span className="text-2xl font-bold tabular-nums text-primary">
-                  {emerging.length}
+                  {emergingCount ?? "—"}
                 </span>
                 <span className="text-xs text-muted-foreground">新兴信号</span>
               </div>
               <div className="hidden h-5 w-px bg-border sm:block" />
               <div className="flex items-baseline gap-2">
                 <span className="text-2xl font-bold tabular-nums text-foreground">
-                  {clusterCount?.count ?? rows.length}
+                  {totalClusters ?? "—"}
                 </span>
                 <span className="text-xs text-muted-foreground">问题簇</span>
               </div>
               <div className="hidden h-5 w-px bg-border sm:block" />
               <div className="flex items-baseline gap-2">
                 <span className="text-2xl font-bold tabular-nums text-foreground">
-                  {needsRefinementCount}
+                  {refinementCount ?? "—"}
                 </span>
-                <span className="text-xs text-muted-foreground">需进一步细化</span>
+                <span className="text-xs text-muted-foreground">
+                  需进一步细化
+                </span>
               </div>
             </div>
           </section>
 
           <hr className="border-border" />
 
-          {/* 新兴信号 */}
+          {/* 新兴信号 — sorted by frozen emergingScore (Prompt 04) */}
           {emerging.length > 0 ? (
             <section>
               <h2 className="text-lg font-semibold tracking-tight text-foreground">
                 新兴信号
               </h2>
               <p className="mt-1 text-sm text-muted-foreground">
-                近期增长显著的问题簇，按增长率排序。
+                按 Emerging 评分排序的新兴问题簇。
               </p>
               <div className="mt-4 divide-y divide-border">
                 {emerging.map((insight, i) => (
@@ -243,34 +252,34 @@ export default async function InsightsPage() {
             </section>
           ) : null}
 
-          {/* 重点问题 */}
-          {priority.length > 0 ? (
+          {/* 需进一步细化 — existing stored needs_refinement state */}
+          {needsRefinement.length > 0 ? (
             <section>
               <h2 className="text-lg font-semibold tracking-tight text-foreground">
-                重点问题
+                需进一步细化
               </h2>
               <p className="mt-1 text-sm text-muted-foreground">
-                高严重度或需进一步细化的问题簇，按反馈量排序。
+                覆盖范围较广、建议进一步细化的问题簇。
               </p>
               <div className="mt-4 divide-y divide-border">
-                {priority.map((insight, i) => (
+                {needsRefinement.map((insight, i) => (
                   <InsightRow key={insight.id} insight={insight} rank={i + 1} />
                 ))}
               </div>
             </section>
           ) : null}
 
-          {/* 全部问题簇 */}
-          {all.length > 0 ? (
+          {/* 其他问题簇 */}
+          {other.length > 0 ? (
             <section>
               <h2 className="text-lg font-semibold tracking-tight text-foreground">
-                全部问题簇
+                其他问题簇
               </h2>
               <p className="mt-1 text-sm text-muted-foreground">
-                按反馈量排序的完整问题簇列表。
+                按反馈量排序的其余问题簇。
               </p>
               <div className="mt-4 divide-y divide-border">
-                {all.map((insight, i) => (
+                {other.map((insight, i) => (
                   <InsightRow key={insight.id} insight={insight} rank={i + 1} />
                 ))}
               </div>
@@ -284,8 +293,14 @@ export default async function InsightsPage() {
             </summary>
             <div className="mt-3 space-y-1 pl-4">
               <p>分析版本：{version}</p>
-              <p>聚类算法：确定性语义聚类 · distance_threshold=0.45</p>
-              <p>新兴信号判定：7天窗口增长率 ≥ 50% 且最小观测量 5 条</p>
+              <p>
+                聚类算法：确定性语义聚类 · distance_threshold=0.45
+              </p>
+              <p>
+                新兴信号判定：Emerging 评分框架（7天窗口增长率 ≥ 50% 且最小观测量 5
+                条）
+              </p>
+              <p>增长率为存储的持久化值，非 UI 计算。</p>
               <p>
                 数据集：codex-14d-2026-09-06 · 仅真实 GitHub Issues（PR 已过滤）
               </p>

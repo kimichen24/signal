@@ -350,6 +350,7 @@ export interface Insight {
   avgSeverityScore: number | null;
   needsRefinement: boolean;
   isEmerging: boolean;
+  emergingScore: number | null;
   growthRate: number | null;
   currentPeriodCount: number | null;
   previousPeriodCount: number | null;
@@ -377,7 +378,7 @@ export async function getInsights(
     const clusters = await client
       .from("clusters")
       .select(
-        "id,cluster_key,cluster_name,category,summary,problem_statement,issue_count,primary_surface,primary_platform,avg_severity_score,is_emerging,growth_rate,current_period_count,previous_period_count,clustering_params"
+        "id,cluster_key,cluster_name,category,summary,problem_statement,issue_count,primary_surface,primary_platform,avg_severity_score,is_emerging,emerging_score,growth_rate,current_period_count,previous_period_count,clustering_params"
       )
       .eq("analysis_version", version)
       .order("issue_count", { ascending: false })
@@ -436,6 +437,8 @@ export async function getInsights(
             : Number(c.avg_severity_score),
         needsRefinement: Boolean(params?.needs_refinement),
         isEmerging: Boolean(c.is_emerging),
+        emergingScore:
+          c.emerging_score === null ? null : Number(c.emerging_score),
         growthRate: c.growth_rate === null ? null : Number(c.growth_rate),
         currentPeriodCount:
           c.current_period_count === null
@@ -637,6 +640,51 @@ export async function getTrendStatus(
       configured: true,
       error: e instanceof Error ? e.message : "Unknown database error",
       status: null,
+    };
+  }
+}
+
+/* ── Cluster Insight Counts (full-production aggregates) ────────── */
+
+export interface ClusterInsightCounts {
+  total: number;
+  emerging: number;
+  needsRefinement: number;
+}
+
+export async function getClusterInsightCounts(
+  version: string
+): Promise<{ configured: boolean; error: string | null; counts: ClusterInsightCounts | null }> {
+  if (!isSupabaseConfigured())
+    return { configured: false, error: null, counts: null };
+  const client = getSupabaseAdmin();
+  if (!client) return { configured: false, error: null, counts: null };
+
+  try {
+    const { data, error } = await client
+      .from("clusters")
+      .select("is_emerging,clustering_params")
+      .eq("analysis_version", version);
+    if (error)
+      return { configured: true, error: error.message, counts: null };
+
+    const rows = data ?? [];
+    const emerging = rows.filter((r) => r.is_emerging).length;
+    const needsRefinement = rows.filter((r) => {
+      const params = r.clustering_params as Record<string, unknown> | null;
+      return Boolean(params?.needs_refinement);
+    }).length;
+
+    return {
+      configured: true,
+      error: null,
+      counts: { total: rows.length, emerging, needsRefinement },
+    };
+  } catch (e) {
+    return {
+      configured: true,
+      error: e instanceof Error ? e.message : "Unknown database error",
+      counts: null,
     };
   }
 }
