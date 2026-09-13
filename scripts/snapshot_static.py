@@ -15,6 +15,9 @@ import sys
 import time
 from pathlib import Path
 
+# Increase recursion limit for large paginated fetches
+sys.setrecursionlimit(5000)
+
 # Ensure project root is on sys.path for pipeline imports
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
@@ -25,7 +28,7 @@ def select_with_retry(sb, table, *, columns="*", filters=None, order=None, page_
     """select_paged with retry on transient errors (504, 429, 503)."""
     for attempt in range(3):
         try:
-            return select_with_retry(sb, 
+            return sb.select_paged(
                 table, columns=columns, filters=filters, order=order,
                 page_size=page_size, max_rows=max_rows,
             )
