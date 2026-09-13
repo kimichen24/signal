@@ -71,10 +71,13 @@ class SupabaseRest:
         load_env()
         url = os.environ.get("NEXT_PUBLIC_SUPABASE_URL", "").strip()
         key = os.environ.get("SUPABASE_SERVICE_ROLE_KEY", "").strip()
+        if not key:
+            # Fallback to anon key (RLS SELECT-only; sufficient for reads)
+            key = os.environ.get("SUPABASE_ANON_KEY", "").strip()
         if not url or not key:
             raise SupabaseConfigError(
                 "Supabase is not configured: set NEXT_PUBLIC_SUPABASE_URL "
-                "and SUPABASE_SERVICE_ROLE_KEY in .env.local"
+                "and SUPABASE_SERVICE_ROLE_KEY or SUPABASE_ANON_KEY in .env.local"
             )
         return cls(url, key)
 
