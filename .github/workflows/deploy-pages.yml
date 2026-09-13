@@ -48,7 +48,7 @@ jobs:
         run: python scripts/snapshot_static.py
 
       - name: Exclude API routes for static export
-        run: mv app/api app/api.disabled && rm -rf .next
+        run: mv app/api ../api_backup && rm -rf .next
 
       - name: Build static export
         env:
@@ -57,7 +57,7 @@ jobs:
 
       - name: Restore API routes
         if: always()
-        run: mv app/api.disabled app/api 2>/dev/null || true
+        run: mv ../api_backup app/api 2>/dev/null || true
 
       - name: Verify static output
         run: |
