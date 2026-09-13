@@ -1011,10 +1011,36 @@ export interface ReleaseTimelineEntry {
   sourceUrl: string;
   description: string | null;
   hasImpact: boolean;
+  sufficientHistory: boolean;
   totalBefore: number;
   totalAfter: number;
   impactedClusters: number;
   topClusters: ReleaseTimelineCluster[];
+}
+
+function computeSufficientHistory(
+  releaseDate: string,
+  dsStart: string,
+  dsEnd: string,
+  minDays: number
+): { sufficient: boolean; beforeDays: number; afterDays: number } {
+  const rd = new Date(releaseDate);
+  const start = new Date(dsStart);
+  const end = new Date(dsEnd);
+  const ms = 86400000;
+  // Before window: release-7d .. release, clipped to dataset
+  const bStart = new Date(Math.max(rd.getTime() - 7 * ms, start.getTime()));
+  const bEnd = new Date(Math.min(rd.getTime(), end.getTime()));
+  const beforeDays = Math.max(0, (bEnd.getTime() - bStart.getTime()) / ms);
+  // After window: release .. release+7d, clipped to dataset
+  const aStart = new Date(Math.max(rd.getTime(), start.getTime()));
+  const aEnd = new Date(Math.min(rd.getTime() + 7 * ms, end.getTime()));
+  const afterDays = Math.max(0, (aEnd.getTime() - aStart.getTime()) / ms);
+  return {
+    sufficient: beforeDays >= minDays && afterDays >= minDays,
+    beforeDays,
+    afterDays,
+  };
 }
 
 export async function getReleaseTimeline(): Promise<{
@@ -1083,6 +1109,13 @@ export async function getReleaseTimeline(): Promise<{
         };
       });
 
+      const coverage = computeSufficientHistory(
+        r.release_date,
+        "2026-08-23T00:00:00Z",
+        "2026-09-06T00:00:00Z",
+        5
+      );
+
       return {
         id: r.id,
         name: r.name,
@@ -1090,6 +1123,7 @@ export async function getReleaseTimeline(): Promise<{
         sourceUrl: r.source_url,
         description: r.description as string | null,
         hasImpact: impacts.length > 0,
+        sufficientHistory: coverage.sufficient,
         totalBefore,
         totalAfter,
         impactedClusters: impacts.length,

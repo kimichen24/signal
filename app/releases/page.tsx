@@ -55,6 +55,9 @@ function BarComparison({
 export default async function ReleasesPage() {
   const { configured, error, rows } = await getReleaseTimeline();
 
+  const sufficientCount = rows.filter((r) => r.sufficientHistory).length;
+  const insufficientCount = rows.filter((r) => !r.sufficientHistory).length;
+
   return (
     <div className="space-y-12">
       {/* Header */}
@@ -93,6 +96,30 @@ export default async function ReleasesPage() {
         />
       ) : (
         <section>
+          {/* Summary strip */}
+          <div className="mb-8 flex flex-wrap items-baseline gap-x-8 gap-y-2 text-sm">
+            <div className="flex items-baseline gap-2">
+              <span className="text-2xl font-bold tabular-nums text-foreground">
+                {rows.length}
+              </span>
+              <span className="text-xs text-muted-foreground">公开版本</span>
+            </div>
+            <div className="hidden h-5 w-px bg-border sm:block" />
+            <div className="flex items-baseline gap-2">
+              <span className="text-2xl font-bold tabular-nums text-foreground">
+                {sufficientCount}
+              </span>
+              <span className="text-xs text-muted-foreground">可比较</span>
+            </div>
+            <div className="hidden h-5 w-px bg-border sm:block" />
+            <div className="flex items-baseline gap-2">
+              <span className="text-2xl font-bold tabular-nums text-muted-foreground">
+                {insufficientCount}
+              </span>
+              <span className="text-xs text-muted-foreground">历史数据不足</span>
+            </div>
+          </div>
+
           {/* Timeline */}
           <div className="relative">
             {/* Timeline line */}
@@ -106,14 +133,6 @@ export default async function ReleasesPage() {
                   release.totalAfter,
                   1
                 );
-                const change =
-                  release.totalBefore > 0
-                    ? Math.round(
-                        ((release.totalAfter - release.totalBefore) /
-                          release.totalBefore) *
-                          100
-                      )
-                    : 0;
 
                 return (
                   <div key={release.id} className="relative pl-8">
@@ -145,8 +164,8 @@ export default async function ReleasesPage() {
                       </a>
                     </div>
 
-                    {/* Impact comparison */}
-                    {release.hasImpact ? (
+                    {/* Content based on sufficiency */}
+                    {release.sufficientHistory && release.hasImpact ? (
                       <div className="mt-4 max-w-md space-y-3">
                         <BarComparison
                           before={release.totalBefore}
@@ -154,15 +173,17 @@ export default async function ReleasesPage() {
                           max={maxCount}
                         />
 
-                        {change !== 0 ? (
+                        {release.totalBefore === release.totalAfter ? (
                           <p className="text-xs text-muted-foreground">
-                            发布后相关反馈{" "}
-                            {change > 0 ? "有所增加" : "有所减少"}，
-                            值得进一步调查。
+                            发布前后相关反馈量保持稳定，未观察到可报告的变化。
+                          </p>
+                        ) : release.totalAfter > release.totalBefore ? (
+                          <p className="text-xs text-muted-foreground">
+                            该版本发布后，相关反馈有所增加，值得进一步调查。
                           </p>
                         ) : (
                           <p className="text-xs text-muted-foreground">
-                            发布前后反馈量持平，未观察到显著变化。
+                            该版本发布后，相关反馈有所减少。
                           </p>
                         )}
 
@@ -222,14 +243,14 @@ export default async function ReleasesPage() {
                 版本来源：GitHub 官方公开 Release，每条带有 source_url 溯源链接。
               </p>
               <p>
-                比较窗口：版本发布日期 ±7 天，裁剪至数据集边界（2026-08-23 →
+                比较窗口：版本发布日期前7天和后7天，裁剪至数据集边界（2026-08-23 →
                 2026-09-06）。
               </p>
               <p>
-                覆盖保障：任一侧覆盖不足 5 天的比较标记为&ldquo;历史数据不足&rdquo;。
+                覆盖保障：任一侧覆盖不足 5 天的比较标记为历史数据不足。
               </p>
               <p>
-                相关性 ≠ 因果关系：反馈量在版本发布后增加仅值得进一步调查，不代表版本导致了问题。
+                相关性 ≠ 因果关系：反馈量在版本发布后变化仅值得进一步调查，不代表版本与问题之间存在因果关系。
               </p>
               <p>
                 数据集：codex-14d-2026-09-06 · 仅真实 GitHub Issues（PR 已过滤）。
