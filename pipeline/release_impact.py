@@ -1,9 +1,17 @@
 """Release impact — deterministic before/after windows (Prompt 04).
 
-For each seeded release: clip the ±window_days windows to the dataset
-bounds, compute coverage days per side, and mark the comparison
-sufficient only when both sides meet the minimum coverage days.
-Correlation only — this module never claims causation.
+For each seeded release: clip the non-overlapping before/after windows
+to the dataset bounds, compute coverage days per side, and mark the
+comparison sufficient only when both sides meet the minimum coverage
+days.  Correlation only — this module never claims causation.
+
+Window semantics (corrected v0.2):
+  before: [max(dataset_start, release_date - window_days), release_date)
+  after:  [release_date, min(dataset_end, release_date + window_days))
+
+The v0.1 implementation used identical ±window_days ranges for both
+sides, producing before_count == after_count for every cluster.  Those
+rows are superseded by v0.2.
 
 For sufficient releases: total in-scope feedback before/after plus
 per-cluster before/after counts with new/increased/decreased/stable
@@ -21,16 +29,28 @@ from datetime import datetime, timedelta, timezone
 from typing import Any
 
 MIN_COVERAGE_DAYS = 5.0
+CALC_VERSION = "v0.2"
 
 
-def clipped_window(
+def clipped_before_window(
     release_date: datetime, days: int, ds_start: datetime, ds_end: datetime
 ) -> tuple[datetime, datetime, float]:
-    """±days window around release, clipped to the dataset. Returns
-    (start, end, coverage_days)."""
+    """Before window: [max(ds_start, release - days), release).
+    Returns (start, end, coverage_days)."""
     raw_start = release_date - timedelta(days=days)
-    raw_end = release_date + timedelta(days=days)
     start = max(raw_start, ds_start)
+    end = min(release_date, ds_end)
+    coverage = (end - start).total_seconds() / 86400.0
+    return start, end, max(coverage, 0.0)
+
+
+def clipped_after_window(
+    release_date: datetime, days: int, ds_start: datetime, ds_end: datetime
+) -> tuple[datetime, datetime, float]:
+    """After window: [release, min(ds_end, release + days)).
+    Returns (start, end, coverage_days)."""
+    raw_end = release_date + timedelta(days=days)
+    start = max(release_date, ds_start)
     end = min(raw_end, ds_end)
     coverage = (end - start).total_seconds() / 86400.0
     return start, end, max(coverage, 0.0)
@@ -143,16 +163,33 @@ def main(argv: list[str] | None = None) -> int:
                 r_date = datetime.fromisoformat(
                     release["release_date"].replace("Z", "+00:00")
                 )
-                b_start, b_end, before_days = clipped_window(
+                b_start, b_end, before_days = clipped_before_window(
                     r_date, args.window_days, ds_start, ds_end
                 )
-                a_start, a_end, after_days = clipped_window(
+                a_start, a_end, after_days = clipped_after_window(
                     r_date, args.window_days, ds_start, ds_end
                 )
                 sufficient = (
                     before_days >= args.min_coverage_days
                     and after_days >= args.min_coverage_days
                 )
+                comparison_status = (
+                    "sufficient_history"
+                    if sufficient
+                    else "insufficient_history"
+                )
+
+                # Invariant checks
+                assert b_end <= a_start, (
+                    f"before_end ({b_end}) must be <= after_start ({a_start})"
+                )
+                assert b_start < b_end or before_days == 0, (
+                    f"before_start ({b_start}) must be < before_end ({b_end})"
+                )
+                assert a_start < a_end or after_days == 0, (
+                    f"after_start ({a_start}) must be < after_end ({a_end})"
+                )
+
                 before_total = sum(
                     1 for t in in_scope_dt if b_start <= t < b_end
                 )
@@ -163,15 +200,14 @@ def main(argv: list[str] | None = None) -> int:
                     "release": release["name"],
                     "release_date": release["release_date"],
                     "source_url": release["source_url"],
+                    "calc_version": CALC_VERSION,
                     "before_window": f"{b_start.isoformat()} .. {b_end.isoformat()} ({round(before_days, 1)}d)",
                     "after_window": f"{a_start.isoformat()} .. {a_end.isoformat()} ({round(after_days, 1)}d)",
+                    "before_coverage_days": round(before_days, 2),
+                    "after_coverage_days": round(after_days, 2),
+                    "comparison_status": comparison_status,
                     "in_scope_before": before_total,
                     "in_scope_after": after_total,
-                    "state": (
-                        "ok"
-                        if sufficient
-                        else "insufficient_history"
-                    ),
                     "min_coverage_days": args.min_coverage_days,
                 }
                 if not sufficient:
@@ -234,17 +270,18 @@ def main(argv: list[str] | None = None) -> int:
                     "start_date": ds_start.isoformat(),
                     "snapshot_at": ds_end.isoformat(),
                     "item_count": sum(
-                        1 for r in report if r["state"] == "ok"
+                        1 for r in report if r["comparison_status"] == "sufficient_history"
                     ),
                     "params": {
+                        "calc_version": CALC_VERSION,
                         "window_days": args.window_days,
                         "min_coverage_days": args.min_coverage_days,
                         "releases_evaluated": len(releases),
-                        "sufficient": sum(
-                            1 for r in report if r["state"] == "ok"
+                        "sufficient_history": sum(
+                            1 for r in report if r["comparison_status"] == "sufficient_history"
                         ),
                         "insufficient_history": sum(
-                            1 for r in report if r["state"] != "ok"
+                            1 for r in report if r["comparison_status"] != "sufficient_history"
                         ),
                         "runtime_seconds": round(
                             time.monotonic() - started, 1
