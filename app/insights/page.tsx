@@ -4,6 +4,7 @@ import {
   getClusterInsightCounts,
 } from "@/lib/supabase/queries";
 import { CATEGORY, SEVERITY } from "@/lib/labels";
+import { getClusterDisplayName } from "@/lib/cluster-labels";
 import type { Insight } from "@/lib/supabase/queries";
 
 export const dynamic = "force-dynamic";
@@ -18,34 +19,10 @@ function severityLabel(score: number | null): string {
   return SEVERITY.low ?? "低";
 }
 
-/* ── Chinese presentation copy for known top clusters ──────────── */
-const CLUSTER_CN: Record<string, { name: string; statement: string }> = {
-  "Windows desktop app crashes and unexpected exits": {
-    name: "Windows 桌面端崩溃与意外退出",
-    statement:
-      "Windows 桌面应用在常见使用场景中频繁发生不可预测的崩溃或退出，打断用户工作流。",
-  },
-  "Paginated thread history projection inconsistencies": {
-    name: "分页会话历史记录显示异常",
-    statement:
-      "分页会话历史无法持久、正确地展示所有已完成对话轮次，导致用户看到不完整或过时的记录。",
-  },
-  "MCP extension lifecycle and server management issues": {
-    name: "MCP 扩展生命周期与服务管理问题",
-    statement:
-      "MCP 扩展在启动、连接和关闭过程中存在稳定性问题，影响工具集成和扩展功能的正常使用。",
-  },
-  "CLI tool execution timeouts and exit code inconsistencies": {
-    name: "CLI 工具执行超时与退出码异常",
-    statement:
-      "CLI 执行命令时频繁超时，且退出码不一致，导致自动化脚本和 CI/CD 流程可靠性下降。",
-  },
-};
-
 /* ── Insight row component ─────────────────────────────────────── */
 
 function InsightRow({ insight, rank }: { insight: Insight; rank: number }) {
-  const cn = CLUSTER_CN[insight.name];
+  const displayName = getClusterDisplayName({ clusterKey: insight.clusterKey, name: insight.name });
   const category = CATEGORY[insight.category] ?? insight.category;
   const sev = severityLabel(insight.avgSeverityScore);
 
@@ -72,7 +49,7 @@ function InsightRow({ insight, rank }: { insight: Insight; rank: number }) {
           </span>
           <div className="min-w-0">
             <p className="text-sm font-medium text-foreground">
-              {cn?.name ?? insight.name}
+              {displayName}
             </p>
             <span className="mt-0.5 text-xs text-muted-foreground">
               {category} · {insight.issueCount} 条反馈
@@ -102,7 +79,7 @@ function InsightRow({ insight, rank }: { insight: Insight; rank: number }) {
 
       {/* Row 2: problem statement */}
       <p className="mt-2 pl-7 text-[13px] leading-6 text-muted-foreground">
-        {cn?.statement ?? insight.problemStatement ?? insight.summary ?? ""}
+        {insight.problemStatement ?? insight.summary ?? ""}
       </p>
 
       {/* Row 3: metadata */}

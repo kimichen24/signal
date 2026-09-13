@@ -740,6 +740,7 @@ export interface Brief {
 }
 
 export interface OpportunityBase {
+  clusterKey: string;
   name: string;
   category: string;
   size: number;
@@ -803,7 +804,7 @@ export async function getOpportunities(
       .from("opportunities")
       .select(
         `id,action_type,priority_score,frequency_score,severity_score,growth_score,engagement_score,priority_reason,product_hypothesis,action_brief,
-         clusters!inner(id,cluster_name,category,issue_count,current_period_count,previous_period_count,growth_rate,is_emerging,clustering_params,analysis_version)`
+         clusters!inner(id,cluster_key,cluster_name,category,issue_count,current_period_count,previous_period_count,growth_rate,is_emerging,clustering_params,analysis_version)`
       )
       .eq("clusters.analysis_version", version)
       .order("priority_score", { ascending: false })
@@ -820,6 +821,7 @@ export async function getOpportunities(
       engagement_score: number | null;
       clusters: {
         id: string;
+        cluster_key: string;
         cluster_name: string;
         category: string;
         issue_count: number;
@@ -888,6 +890,7 @@ export async function getOpportunities(
       return {
         id: r.id,
         clusterId: cluster?.id ?? "",
+        clusterKey: cluster?.cluster_key ?? "",
         name: cluster?.cluster_name ?? "",
         category: cluster?.category ?? "",
         size: Number(cluster?.issue_count ?? 0),

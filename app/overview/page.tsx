@@ -6,6 +6,7 @@ import {
   getOpportunities,
 } from "@/lib/supabase/queries";
 import { CATEGORY, SURFACE, SEVERITY, ACTION } from "@/lib/labels";
+import { getClusterDisplayName } from "@/lib/cluster-labels";
 
 export const dynamic = "force-dynamic";
 
@@ -42,28 +43,6 @@ function severityLabel(score: number | null): string {
   if (score >= 1.5) return SEVERITY.medium ?? "中";
   return SEVERITY.low ?? "低";
 }
-
-/* ── Portfolio Chinese copy for top 3 signals ─────────────────────── */
-const SIGNAL_CN: Record<
-  string,
-  { name: string; statement: string }
-> = {
-  "Weekly quota and 5-hour usage window limits": {
-    name: "用量配额与使用窗口限制",
-    statement:
-      "5小时滚动使用窗口与每周配额的关系令人困惑，限制方式与宣传的额度不一致。",
-  },
-  "Windows desktop app crashes and unexpected exits": {
-    name: "Windows 桌面端崩溃与意外退出",
-    statement:
-      "Windows 桌面应用在常见使用场景中频繁发生不可预测的崩溃或退出，打断用户工作流。",
-  },
-  "Paginated thread history projection inconsistencies": {
-    name: "分页会话历史记录显示异常",
-    statement:
-      "分页会话历史无法持久、正确地展示所有已完成对话轮次，导致用户看到不完整或过时的记录。",
-  },
-};
 
 export default async function OverviewPage() {
   const caseStudy = process.env.NEXT_PUBLIC_CASE_STUDY ?? "OpenAI Codex";
@@ -170,7 +149,7 @@ export default async function OverviewPage() {
           </p>
           <div className="mt-6 divide-y divide-border">
             {top3.map((opp, index) => {
-              const cn = SIGNAL_CN[opp.name];
+              const displayName = getClusterDisplayName({ clusterKey: opp.clusterKey, name: opp.name });
               const trend = trendArrow(opp.current, opp.previous);
               const displayCategory =
                 CATEGORY[opp.category] ?? opp.category;
@@ -186,7 +165,7 @@ export default async function OverviewPage() {
                       </span>
                       <div className="min-w-0">
                         <p className="text-sm font-medium text-foreground">
-                          {cn?.name ?? opp.name}
+                          {displayName}
                         </p>
                         <span className="mt-0.5 inline-block rounded bg-secondary px-1.5 py-0.5 text-[11px] text-muted-foreground">
                           {displayCategory} · {opp.size} 条 · {actionLabel}
@@ -205,8 +184,7 @@ export default async function OverviewPage() {
 
                   {/* Row 2: problem statement */}
                   <p className="mt-2 pl-7 text-[13px] leading-6 text-muted-foreground">
-                    {cn?.statement ??
-                      (opp.brief?.what_changed ?? "")}
+                    {opp.brief?.what_changed ?? ""}
                   </p>
 
                   {/* Row 3: metadata + evidence link */}
