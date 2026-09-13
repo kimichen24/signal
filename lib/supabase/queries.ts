@@ -997,6 +997,7 @@ export async function getReleases(): Promise<{
 
 export interface ReleaseTimelineCluster {
   clusterId: string;
+  clusterKey: string;
   clusterName: string;
   beforeCount: number;
   afterCount: number;
@@ -1039,14 +1040,14 @@ export async function getReleaseTimeline(): Promise<{
       before_count: number;
       after_count: number;
       signal_type: string;
-      clusters: { cluster_name: string } | null;
+      clusters: { cluster_key: string; cluster_name: string } | null;
     };
     const allImpacts: ImpactRow[] = [];
     for (let offset = 0; ; ) {
       const { data: batch, error: impErr } = await client
         .from("release_impacts")
         .select(
-          "release_id,cluster_id,before_count,after_count,signal_type,clusters(cluster_name)"
+          "release_id,cluster_id,before_count,after_count,signal_type,clusters(cluster_key,cluster_name)"
         )
         .order("after_count", { ascending: false })
         .range(offset, offset + 999);
@@ -1074,6 +1075,7 @@ export async function getReleaseTimeline(): Promise<{
         totalAfter += imp.after_count;
         return {
           clusterId: imp.cluster_id,
+          clusterKey: imp.clusters?.cluster_key ?? "",
           clusterName: imp.clusters?.cluster_name ?? "",
           beforeCount: imp.before_count,
           afterCount: imp.after_count,

@@ -175,7 +175,7 @@ export default async function ReleasesPage() {
                           <div className="space-y-1.5 pt-1">
                             {release.topClusters.map((cluster) => {
                               const displayName = getClusterDisplayName({
-                                clusterKey: undefined,
+                                clusterKey: cluster.clusterKey,
                                 name: cluster.clusterName,
                               });
                               return (
