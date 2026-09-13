@@ -3,9 +3,9 @@ import {
   getDataSummary,
   getDistributions,
   getEntityCount,
-  getInsights,
+  getOpportunities,
 } from "@/lib/supabase/queries";
-import { CATEGORY, SURFACE } from "@/lib/labels";
+import { CATEGORY, SURFACE, SEVERITY, ACTION } from "@/lib/labels";
 
 export const dynamic = "force-dynamic";
 
@@ -15,29 +15,55 @@ function formatNumber(value: number | null): string {
   return value === null ? "—" : value.toLocaleString("zh-CN");
 }
 
-function trendDirection(
+function trendArrow(
   current: number,
   previous: number
 ): { arrow: string; pct: string; color: string } {
   if (previous === 0 && current === 0)
     return { arrow: "—", pct: "0%", color: "text-muted-foreground" };
   if (previous === 0)
-    return { arrow: "↑", pct: "新增", color: "text-foreground" };
+    return { arrow: "↑", pct: "新增", color: "text-primary" };
   const change = Math.round(((current - previous) / previous) * 100);
   if (change > 5)
-    return { arrow: "↑", pct: `+${change}%`, color: "text-foreground" };
+    return { arrow: "↑", pct: `+${change}%`, color: "text-primary" };
   if (change < -5)
     return { arrow: "↓", pct: `${change}%`, color: "text-destructive" };
-  return { arrow: "→", pct: `${change > 0 ? "+" : ""}${change}%`, color: "text-muted-foreground" };
+  return {
+    arrow: "→",
+    pct: `${change > 0 ? "+" : ""}${change}%`,
+    color: "text-muted-foreground",
+  };
 }
 
-function severityInfo(score: number | null): { label: string; color: string } {
-  if (score === null) return { label: "—", color: "text-muted-foreground" };
-  if (score >= 3.5) return { label: "严重", color: "text-destructive" };
-  if (score >= 2.5) return { label: "高", color: "text-foreground" };
-  if (score >= 1.5) return { label: "中", color: "text-muted-foreground" };
-  return { label: "低", color: "text-muted-foreground" };
+function severityLabel(score: number | null): string {
+  if (score === null) return "—";
+  if (score >= 3.5) return SEVERITY.critical ?? "严重";
+  if (score >= 2.5) return SEVERITY.high ?? "高";
+  if (score >= 1.5) return SEVERITY.medium ?? "中";
+  return SEVERITY.low ?? "低";
 }
+
+/* ── Portfolio Chinese copy for top 3 signals ─────────────────────── */
+const SIGNAL_CN: Record<
+  string,
+  { name: string; statement: string }
+> = {
+  "Weekly quota and 5-hour usage window limits": {
+    name: "用量配额与使用窗口限制",
+    statement:
+      "5小时滚动使用窗口与每周配额的关系令人困惑，限制方式与宣传的额度不一致。",
+  },
+  "Windows desktop app crashes and unexpected exits": {
+    name: "Windows 桌面端崩溃与意外退出",
+    statement:
+      "Windows 桌面应用在常见使用场景中频繁发生不可预测的崩溃或退出，打断用户工作流。",
+  },
+  "Paginated thread history projection inconsistencies": {
+    name: "分页会话历史记录显示异常",
+    statement:
+      "分页会话历史无法持久、正确地展示所有已完成对话轮次，导致用户看到不完整或过时的记录。",
+  },
+};
 
 export default async function OverviewPage() {
   const caseStudy = process.env.NEXT_PUBLIC_CASE_STUDY ?? "OpenAI Codex";
@@ -50,44 +76,36 @@ export default async function OverviewPage() {
     (summary.totalIssues ?? 0) > 0;
 
   const distributions = hasData ? await getDistributions(version) : null;
-  const topClusters = hasData ? await getInsights(version, 20) : null;
-  const clusterCount = hasData ? await getEntityCount("clusters", version) : null;
-  const opportunityCount = hasData ? await getEntityCount("opportunities") : null;
+  const opportunities = hasData ? await getOpportunities(version, 50) : null;
+  const clusterCount = hasData
+    ? await getEntityCount("clusters", version)
+    : null;
+  const opportunityCount = hasData
+    ? await getEntityCount("opportunities")
+    : null;
 
-  const top3 = (topClusters?.rows ?? [])
-    .slice(0, 3)
-    .map((c) => ({
-      id: c.id,
-      name: c.name,
-      category: c.category,
-      issueCount: c.issueCount,
-      problemStatement: c.problemStatement,
-      isEmerging: c.isEmerging,
-      growthRate: c.growthRate,
-      currentPeriodCount: c.currentPeriodCount,
-      previousPeriodCount: c.previousPeriodCount,
-      avgSeverityScore: c.avgSeverityScore,
-    }));
+  const top3 = (opportunities?.rows ?? []).slice(0, 3);
 
   const topSurfaces = (distributions?.data?.surface ?? []).slice(0, 5);
   const topCategories = (distributions?.data?.category ?? []).slice(0, 5);
 
   return (
     <div className="space-y-16">
-      {/* Hero */}
+      {/* ── Hero ──────────────────────────────────────────────────── */}
       <section className="max-w-2xl">
-        <h1 className="text-2xl font-bold tracking-tight text-foreground">
-          {caseStudy === "OpenAI Codex" ? "Signal" : "Signal"} · AI
-          产品运营智能系统
+        <h1 className="text-3xl font-bold tracking-tight text-foreground">
+          Signal
         </h1>
+        <p className="mt-1 text-lg font-medium text-muted-foreground">
+          AI 产品运营智能系统
+        </p>
         <p className="mt-4 text-[15px] leading-7 text-muted-foreground">
-          从 {formatNumber(summary.totalIssues)} 条真实 {caseStudy}{" "}
-          用户反馈中，发现正在出现的问题、识别变化信号，并将证据转化为可执行的产品运营机会。
+          从真实 {caseStudy} 用户反馈中发现正在出现的问题、识别变化信号，并将证据转化为可执行的产品运营机会。
         </p>
         <div className="mt-6 flex flex-wrap items-center gap-3">
           <Link
             href="/insights"
-            className="inline-flex h-9 items-center rounded-md bg-foreground px-4 text-sm font-medium text-background transition-colors hover:bg-foreground/90"
+            className="inline-flex h-9 items-center rounded-md bg-primary px-4 text-sm font-medium text-primary-foreground transition-colors hover:bg-primary/90"
           >
             查看关键洞察
           </Link>
@@ -99,105 +117,119 @@ export default async function OverviewPage() {
           </Link>
         </div>
         <p className="mt-4 text-xs text-muted-foreground">
-          14 个完整日历日 · 真实 GitHub Issues
+          14 个完整日历日 · {caseStudy} · 真实 GitHub Issues
         </p>
       </section>
 
-      {/* Metric Strip */}
+      {/* ── Metric Strip ──────────────────────────────────────────── */}
       {hasData ? (
         <section>
-          <div className="flex flex-wrap gap-x-10 gap-y-4 text-sm">
-            <div>
-              <span className="font-semibold tabular-nums text-foreground">
+          <div className="flex flex-wrap items-baseline gap-x-8 gap-y-4 text-sm sm:gap-x-12">
+            <div className="flex items-baseline gap-2">
+              <span className="text-2xl font-bold tabular-nums text-foreground">
                 {formatNumber(summary.totalIssues)}
               </span>
-              <span className="ml-1.5 text-muted-foreground">真实反馈</span>
+              <span className="text-xs text-muted-foreground">真实反馈</span>
             </div>
-            <div>
-              <span className="font-semibold tabular-nums text-foreground">
+            <div className="hidden h-5 w-px bg-border sm:block" />
+            <div className="flex items-baseline gap-2">
+              <span className="text-2xl font-bold tabular-nums text-foreground">
                 {formatNumber(distributions?.data?.inScopeTotal ?? null)}
               </span>
-              <span className="ml-1.5 text-muted-foreground">有效反馈</span>
+              <span className="text-xs text-muted-foreground">有效反馈</span>
             </div>
-            <div>
-              <span className="font-semibold tabular-nums text-foreground">
+            <div className="hidden h-5 w-px bg-border sm:block" />
+            <div className="flex items-baseline gap-2">
+              <span className="text-2xl font-bold tabular-nums text-foreground">
                 {formatNumber(clusterCount?.count ?? null)}
               </span>
-              <span className="ml-1.5 text-muted-foreground">问题簇</span>
+              <span className="text-xs text-muted-foreground">问题簇</span>
             </div>
-            <div>
-              <span className="font-semibold tabular-nums text-foreground">
+            <div className="hidden h-5 w-px bg-border sm:block" />
+            <div className="flex items-baseline gap-2">
+              <span className="text-2xl font-bold tabular-nums text-foreground">
                 {formatNumber(opportunityCount?.count ?? null)}
               </span>
-              <span className="ml-1.5 text-muted-foreground">产品机会</span>
+              <span className="text-xs text-muted-foreground">产品机会</span>
             </div>
           </div>
         </section>
       ) : null}
 
-      {/* Divider */}
+      {/* ── Divider ───────────────────────────────────────────────── */}
       <hr className="border-border" />
 
-      {/* Top Signals */}
+      {/* ── Top 3 Signals ─────────────────────────────────────────── */}
       {top3.length > 0 ? (
         <section>
           <h2 className="text-lg font-semibold tracking-tight text-foreground">
             现在最值得关注什么？
           </h2>
           <p className="mt-1 text-sm text-muted-foreground">
-            基于反馈频次、严重度和趋势信号，当前最值得优先调查的问题簇。
+            按调查优先级排序的前三个产品机会。
           </p>
-          <div className="mt-6 space-y-1">
-            {top3.map((signal, index) => {
-              const trend = trendDirection(
-                signal.currentPeriodCount ?? 0,
-                signal.previousPeriodCount ?? 0
-              );
-              const sev = severityInfo(signal.avgSeverityScore);
+          <div className="mt-6 divide-y divide-border">
+            {top3.map((opp, index) => {
+              const cn = SIGNAL_CN[opp.name];
+              const trend = trendArrow(opp.current, opp.previous);
+              const displayCategory =
+                CATEGORY[opp.category] ?? opp.category;
+              const actionLabel = ACTION[opp.action] ?? opp.action;
+
               return (
-                <div
-                  key={signal.id}
-                  className="flex flex-col gap-3 rounded-lg border border-border px-5 py-4 sm:flex-row sm:items-start sm:justify-between"
-                >
-                  <div className="min-w-0 flex-1">
-                    <div className="flex flex-wrap items-center gap-2">
-                      <span className="text-xs tabular-nums text-muted-foreground">
-                        {index + 1}.
+                <div key={opp.id} className="py-5 first:pt-0 last:pb-0">
+                  {/* Row 1: rank + name + priority + trend */}
+                  <div className="flex items-start justify-between gap-4">
+                    <div className="flex min-w-0 items-start gap-3">
+                      <span className="mt-0.5 shrink-0 text-sm font-semibold tabular-nums text-muted-foreground">
+                        {String(index + 1).padStart(2, "0")}
                       </span>
-                      <span className="text-sm font-medium text-foreground">
-                        {signal.name}
-                      </span>
-                      <span className="rounded bg-secondary px-1.5 py-0.5 text-[11px] text-muted-foreground">
-                        {CATEGORY[signal.category] ?? signal.category}
-                      </span>
-                      {signal.isEmerging ? (
-                        <span className="rounded bg-primary/10 px-1.5 py-0.5 text-[11px] font-medium text-primary">
-                          新兴
+                      <div className="min-w-0">
+                        <p className="text-sm font-medium text-foreground">
+                          {cn?.name ?? opp.name}
+                        </p>
+                        <span className="mt-0.5 inline-block rounded bg-secondary px-1.5 py-0.5 text-[11px] text-muted-foreground">
+                          {displayCategory} · {opp.size} 条 · {actionLabel}
                         </span>
-                      ) : null}
+                      </div>
                     </div>
-                    {signal.problemStatement ? (
-                      <p className="mt-1.5 text-[13px] leading-6 text-muted-foreground">
-                        {signal.problemStatement}
-                      </p>
-                    ) : null}
-                    <div className="mt-2 flex flex-wrap items-center gap-3 text-xs text-muted-foreground">
-                      <span>
-                        {signal.issueCount} 条反馈
+                    <div className="flex shrink-0 items-center gap-2">
+                      <span className="text-sm font-semibold tabular-nums text-foreground">
+                        {Math.round(opp.priority * 100)}
                       </span>
-                      <span className={sev.color}>
-                        严重度 {sev.label}
+                      <span className={`text-sm font-medium tabular-nums ${trend.color}`}>
+                        {trend.arrow} {trend.pct}
                       </span>
                     </div>
                   </div>
-                  <div className="flex shrink-0 items-center gap-2 text-sm sm:flex-col sm:items-end sm:gap-1">
-                    <span className={`font-medium tabular-nums ${trend.color}`}>
-                      {trend.arrow} {trend.pct}
+
+                  {/* Row 2: problem statement */}
+                  <p className="mt-2 pl-7 text-[13px] leading-6 text-muted-foreground">
+                    {cn?.statement ??
+                      (opp.brief?.what_changed ?? "")}
+                  </p>
+
+                  {/* Row 3: metadata + evidence link */}
+                  <div className="mt-2 flex flex-wrap items-center gap-x-4 gap-y-1 pl-7 text-xs text-muted-foreground">
+                    <span className="tabular-nums">
+                      上一周期 {opp.previous} · 当前周期 {opp.current}
                     </span>
-                    <span className="text-xs tabular-nums text-muted-foreground">
-                      {signal.currentPeriodCount ?? 0} vs{" "}
-                      {signal.previousPeriodCount ?? 0}
-                    </span>
+                    {opp.components.severity !== undefined ? (
+                      <span>
+                        AI 估算严重度：
+                        {severityLabel(opp.components.severity)}
+                      </span>
+                    ) : null}
+                    {opp.representatives.length > 0 ? (
+                      <Link
+                        href={opp.representatives[0].githubUrl}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-primary underline-offset-4 hover:underline"
+                      >
+                        查看原始证据 →
+                      </Link>
+                    ) : null}
                   </div>
                 </div>
               );
@@ -205,16 +237,16 @@ export default async function OverviewPage() {
           </div>
           <div className="mt-4">
             <Link
-              href="/insights"
+              href="/opportunities"
               className="text-sm text-primary underline-offset-4 hover:underline"
             >
-              查看全部 {topClusters?.rows.length ?? 0} 个洞察 →
+              查看全部 {opportunityCount?.count ?? 0} 个产品机会 →
             </Link>
           </div>
         </section>
       ) : null}
 
-      {/* Feedback Structure */}
+      {/* ── Feedback Structure ────────────────────────────────────── */}
       {distributions?.data ? (
         <section>
           <h2 className="text-lg font-semibold tracking-tight text-foreground">
@@ -280,7 +312,7 @@ export default async function OverviewPage() {
         </section>
       ) : null}
 
-      {/* How It Works */}
+      {/* ── How It Works ──────────────────────────────────────────── */}
       <section>
         <h2 className="text-lg font-semibold tracking-tight text-foreground">
           Signal 如何工作
@@ -319,7 +351,7 @@ export default async function OverviewPage() {
         </div>
       </section>
 
-      {/* Methodology Disclosure */}
+      {/* ── Methodology Disclosure ────────────────────────────────── */}
       {hasData ? (
         <details className="text-xs text-muted-foreground">
           <summary className="cursor-pointer hover:text-foreground">
@@ -344,7 +376,7 @@ export default async function OverviewPage() {
         </details>
       ) : null}
 
-      {/* Empty state */}
+      {/* ── Empty state ───────────────────────────────────────────── */}
       {!hasData ? (
         <div className="rounded-lg border border-dashed border-border p-10 text-center">
           <h2 className="text-sm font-medium text-foreground">

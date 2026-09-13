@@ -6,8 +6,8 @@ import { NAV_ITEMS } from "@/components/nav-items";
 import { cn } from "@/lib/utils";
 
 const primary = NAV_ITEMS[0]; // 总览
-const analysis = NAV_ITEMS.slice(1, 4); // 反馈、洞察、版本影响
-const decision = NAV_ITEMS.slice(4); // 机会、行动简报
+const observation = NAV_ITEMS.slice(1, 3); // 反馈、洞察
+const decision = NAV_ITEMS.slice(3); // 版本影响、机会、行动简报
 
 function NavGroup({
   items,
@@ -80,20 +80,20 @@ export function AppSidebar({
         </div>
         <div className="space-y-0.5 border-t border-border pt-4">
           <p className="px-3 pb-1.5 text-[11px] tracking-wider text-muted-foreground/70">
-            分析深度
+            观察
           </p>
-          <NavGroup items={analysis} pathname={pathname} />
+          <NavGroup items={observation} pathname={pathname} />
         </div>
         <div className="space-y-0.5 border-t border-border pt-4">
           <p className="px-3 pb-1.5 text-[11px] tracking-wider text-muted-foreground/70">
-            决策支持
+            决策
           </p>
           <NavGroup items={decision} pathname={pathname} />
         </div>
       </nav>
       <div className="border-t px-5 py-5 text-xs text-muted-foreground">
-        <p>案例：{caseStudy}</p>
-        <p className="mt-0.5">冻结数据集 · codex-14d-2026-09-06</p>
+        <p>案例数据</p>
+        <p className="mt-0.5">{caseStudy}</p>
       </div>
     </aside>
   );
