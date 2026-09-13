@@ -193,7 +193,9 @@ function BriefMemo({ opportunity }: { opportunity: Opportunity }) {
 export default async function ActionBriefsPage() {
   const version = process.env.SIGNAL_ANALYSIS_VERSION ?? "v0.3.4";
   const { configured, error, rows } = await getOpportunities(version, 50);
-  const briefed = rows.filter((r) => r.brief);
+  const briefed = rows.filter(
+    (r) => r.brief && Object.keys(r.brief).length > 0
+  );
 
   const investigateNow = briefed.filter(
     (r) => r.action === "investigate_now"
