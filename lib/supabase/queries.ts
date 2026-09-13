@@ -229,6 +229,107 @@ export async function getRecentAnalyses(
   }
 }
 
+/* ── Feedback Inbox ──────────────────────────────────────────────── */
+
+export interface FeedbackInboxItem {
+  id: string;
+  issueNumber: number;
+  title: string;
+  githubUrl: string;
+  state: string | null;
+  platform: string | null;
+  createdAt: string;
+  analysis: RecentAnalysis | null;
+}
+
+export interface FeedbackInboxResult {
+  configured: boolean;
+  error: string | null;
+  rows: FeedbackInboxItem[];
+}
+
+export async function getFeedbackInbox(
+  limit = 20
+): Promise<FeedbackInboxResult> {
+  if (!isSupabaseConfigured())
+    return { configured: false, error: null, rows: [] };
+  const client = getSupabaseAdmin();
+  if (!client) return { configured: false, error: null, rows: [] };
+
+  try {
+    const { data: issues, error: issueErr } = await client
+      .from("issues")
+      .select(
+        "id, github_issue_number, title, github_url, state, parsed_platform, github_created_at"
+      )
+      .order("github_created_at", { ascending: false })
+      .limit(limit);
+    if (issueErr)
+      return { configured: true, error: issueErr.message, rows: [] };
+
+    const issueIds = (issues ?? []).map((i) => i.id as string);
+    const version = process.env.SIGNAL_ANALYSIS_VERSION ?? "v0.3.4";
+
+    const { data: analyses } = await client
+      .from("issue_analysis")
+      .select(
+        `issue_id, issue_type, surface, platform, category, subtopic, severity,
+         confidence, needs_review, summary, user_scenario, user_impact,
+         product_scope, scope_reason, analysis_version, analyzed_at,
+         issues(github_issue_number, title, github_url)`
+      )
+      .eq("analysis_version", version)
+      .in("issue_id", issueIds);
+
+    const analysisMap = new Map<string, RecentAnalysis>();
+    for (const row of analyses ?? []) {
+      const r = row as Record<string, unknown>;
+      const issue = r.issues as
+        | { github_issue_number: number; title: string; github_url: string }
+        | null;
+      analysisMap.set(r.issue_id as string, {
+        issueNumber: issue?.github_issue_number ?? 0,
+        title: issue?.title ?? "",
+        githubUrl: issue?.github_url ?? "",
+        issueType: r.issue_type as string,
+        surface: r.surface as string,
+        platform: r.platform as string,
+        category: r.category as string,
+        subtopic: r.subtopic as string,
+        severity: r.severity as string,
+        confidence: Number(r.confidence),
+        needsReview: Boolean(r.needs_review),
+        summary: r.summary as string,
+        userScenario: (r.user_scenario as string | null) ?? null,
+        userImpact: (r.user_impact as string | null) ?? null,
+        productScope: (r.product_scope as string) ?? "codex_core",
+        scopeReason: (r.scope_reason as string | null) ?? null,
+        analysisVersion: r.analysis_version as string,
+        analyzedAt: r.analyzed_at as string,
+      });
+    }
+
+    const rows: FeedbackInboxItem[] = (issues ?? []).map((issue) => ({
+      id: issue.id as string,
+      issueNumber: issue.github_issue_number as number,
+      title: issue.title as string,
+      githubUrl: issue.github_url as string,
+      state: (issue.state as string) ?? null,
+      platform: (issue.parsed_platform as string | null) ?? null,
+      createdAt: (issue.github_created_at as string) ?? "",
+      analysis: analysisMap.get(issue.id as string) ?? null,
+    }));
+
+    return { configured: true, error: null, rows };
+  } catch (e) {
+    return {
+      configured: true,
+      error: e instanceof Error ? e.message : "Unknown database error",
+      rows: [],
+    };
+  }
+}
+
 export interface InsightEvidence {
   issueNumber: number;
   title: string;
