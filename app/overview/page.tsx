@@ -2,6 +2,7 @@ import Link from "next/link";
 import { getOverviewData } from "@/lib/data-adapter";
 import { CATEGORY, SURFACE, SEVERITY, ACTION } from "@/lib/labels";
 import { getClusterDisplayName } from "@/lib/cluster-labels";
+import { getChineseBrief } from "@/lib/narrative-copy";
 
 export const metadata = { title: "总览" };
 
@@ -135,6 +136,7 @@ export default async function OverviewPage() {
           <div className="mt-6 divide-y divide-border">
             {top3.map((opp, index) => {
               const displayName = getClusterDisplayName({ clusterKey: opp.clusterKey, name: opp.name });
+              const brief = getChineseBrief(opp);
               const trend = trendArrow(opp.current, opp.previous);
               const displayCategory =
                 CATEGORY[opp.category] ?? opp.category;
@@ -169,7 +171,7 @@ export default async function OverviewPage() {
 
                   {/* Row 2: problem statement */}
                   <p className="mt-2 pl-7 text-[13px] leading-6 text-muted-foreground">
-                    {opp.brief?.what_changed ?? ""}
+                    {brief?.what_changed ?? ""}
                   </p>
 
                   {/* Row 3: metadata + evidence link */}

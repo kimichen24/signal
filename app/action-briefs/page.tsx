@@ -3,6 +3,7 @@ import { Badge } from "@/components/ui/badge";
 import { getActionBriefsData } from "@/lib/data-adapter";
 import { getClusterDisplayName } from "@/lib/cluster-labels";
 import { ACTION } from "@/lib/labels";
+import { getChineseBrief } from "@/lib/narrative-copy";
 import type { Opportunity } from "@/lib/supabase/queries";
 
 export const metadata = { title: "行动简报" };
@@ -20,7 +21,7 @@ const ACTION_VARIANT: Record<
 /* ── Brief memo component ──────────────────────────────────────── */
 
 function BriefMemo({ opportunity }: { opportunity: Opportunity }) {
-  const brief = opportunity.brief!;
+  const brief = getChineseBrief(opportunity)!;
   const displayName = getClusterDisplayName({
     clusterKey: opportunity.clusterKey,
     name: opportunity.name,

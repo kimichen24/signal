@@ -2,6 +2,7 @@ import { EmptyState } from "@/components/empty-state";
 import { getInsightsData } from "@/lib/data-adapter";
 import { CATEGORY, SEVERITY } from "@/lib/labels";
 import { getClusterDisplayName } from "@/lib/cluster-labels";
+import { getChineseInsightNarrative } from "@/lib/narrative-copy";
 import type { Insight } from "@/lib/supabase/queries";
 
 export const metadata = { title: "洞察" };
@@ -74,7 +75,7 @@ function InsightRow({ insight, rank }: { insight: Insight; rank: number }) {
 
       {/* Row 2: problem statement */}
       <p className="mt-2 pl-7 text-[13px] leading-6 text-muted-foreground">
-        {insight.problemStatement ?? insight.summary ?? ""}
+        {getChineseInsightNarrative(insight)}
       </p>
 
       {/* Row 3: metadata */}
@@ -216,7 +217,7 @@ export default async function InsightsPage() {
                 新兴信号
               </h2>
               <p className="mt-1 text-sm text-muted-foreground">
-                按 Emerging 评分排序的新兴问题簇。
+                按新兴信号评分排序的问题簇。
               </p>
               <div className="mt-4 divide-y divide-border">
                 {emerging.map((insight, i) => (
@@ -271,7 +272,7 @@ export default async function InsightsPage() {
                 聚类算法：确定性语义聚类 · distance_threshold=0.45
               </p>
               <p>
-                新兴信号判定：Emerging 评分框架（7天窗口增长率 ≥ 50% 且最小观测量 5
+                新兴信号判定：新兴信号评分框架（7天窗口增长率 ≥ 50% 且最小观测量 5
                 条）
               </p>
               <p>增长率为存储的持久化值，非 UI 计算。</p>

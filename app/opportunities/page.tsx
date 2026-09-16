@@ -3,6 +3,7 @@ import { Badge } from "@/components/ui/badge";
 import { getOpportunitiesData } from "@/lib/data-adapter";
 import { getClusterDisplayName } from "@/lib/cluster-labels";
 import { CATEGORY, SEVERITY, ACTION } from "@/lib/labels";
+import { getChineseBrief } from "@/lib/narrative-copy";
 import type { Opportunity } from "@/lib/supabase/queries";
 
 export const metadata = { title: "机会" };
@@ -66,6 +67,7 @@ function OpportunityRow({
   const actionVariant = ACTION_VARIANT[opportunity.action] ?? "outline";
   const category = CATEGORY[opportunity.category] ?? opportunity.category;
   const sev = severityFromComponents(opportunity.components);
+  const brief = getChineseBrief(opportunity);
 
   return (
     <div className="py-5 first:pt-0 last:pb-0">
@@ -101,9 +103,9 @@ function OpportunityRow({
       </div>
 
       {/* Row 2: problem statement */}
-      {opportunity.brief?.what_changed ? (
+      {brief?.what_changed ? (
         <p className="mt-2 pl-7 text-[13px] leading-6 text-muted-foreground">
-          {opportunity.brief.what_changed}
+          {brief.what_changed}
         </p>
       ) : null}
 
@@ -155,20 +157,20 @@ function OpportunityRow({
                   : ""}
               </p>
             ) : null}
-            {opportunity.brief?.product_hypothesis ? (
+            {brief?.product_hypothesis ? (
               <p>
                 <span className="font-medium text-foreground/80">
                   产品假设：{" "}
                 </span>
-                {opportunity.brief.product_hypothesis}
+                {brief.product_hypothesis}
               </p>
             ) : null}
-            {opportunity.brief?.recommended_investigation ? (
+            {brief?.recommended_investigation ? (
               <p>
                 <span className="font-medium text-foreground/80">
                   建议调查：{" "}
                 </span>
-                {opportunity.brief.recommended_investigation}
+                {brief.recommended_investigation}
               </p>
             ) : null}
           </div>
