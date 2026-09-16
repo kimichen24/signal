@@ -5,8 +5,6 @@ import { getClusterDisplayName } from "@/lib/cluster-labels";
 import { CATEGORY, SEVERITY, ACTION } from "@/lib/labels";
 import type { Opportunity } from "@/lib/supabase/queries";
 
-export { dynamic } from "@/lib/page-config";
-
 export const metadata = { title: "机会" };
 
 const ACTION_VARIANT: Record<

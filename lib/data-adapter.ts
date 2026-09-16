@@ -9,6 +9,7 @@
 
 import { readFileSync } from "fs";
 import { join } from "path";
+import { connection } from "next/server";
 
 const isStatic = process.env.DEPLOY_TARGET === "github-pages";
 
@@ -29,6 +30,8 @@ export async function getOverviewData() {
       opportunityCount: number;
     }>("overview.json");
   }
+
+  await connection();
 
   const {
     getDataSummary,
@@ -74,6 +77,8 @@ export async function getFeedbackData() {
     }>("feedback.json");
   }
 
+  await connection();
+
   const { getFeedbackInbox } = await import("@/lib/supabase/queries");
   return getFeedbackInbox(20);
 }
@@ -95,6 +100,8 @@ export async function getInsightsData(): Promise<{
     }>("insights.json");
     return data;
   }
+
+  await connection();
 
   const { getInsights, getClusterInsightCounts } = await import(
     "@/lib/supabase/queries"
@@ -124,6 +131,8 @@ export async function getReleasesData() {
     }>("releases.json");
   }
 
+  await connection();
+
   const { getReleaseTimeline } = await import("@/lib/supabase/queries");
   return getReleaseTimeline();
 }
@@ -138,6 +147,8 @@ export async function getOpportunitiesData() {
       rows: import("@/lib/supabase/queries").Opportunity[];
     }>("opportunities.json");
   }
+
+  await connection();
 
   const { getOpportunities } = await import("@/lib/supabase/queries");
   const version = process.env.SIGNAL_ANALYSIS_VERSION ?? "v0.3.4";
@@ -154,6 +165,8 @@ export async function getActionBriefsData() {
       rows: import("@/lib/supabase/queries").Opportunity[];
     }>("action-briefs.json");
   }
+
+  await connection();
 
   const { getOpportunities } = await import("@/lib/supabase/queries");
   const version = process.env.SIGNAL_ANALYSIS_VERSION ?? "v0.3.4";

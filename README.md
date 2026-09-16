@@ -114,6 +114,7 @@ python -m pytest tests -q       # 配置一致性测试
 - needs_refinement 宽簇不伪装成单一精确痛点
 
 ## 进度（Progress）
+- [x] Post-audit maintenance — pytest 文档计数更新为 176；移除共享 dynamic 重导出，Vercel 数据分支使用 connection() 保持请求时读取，Pages 继续使用静态快照。pytest 176 / Vitest 12、typecheck、lint、双目标构建通过，无 Route Segment Config 警告；六页运行时验证通过，Pages 零 Supabase 请求，health API 仅保留在 Vercel。
 - [x] Phase 0 — Bootstrap：Next.js shell、typed env、Supabase server client、`/api/health`、pipeline 环境、lint/typecheck/test
 - [x] Phase 1 — 100 条真实 Issue 已入库：`ingest_github` CLI（幂等 upsert、PR 过滤、created-at 窗口）、确定性 parser + `body_clean`、Feedback 页真实数据（`prompts/01_DATA_INGESTION.md`）
 - [x] Phase 2 — AI 结构化抽取已跑通：MiMo provider（OpenAI 兼容 + 本地 schema 校验重试）、确定性元数据优先规范化、scope 三分类（工作流原则锁定）、severity rubric 人工盲评校准（20 条开发诊断集：严格一致率 55%→75%）。**冻结版本 v0.3.4：100/100 条分析完成，0 失败 0 重试**（`prompts/02_AI_EXTRACTION.md`）

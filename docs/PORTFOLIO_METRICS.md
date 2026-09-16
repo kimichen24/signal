@@ -25,7 +25,7 @@
 | 趋势不变量 | raw 1064+1190=2254 · in-scope 994+1102=2096 · clustered 666+729=1395 · 逐簇 prev+curr=size 全部成立 |
 | 输入可审计 | 新分析 2,154/2,154 带 `analysis_input_hash`；100 条 dev 分析标记 legacy（源行被重摄入覆盖，无法保证精确重建） |
 | 聚类跨进程确定性 | 修复行序不稳定后，跨进程指纹验证一致（`docs/CLUSTERING_CALIBRATION.md`） |
-| 测试 | pytest 158 · vitest 12 · typecheck/lint/build 全绿 |
+| 测试 | pytest 176 · vitest 12 · typecheck/lint/build 全绿 |
 
 ## 3. Evaluation agreement（独立参考一致率 — 非 accuracy）
 

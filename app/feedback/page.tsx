@@ -2,8 +2,6 @@ import { EmptyState } from "@/components/empty-state";
 import { FeedbackInbox } from "@/components/feedback-inbox";
 import { getFeedbackData } from "@/lib/data-adapter";
 
-export { dynamic } from "@/lib/page-config";
-
 export const metadata = { title: "反馈" };
 
 export default async function FeedbackPage() {

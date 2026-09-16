@@ -3,8 +3,6 @@ import { getOverviewData } from "@/lib/data-adapter";
 import { CATEGORY, SURFACE, SEVERITY, ACTION } from "@/lib/labels";
 import { getClusterDisplayName } from "@/lib/cluster-labels";
 
-export { dynamic } from "@/lib/page-config";
-
 export const metadata = { title: "总览" };
 
 function formatNumber(value: number | null): string {

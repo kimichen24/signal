@@ -4,8 +4,6 @@ import { CATEGORY, SEVERITY } from "@/lib/labels";
 import { getClusterDisplayName } from "@/lib/cluster-labels";
 import type { Insight } from "@/lib/supabase/queries";
 
-export { dynamic } from "@/lib/page-config";
-
 export const metadata = { title: "洞察" };
 
 function severityLabel(score: number | null): string {

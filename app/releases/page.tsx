@@ -2,8 +2,6 @@ import { EmptyState } from "@/components/empty-state";
 import { getReleasesData } from "@/lib/data-adapter";
 import { getClusterDisplayName } from "@/lib/cluster-labels";
 
-export { dynamic } from "@/lib/page-config";
-
 export const metadata = { title: "版本影响" };
 
 function BarComparison({
