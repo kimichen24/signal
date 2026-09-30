@@ -114,6 +114,7 @@ python -m pytest tests -q       # 配置一致性测试
 - needs_refinement 宽簇不伪装成单一精确痛点
 
 ## 进度（Progress）
+- [x] Severity presentation consistency — Overview / Insights / Opportunities 共用数值展示 helper，簇平均 AI 严重度统一为 0–1 分数、两位小数；移除页面等级阈值，不改数据库、pipeline、评分或机会排序。pytest 176 / Vitest 19、typecheck、lint、正常生产构建与冻结快照静态构建通过；Portfolio 四张证据截图已从本地生产构建重新生成，未提交、未部署。
 - [x] Post-audit maintenance — pytest 文档计数更新为 176；移除共享 dynamic 重导出，Vercel 数据分支使用 connection() 保持请求时读取，Pages 继续使用静态快照。pytest 176 / Vitest 12、typecheck、lint、双目标构建通过，无 Route Segment Config 警告；六页运行时验证通过，Pages 零 Supabase 请求，health API 仅保留在 Vercel。
 - [x] Phase 0 — Bootstrap：Next.js shell、typed env、Supabase server client、`/api/health`、pipeline 环境、lint/typecheck/test
 - [x] Phase 1 — 100 条真实 Issue 已入库：`ingest_github` CLI（幂等 upsert、PR 过滤、created-at 窗口）、确定性 parser + `body_clean`、Feedback 页真实数据（`prompts/01_DATA_INGESTION.md`）

@@ -1,8 +1,9 @@
 import Link from "next/link";
 import { getOverviewData } from "@/lib/data-adapter";
-import { CATEGORY, SURFACE, SEVERITY, ACTION } from "@/lib/labels";
+import { CATEGORY, SURFACE, ACTION } from "@/lib/labels";
 import { getClusterDisplayName } from "@/lib/cluster-labels";
 import { getChineseBrief } from "@/lib/narrative-copy";
+import { formatClusterSeverity } from "@/lib/severity-display";
 
 export const metadata = { title: "总览" };
 
@@ -28,14 +29,6 @@ function trendArrow(
     pct: `${change > 0 ? "+" : ""}${change}%`,
     color: "text-muted-foreground",
   };
-}
-
-function severityLabel(score: number | null): string {
-  if (score === null) return "—";
-  if (score >= 3.5) return SEVERITY.critical ?? "严重";
-  if (score >= 2.5) return SEVERITY.high ?? "高";
-  if (score >= 1.5) return SEVERITY.medium ?? "中";
-  return SEVERITY.low ?? "低";
 }
 
 export default async function OverviewPage() {
@@ -181,8 +174,7 @@ export default async function OverviewPage() {
                     </span>
                     {opp.components.severity !== undefined ? (
                       <span>
-                        AI 估算严重度：
-                        {severityLabel(opp.components.severity)}
+                        {formatClusterSeverity(opp.components.severity)}
                       </span>
                     ) : null}
                     {opp.representatives.length > 0 ? (

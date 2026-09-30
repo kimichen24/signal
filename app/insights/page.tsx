@@ -1,26 +1,18 @@
 import { EmptyState } from "@/components/empty-state";
 import { getInsightsData } from "@/lib/data-adapter";
-import { CATEGORY, SEVERITY } from "@/lib/labels";
+import { CATEGORY } from "@/lib/labels";
 import { getClusterDisplayName } from "@/lib/cluster-labels";
 import { getChineseInsightNarrative } from "@/lib/narrative-copy";
+import { formatClusterSeverity } from "@/lib/severity-display";
 import type { Insight } from "@/lib/supabase/queries";
 
 export const metadata = { title: "洞察" };
-
-function severityLabel(score: number | null): string {
-  if (score === null) return "—";
-  if (score >= 3.5) return SEVERITY.critical ?? "严重";
-  if (score >= 2.5) return SEVERITY.high ?? "高";
-  if (score >= 1.5) return SEVERITY.medium ?? "中";
-  return SEVERITY.low ?? "低";
-}
 
 /* ── Insight row component ─────────────────────────────────────── */
 
 function InsightRow({ insight, rank }: { insight: Insight; rank: number }) {
   const displayName = getClusterDisplayName({ clusterKey: insight.clusterKey, name: insight.name });
   const category = CATEGORY[insight.category] ?? insight.category;
-  const sev = severityLabel(insight.avgSeverityScore);
 
   /* Display persisted growth_rate with explicit label.
      growth_rate is stored as a decimal (e.g. 0.35 = 35%). */
@@ -87,7 +79,7 @@ function InsightRow({ insight, rank }: { insight: Insight; rank: number }) {
             {insight.currentPeriodCount ?? 0}
           </span>
         ) : null}
-        <span>AI 估算严重度：{sev}</span>
+        <span>{formatClusterSeverity(insight.avgSeverityScore)}</span>
         {growthPct !== null ? (
           <span>增长率 {growthPct}%</span>
         ) : null}

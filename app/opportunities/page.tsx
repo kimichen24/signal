@@ -2,8 +2,9 @@ import { EmptyState } from "@/components/empty-state";
 import { Badge } from "@/components/ui/badge";
 import { getOpportunitiesData } from "@/lib/data-adapter";
 import { getClusterDisplayName } from "@/lib/cluster-labels";
-import { CATEGORY, SEVERITY, ACTION } from "@/lib/labels";
+import { CATEGORY, ACTION } from "@/lib/labels";
 import { getChineseBrief } from "@/lib/narrative-copy";
+import { formatClusterSeverity } from "@/lib/severity-display";
 import type { Opportunity } from "@/lib/supabase/queries";
 
 export const metadata = { title: "机会" };
@@ -17,16 +18,6 @@ const ACTION_VARIANT: Record<
   monitor: "secondary",
   low_priority: "outline",
 };
-
-function severityFromComponents(
-  components: Record<string, number>
-): string {
-  const score = components.severity ?? 0;
-  if (score >= 0.7) return SEVERITY.critical ?? "严重";
-  if (score >= 0.5) return SEVERITY.high ?? "高";
-  if (score >= 0.3) return SEVERITY.medium ?? "中";
-  return SEVERITY.low ?? "低";
-}
 
 function ComponentBar({
   label,
@@ -66,7 +57,6 @@ function OpportunityRow({
   const actionLabel = ACTION[opportunity.action] ?? opportunity.action;
   const actionVariant = ACTION_VARIANT[opportunity.action] ?? "outline";
   const category = CATEGORY[opportunity.category] ?? opportunity.category;
-  const sev = severityFromComponents(opportunity.components);
   const brief = getChineseBrief(opportunity);
 
   return (
@@ -114,7 +104,7 @@ function OpportunityRow({
         <span className="tabular-nums">
           {opportunity.size} 条反馈
         </span>
-        <span>AI 估算严重度：{sev}</span>
+        <span>{formatClusterSeverity(opportunity.components.severity)}</span>
         {opportunity.trendState === "new_signal" ? (
           <span className="text-primary">新信号</span>
         ) : opportunity.trendState === "low_base_acceleration" ? (
