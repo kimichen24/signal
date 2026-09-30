@@ -1,0 +1,572 @@
+{
+  "configured": true,
+  "error": null,
+  "rows": [
+    {
+      "id": "09f4b99c-12eb-4c58-81d1-aeef170470d9",
+      "name": "Python SDK 0.154.0",
+      "releaseDate": "2026-09-10T19:51:43+00:00",
+      "sourceUrl": "https://github.com/openai/codex/releases/tag/python-v0.154.0",
+      "description": "Install with `pip install --upgrade openai-codex==0.154.0` (Python 3.10 or later). This release includes the matching `openai-codex-cli-bin==0.154.0` runtime.\n\n- Add `max` and `ultra` reasoning-effort values. [#39662](https://github.com/openai/codex/pull/39662)\n- Add `ExternalMessage` to synchronous and asynchronous `run()` and `turn()` calls. External content can start a turn or join an active regular turn with tool-level authority; it does not grant user authorization. Consumers receive indepe",
+      "hasImpact": false,
+      "sufficientHistory": false,
+      "totalBefore": 0,
+      "totalAfter": 0,
+      "impactedClusters": 0,
+      "topClusters": []
+    },
+    {
+      "id": "b5a055e8-34e6-474a-92c5-28308e5d167f",
+      "name": "0.154.0",
+      "releaseDate": "2026-09-09T22:35:38+00:00",
+      "sourceUrl": "https://github.com/openai/codex/releases/tag/rust-v0.154.0",
+      "description": "## New Features\n\n- GPT-6-Astra is now available in the model picker and Amazon Bedrock catalogs. (#42879, #42619)\n- Experimental worktree support lets you create isolated checkouts for new or forked sessions using `--worktree` or `/worktree`, then browse and resume them. (#42652, #43069, #43120, #43286)\n- Answer questions inline while Codex continues working, using suggested choices or custom text without losing your main draft. (#42891, #42894, #42897)\n- Windows sessions can now share a backgro",
+      "hasImpact": false,
+      "sufficientHistory": false,
+      "totalBefore": 0,
+      "totalAfter": 0,
+      "impactedClusters": 0,
+      "topClusters": []
+    },
+    {
+      "id": "c8251908-f72e-4ae6-bb54-ccff046a6401",
+      "name": "0.153.4",
+      "releaseDate": "2026-09-04T23:25:48+00:00",
+      "sourceUrl": "https://github.com/openai/codex/releases/tag/rust-v0.153.4",
+      "description": "## Bug Fixes\n\n- Fixed Astra’s visibility in the bundled model picker and made it the bundled default when no model is explicitly configured. (#42874)\n- Updated Astra’s guidance to use asynchronous questions only when the tool is available in the session. (#42878)\n\n## Changelog\n\nFull Changelog: https://github.com/openai/codex/compare/rust-v0.153.3...rust-v0.153.4\n\n- #42874 [0.153 hotfix] Show Astra in bundled model picker @rhan-oai\n- #42878 [0.153 hotfix] Qualify Astra async-question guidance by ",
+      "hasImpact": true,
+      "sufficientHistory": false,
+      "totalBefore": 807,
+      "totalAfter": 807,
+      "impactedClusters": 182,
+      "topClusters": [
+        {
+          "clusterId": "5a4f3cf5-1911-4612-ac5e-2b65437a520e",
+          "clusterKey": "Reliability:d363e0cf",
+          "clusterName": "Terminal session state display issues",
+          "beforeCount": 1,
+          "afterCount": 1,
+          "signalType": "stable"
+        },
+        {
+          "clusterId": "c17f0ade-e045-4aa9-a7fb-f8b10d79502f",
+          "clusterKey": "Reliability:0c99bcba",
+          "clusterName": "App-server thread lifecycle and resume reliability",
+          "beforeCount": 2,
+          "afterCount": 2,
+          "signalType": "stable"
+        },
+        {
+          "clusterId": "c1118edf-02f6-40ef-89ca-19477033bb1e",
+          "clusterKey": "Reliability:6437ebf4",
+          "clusterName": "Remote device QR pairing failures on specific devices",
+          "beforeCount": 2,
+          "afterCount": 2,
+          "signalType": "stable"
+        },
+        {
+          "clusterId": "d59370e7-63d2-47ad-9ffe-40530b5def12",
+          "clusterKey": "Tool Execution:dd43bcc7",
+          "clusterName": "Windows unified-exec tool execution failures",
+          "beforeCount": 16,
+          "afterCount": 16,
+          "signalType": "stable"
+        },
+        {
+          "clusterId": "afcb162b-e6d5-4fdc-b7fb-ca3e185c287f",
+          "clusterKey": "Git & Workspace:6e0094fc",
+          "clusterName": "Windows/WSL path handling breaks project operations",
+          "beforeCount": 8,
+          "afterCount": 8,
+          "signalType": "stable"
+        }
+      ]
+    },
+    {
+      "id": "2c133283-91fd-46ae-aadd-a37a8f5ae21a",
+      "name": "0.153.3",
+      "releaseDate": "2026-09-04T19:01:32+00:00",
+      "sourceUrl": "https://github.com/openai/codex/releases/tag/rust-v0.153.3",
+      "description": "## New Features\n- Added GPT-6-Astra to the Amazon Bedrock model picker for Mantle and Runtime global/US routes. (#42805)\n\n## Bug Fixes\n- Corrected GPT-6-Astra’s guidance for asynchronous clarification questions to use the supported tool and recognize that it accepts text only. (#42809)\n\n## Changelog\n\nFull Changelog: https://github.com/openai/codex/compare/rust-v0.153.2...rust-v0.153.3\n\n- #42805 [0.153 hotfix] Add GPT-6-Astra to Amazon Bedrock catalogs @celia-oai\n- #42809 [0.153 hotfix] Update As",
+      "hasImpact": true,
+      "sufficientHistory": false,
+      "totalBefore": 825,
+      "totalAfter": 825,
+      "impactedClusters": 184,
+      "topClusters": [
+        {
+          "clusterId": "613e02b8-ce74-47d2-b91c-a313be5dba7f",
+          "clusterKey": "Reliability:da5c6ca2",
+          "clusterName": "App crashes under specific interactions",
+          "beforeCount": 2,
+          "afterCount": 2,
+          "signalType": "stable"
+        },
+        {
+          "clusterId": "8a32aa4d-dd04-4f68-b434-36e6806c27e2",
+          "clusterKey": "Safety & Permissions:0b601740",
+          "clusterName": "Approval and permission configuration bypass or override",
+          "beforeCount": 2,
+          "afterCount": 2,
+          "signalType": "stable"
+        },
+        {
+          "clusterId": "5e582570-f4c3-40c5-a18d-c6ad59574397",
+          "clusterKey": "Tool Execution:165fe7c4",
+          "clusterName": "Windows sandbox execution failures",
+          "beforeCount": 3,
+          "afterCount": 3,
+          "signalType": "stable"
+        },
+        {
+          "clusterId": "f05257be-024f-4489-b544-fb0b801e6ecd",
+          "clusterKey": "Reliability:2d9e3465",
+          "clusterName": "WSL agent mode path handling failures",
+          "beforeCount": 1,
+          "afterCount": 1,
+          "signalType": "stable"
+        },
+        {
+          "clusterId": "f97cb834-3dbc-435e-b9fd-a49ef4df2aab",
+          "clusterKey": "Context & Memory:334cc257",
+          "clusterName": "Persistent chat context and history in Codex",
+          "beforeCount": 3,
+          "afterCount": 3,
+          "signalType": "stable"
+        }
+      ]
+    },
+    {
+      "id": "7cabe248-8aad-41c1-8cae-299245c9e2e8",
+      "name": "0.153.2",
+      "releaseDate": "2026-09-03T23:53:12+00:00",
+      "sourceUrl": "https://github.com/openai/codex/releases/tag/rust-v0.153.2",
+      "description": "## Bug Fixes\n\n- Corrected the GPT-6-Astra Fast tier description to say “2x speed, increased usage” instead of “1.5x.” This changes only the displayed text, not how requests run. (#42632)\n\n## Changelog\n\nFull Changelog: https://github.com/openai/codex/compare/rust-v0.153.1...rust-v0.153.2\n\n- #42632 Fix GPT-6-Astra Fast tier description for 0.153.2 @anp-oai\n\n\n",
+      "hasImpact": true,
+      "sufficientHistory": false,
+      "totalBefore": 912,
+      "totalAfter": 912,
+      "impactedClusters": 190,
+      "topClusters": [
+        {
+          "clusterId": "afcb162b-e6d5-4fdc-b7fb-ca3e185c287f",
+          "clusterKey": "Git & Workspace:6e0094fc",
+          "clusterName": "Windows/WSL path handling breaks project operations",
+          "beforeCount": 9,
+          "afterCount": 9,
+          "signalType": "stable"
+        },
+        {
+          "clusterId": "f0f8b0eb-690b-4c55-9686-f5e035ffc27a",
+          "clusterKey": "Reliability:ceb7a227",
+          "clusterName": "Remote thread writer lock conflicts",
+          "beforeCount": 1,
+          "afterCount": 1,
+          "signalType": "stable"
+        },
+        {
+          "clusterId": "2cbe948e-14da-4a82-8d32-40c9a0e12042",
+          "clusterKey": "Tool Execution:73bcf9a1",
+          "clusterName": "Windows Git execution and shell fallback issues",
+          "beforeCount": 1,
+          "afterCount": 1,
+          "signalType": "stable"
+        },
+        {
+          "clusterId": "0e4a3ffd-1195-4f70-8bd7-2edc73053137",
+          "clusterKey": "Tool Execution:8ed346f5",
+          "clusterName": "Tool result reporting and timing issues",
+          "beforeCount": 2,
+          "afterCount": 2,
+          "signalType": "stable"
+        },
+        {
+          "clusterId": "9e4e66c5-24b8-4f52-aee8-58b5d3c2a2f9",
+          "clusterKey": "App / UI / UX:cc54824e",
+          "clusterName": "Desktop chat history persistence and deletion failures",
+          "beforeCount": 11,
+          "afterCount": 11,
+          "signalType": "stable"
+        }
+      ]
+    },
+    {
+      "id": "95cc1abd-6640-4ffa-af78-48a980b0f76f",
+      "name": "0.153.1",
+      "releaseDate": "2026-09-03T21:02:56+00:00",
+      "sourceUrl": "https://github.com/openai/codex/releases/tag/rust-v0.153.1",
+      "description": "## New Features\n\n- Added support for configuring GPT-6-Astra through the API without changing the default model or showing it in the model picker. (#42605)\n\n## Changelog\n\nFull Changelog: https://github.com/openai/codex/compare/rust-v0.153.0...rust-v0.153.1\n\n- #42605 Backport GPT-6-Astra model catalog to 0.153 @anp-oai\n\n\n",
+      "hasImpact": true,
+      "sufficientHistory": false,
+      "totalBefore": 916,
+      "totalAfter": 916,
+      "impactedClusters": 190,
+      "topClusters": [
+        {
+          "clusterId": "afcb162b-e6d5-4fdc-b7fb-ca3e185c287f",
+          "clusterKey": "Git & Workspace:6e0094fc",
+          "clusterName": "Windows/WSL path handling breaks project operations",
+          "beforeCount": 9,
+          "afterCount": 9,
+          "signalType": "stable"
+        },
+        {
+          "clusterId": "f0f8b0eb-690b-4c55-9686-f5e035ffc27a",
+          "clusterKey": "Reliability:ceb7a227",
+          "clusterName": "Remote thread writer lock conflicts",
+          "beforeCount": 1,
+          "afterCount": 1,
+          "signalType": "stable"
+        },
+        {
+          "clusterId": "2cbe948e-14da-4a82-8d32-40c9a0e12042",
+          "clusterKey": "Tool Execution:73bcf9a1",
+          "clusterName": "Windows Git execution and shell fallback issues",
+          "beforeCount": 1,
+          "afterCount": 1,
+          "signalType": "stable"
+        },
+        {
+          "clusterId": "0e4a3ffd-1195-4f70-8bd7-2edc73053137",
+          "clusterKey": "Tool Execution:8ed346f5",
+          "clusterName": "Tool result reporting and timing issues",
+          "beforeCount": 2,
+          "afterCount": 2,
+          "signalType": "stable"
+        },
+        {
+          "clusterId": "9e4e66c5-24b8-4f52-aee8-58b5d3c2a2f9",
+          "clusterKey": "App / UI / UX:cc54824e",
+          "clusterName": "Desktop chat history persistence and deletion failures",
+          "beforeCount": 11,
+          "afterCount": 11,
+          "signalType": "stable"
+        }
+      ]
+    },
+    {
+      "id": "9377d875-0e94-419c-9179-4933a53e8275",
+      "name": "0.153.0",
+      "releaseDate": "2026-09-03T01:37:38+00:00",
+      "sourceUrl": "https://github.com/openai/codex/releases/tag/rust-v0.153.0",
+      "description": "## New Features\n\n- Vim mode now supports undo with `u` and redo with `Ctrl+R`, preserving complete drafts including pasted content and attachments. ([#41941](https://github.com/openai/codex/pull/41941), [#42140](https://github.com/openai/codex/pull/42140))\n- The plugin CLI can list, install, and remove plugins from remote marketplaces. ([#42150](https://github.com/openai/codex/pull/42150))\n- Set `tui.auto_recap = false` to disable automatic recaps while keeping manual `/recap` available. ([#4210",
+      "hasImpact": true,
+      "sufficientHistory": false,
+      "totalBefore": 1009,
+      "totalAfter": 1009,
+      "impactedClusters": 194,
+      "topClusters": [
+        {
+          "clusterId": "104022ab-b29e-418a-967e-07477de52dd3",
+          "clusterKey": "Context & Memory:3f721039",
+          "clusterName": "Cross-thread task handoff and routing failures",
+          "beforeCount": 1,
+          "afterCount": 1,
+          "signalType": "stable"
+        },
+        {
+          "clusterId": "0569b1e7-acbe-47e1-b792-a22a88dd9354",
+          "clusterKey": "Reliability:a49aaba8",
+          "clusterName": "Windows sandbox setup and provisioning failures",
+          "beforeCount": 10,
+          "afterCount": 10,
+          "signalType": "stable"
+        },
+        {
+          "clusterId": "da5e3fa9-8ed4-4b26-a750-9f7a4627097a",
+          "clusterKey": "Reliability:e9853d95",
+          "clusterName": "macOS Desktop task stalls and stream disconnections",
+          "beforeCount": 7,
+          "afterCount": 7,
+          "signalType": "stable"
+        },
+        {
+          "clusterId": "5bea030a-45a8-43b7-8f3e-639ee3f9dfee",
+          "clusterKey": "Reliability:8fa30f21",
+          "clusterName": "App-server session hangs and lifecycle failures",
+          "beforeCount": 3,
+          "afterCount": 3,
+          "signalType": "stable"
+        },
+        {
+          "clusterId": "0db55299-03e2-4fd6-8cf3-944ee40a4e3d",
+          "clusterKey": "App / UI / UX:97578255",
+          "clusterName": "Desktop pet interactivity and interaction failures",
+          "beforeCount": 28,
+          "afterCount": 28,
+          "signalType": "stable"
+        }
+      ]
+    },
+    {
+      "id": "cc4243b6-32a9-43ad-b624-a8a698059adf",
+      "name": "0.152.1",
+      "releaseDate": "2026-09-01T22:33:02+00:00",
+      "sourceUrl": "https://github.com/openai/codex/releases/tag/rust-v0.152.1",
+      "description": "## Bug Fixes\n- Guardian approval review now honors Node REPL policies provided through model metadata.\n\n**Full Changelog**: https://github.com/openai/codex/compare/rust-v0.152.0...rust-v0.152.1\n",
+      "hasImpact": true,
+      "sufficientHistory": false,
+      "totalBefore": 1156,
+      "totalAfter": 1156,
+      "impactedClusters": 194,
+      "topClusters": [
+        {
+          "clusterId": "57111bc6-e059-4670-a38a-9700048f97d3",
+          "clusterKey": "App / UI / UX:6e065f33",
+          "clusterName": "macOS composer input and formatting issues",
+          "beforeCount": 3,
+          "afterCount": 3,
+          "signalType": "stable"
+        },
+        {
+          "clusterId": "a5e71a54-219f-4ab5-9417-44d8a8d96d61",
+          "clusterKey": "Safety & Permissions:fd1a26dc",
+          "clusterName": "Agent performing reset actions without user consent",
+          "beforeCount": 3,
+          "afterCount": 3,
+          "signalType": "stable"
+        },
+        {
+          "clusterId": "0e9f7f03-d52b-4e55-aa21-cfc572e00e75",
+          "clusterKey": "Reliability:d2171ed8",
+          "clusterName": "Windows setProgressBar TypeError on file operations",
+          "beforeCount": 3,
+          "afterCount": 3,
+          "signalType": "stable"
+        },
+        {
+          "clusterId": "c17f0ade-e045-4aa9-a7fb-f8b10d79502f",
+          "clusterKey": "Reliability:0c99bcba",
+          "clusterName": "App-server thread lifecycle and resume reliability",
+          "beforeCount": 2,
+          "afterCount": 2,
+          "signalType": "stable"
+        },
+        {
+          "clusterId": "16bb3f8a-d7ea-4524-b5e6-6e2055e465c7",
+          "clusterKey": "Tool Execution:d96ebd06",
+          "clusterName": "Subagent tool and workspace access limitations",
+          "beforeCount": 3,
+          "afterCount": 3,
+          "signalType": "stable"
+        }
+      ]
+    },
+    {
+      "id": "614a56f0-fbb1-46c9-b458-f9360496a1e1",
+      "name": "0.152.0",
+      "releaseDate": "2026-09-01T01:58:32+00:00",
+      "sourceUrl": "https://github.com/openai/codex/releases/tag/rust-v0.152.0",
+      "description": "## New Features\n\n- Vim mode supports `/` and `?` searches within drafts, highlighted matches, and repeat navigation with `n` and `N`. (#41586)\n- Rate-limit banners offer actions for checking usage, managing credits, resetting limits, and managing plans. (#41742)\n- The terminal UI and `codex exec` show credential-refresh progress, including Amazon Bedrock reauthentication. (#41239)\n- MCP server names can contain `:`, `@`, `/`, and `.`, supporting package-style names throughout CLI commands and au",
+      "hasImpact": true,
+      "sufficientHistory": false,
+      "totalBefore": 1230,
+      "totalAfter": 1230,
+      "impactedClusters": 196,
+      "topClusters": [
+        {
+          "clusterId": "613e02b8-ce74-47d2-b91c-a313be5dba7f",
+          "clusterKey": "Reliability:da5c6ca2",
+          "clusterName": "App crashes under specific interactions",
+          "beforeCount": 3,
+          "afterCount": 3,
+          "signalType": "stable"
+        },
+        {
+          "clusterId": "5a4f3cf5-1911-4612-ac5e-2b65437a520e",
+          "clusterKey": "Reliability:d363e0cf",
+          "clusterName": "Terminal session state display issues",
+          "beforeCount": 3,
+          "afterCount": 3,
+          "signalType": "stable"
+        },
+        {
+          "clusterId": "0e9f7f03-d52b-4e55-aa21-cfc572e00e75",
+          "clusterKey": "Reliability:d2171ed8",
+          "clusterName": "Windows setProgressBar TypeError on file operations",
+          "beforeCount": 3,
+          "afterCount": 3,
+          "signalType": "stable"
+        },
+        {
+          "clusterId": "c1118edf-02f6-40ef-89ca-19477033bb1e",
+          "clusterKey": "Reliability:6437ebf4",
+          "clusterName": "Remote device QR pairing failures on specific devices",
+          "beforeCount": 3,
+          "afterCount": 3,
+          "signalType": "stable"
+        },
+        {
+          "clusterId": "afcb162b-e6d5-4fdc-b7fb-ca3e185c287f",
+          "clusterKey": "Git & Workspace:6e0094fc",
+          "clusterName": "Windows/WSL path handling breaks project operations",
+          "beforeCount": 9,
+          "afterCount": 9,
+          "signalType": "stable"
+        }
+      ]
+    },
+    {
+      "id": "f85a65d0-b95e-43f2-b660-ba4a02f15782",
+      "name": "0.151.0",
+      "releaseDate": "2026-08-29T09:55:39+00:00",
+      "sourceUrl": "https://github.com/openai/codex/releases/tag/rust-v0.151.0",
+      "description": "## New Features\n\n- Added a configurable grace period for discovering tools from optional MCP servers. (#41199)\n- Extensions can now inspect or replace MCP tool results before they reach the model. (#41202)\n- Plugin catalogs now combine per-repository configuration and report invalid project marketplaces without hiding valid plugins. (#41208)\n\n## Bug Fixes\n\n- Preserved restored permission profiles across TUI turns and prevented `/cd` from weakening sandbox restrictions. (#41192)\n- Kept tool avail",
+      "hasImpact": true,
+      "sufficientHistory": true,
+      "totalBefore": 624,
+      "totalAfter": 704,
+      "impactedClusters": 196,
+      "topClusters": [
+        {
+          "clusterId": "bea4cde5-d87d-48f2-a92f-bef3516ced63",
+          "clusterKey": "Reliability:537ffbf6",
+          "clusterName": "Backend API 404 errors on codex responses endpoint",
+          "beforeCount": 0,
+          "afterCount": 28,
+          "signalType": "new"
+        },
+        {
+          "clusterId": "526c66f3-80cf-4344-891b-3ed647ae3199",
+          "clusterKey": "Authentication & Account:0bc846a7",
+          "clusterName": "Desktop app session and token handling failures",
+          "beforeCount": 32,
+          "afterCount": 7,
+          "signalType": "decreased"
+        },
+        {
+          "clusterId": "0db55299-03e2-4fd6-8cf3-944ee40a4e3d",
+          "clusterKey": "App / UI / UX:97578255",
+          "clusterName": "Desktop pet interactivity and interaction failures",
+          "beforeCount": 7,
+          "afterCount": 22,
+          "signalType": "increased"
+        },
+        {
+          "clusterId": "1dd72c44-fe62-4dc5-927d-dd474a018a0c",
+          "clusterKey": "Safety & Permissions:25cd0c87",
+          "clusterName": "False-positive safety and content filter blocks",
+          "beforeCount": 9,
+          "afterCount": 19,
+          "signalType": "increased"
+        },
+        {
+          "clusterId": "ed7b8672-5d4f-4f01-b37e-010f1a6bc31c",
+          "clusterKey": "App / UI / UX:2f8dc02f",
+          "clusterName": "Chrome extension side panel and tab control issues",
+          "beforeCount": 10,
+          "afterCount": 0,
+          "signalType": "decreased"
+        }
+      ]
+    },
+    {
+      "id": "54969def-1a38-41da-9021-46050504229c",
+      "name": "0.150.1",
+      "releaseDate": "2026-08-27T01:56:54+00:00",
+      "sourceUrl": "https://github.com/openai/codex/releases/tag/rust-v0.150.1",
+      "description": "## Bug Fixes\n- Remote compaction now counts retained images toward its token budget by default, trimming older images as needed. (#41003)\n\n## Changelog\n\nFull Changelog: https://github.com/openai/codex/compare/rust-v0.150.0...rust-v0.150.1\n\n- #41003 Backport retained-image compaction budgeting to 0.150 @rhan-oai\n\n\n",
+      "hasImpact": true,
+      "sufficientHistory": false,
+      "totalBefore": 1049,
+      "totalAfter": 1049,
+      "impactedClusters": 192,
+      "topClusters": [
+        {
+          "clusterId": "0e9f7f03-d52b-4e55-aa21-cfc572e00e75",
+          "clusterKey": "Reliability:d2171ed8",
+          "clusterName": "Windows setProgressBar TypeError on file operations",
+          "beforeCount": 3,
+          "afterCount": 3,
+          "signalType": "stable"
+        },
+        {
+          "clusterId": "c17f0ade-e045-4aa9-a7fb-f8b10d79502f",
+          "clusterKey": "Reliability:0c99bcba",
+          "clusterName": "App-server thread lifecycle and resume reliability",
+          "beforeCount": 3,
+          "afterCount": 3,
+          "signalType": "stable"
+        },
+        {
+          "clusterId": "16bb3f8a-d7ea-4524-b5e6-6e2055e465c7",
+          "clusterKey": "Tool Execution:d96ebd06",
+          "clusterName": "Subagent tool and workspace access limitations",
+          "beforeCount": 2,
+          "afterCount": 2,
+          "signalType": "stable"
+        },
+        {
+          "clusterId": "e4b36138-42ad-49ad-b8f0-864bb590732e",
+          "clusterKey": "Reliability:e07fe910",
+          "clusterName": "Desktop startup failures from SQLite database issues",
+          "beforeCount": 3,
+          "afterCount": 3,
+          "signalType": "stable"
+        },
+        {
+          "clusterId": "c1118edf-02f6-40ef-89ca-19477033bb1e",
+          "clusterKey": "Reliability:6437ebf4",
+          "clusterName": "Remote device QR pairing failures on specific devices",
+          "beforeCount": 2,
+          "afterCount": 2,
+          "signalType": "stable"
+        }
+      ]
+    },
+    {
+      "id": "1c3b28be-4e61-4a97-abc3-2133e7757ee1",
+      "name": "0.150.0",
+      "releaseDate": "2026-08-26T19:37:28+00:00",
+      "sourceUrl": "https://github.com/openai/codex/releases/tag/rust-v0.150.0",
+      "description": "## New Features\n\n- Reference other Codex tasks with `@` mentions, and ask agents to read, create, or message tasks from the terminal. (#40308, #40315)\n- `/copy` now offers a picker for full responses, individual code blocks, and blockquotes. (#39997)\n- Unnamed terminal tasks receive descriptive titles automatically, and `/rename` suggests an editable title based on the conversation. (#40492, #40495)\n- Markdown links appear as clickable labels in supported terminals, with visible URLs retained el",
+      "hasImpact": true,
+      "sufficientHistory": false,
+      "totalBefore": 1028,
+      "totalAfter": 1028,
+      "impactedClusters": 192,
+      "topClusters": [
+        {
+          "clusterId": "5a4f3cf5-1911-4612-ac5e-2b65437a520e",
+          "clusterKey": "Reliability:d363e0cf",
+          "clusterName": "Terminal session state display issues",
+          "beforeCount": 2,
+          "afterCount": 2,
+          "signalType": "stable"
+        },
+        {
+          "clusterId": "0e9f7f03-d52b-4e55-aa21-cfc572e00e75",
+          "clusterKey": "Reliability:d2171ed8",
+          "clusterName": "Windows setProgressBar TypeError on file operations",
+          "beforeCount": 3,
+          "afterCount": 3,
+          "signalType": "stable"
+        },
+        {
+          "clusterId": "c1118edf-02f6-40ef-89ca-19477033bb1e",
+          "clusterKey": "Reliability:6437ebf4",
+          "clusterName": "Remote device QR pairing failures on specific devices",
+          "beforeCount": 2,
+          "afterCount": 2,
+          "signalType": "stable"
+        },
+        {
+          "clusterId": "afcb162b-e6d5-4fdc-b7fb-ca3e185c287f",
+          "clusterKey": "Git & Workspace:6e0094fc",
+          "clusterName": "Windows/WSL path handling breaks project operations",
+          "beforeCount": 6,
+          "afterCount": 6,
+          "signalType": "stable"
+        },
+        {
+          "clusterId": "2735bc37-b0b7-4adc-86c0-49533a5f8a73",
+          "clusterKey": "Safety & Permissions:a9264eaa",
+          "clusterName": "Sandbox permission profile enforcement failures",
+          "beforeCount": 11,
+          "afterCount": 11,
+          "signalType": "stable"
+        }
+      ]
+    }
+  ]
+}

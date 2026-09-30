@@ -24,14 +24,6 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Setup Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: "3.12"
-
-      - name: Install Python dependencies
-        run: pip install -r requirements.txt
-
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
@@ -41,11 +33,81 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      - name: Generate frozen data snapshot
-        env:
-          NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.NEXT_PUBLIC_SUPABASE_URL }}
-          SUPABASE_ANON_KEY: ${{ secrets.SUPABASE_ANON_KEY }}
-        run: python scripts/snapshot_static.py
+      - name: Validate frozen snapshot
+        run: |
+          node <<'NODE'
+          const assert = require('node:assert/strict');
+          const { readFileSync } = require('node:fs');
+          const { createHash } = require('node:crypto');
+          const root = 'data/frozen/codex-14d-2026-09-06';
+          const manifest = JSON.parse(readFileSync(`${root}/manifest.json`, 'utf8'));
+          assert.equal(manifest.dataset_id, 'codex-14d-2026-09-06');
+          assert.equal(manifest.snapshot_version, '1');
+          assert.equal(manifest.analysis_version, 'v0.3.4');
+          const files = ['overview', 'feedback', 'insights', 'opportunities', 'action-briefs', 'releases'];
+          assert.deepEqual(Object.keys(manifest.files_sha256).sort(), files.map(name => `${name}.json`).sort());
+          const data = {};
+          for (const name of files) {
+            const filename = `${name}.json`;
+            const bytes = readFileSync(`${root}/${filename}`);
+            assert.equal(createHash('sha256').update(bytes).digest('hex'), manifest.files_sha256[filename], `${filename}: SHA256 mismatch`);
+            data[name] = JSON.parse(bytes.toString('utf8'));
+            const state = name === 'overview' ? data[name].summary : data[name];
+            assert.equal(state.configured, true, `${filename}: not configured`);
+            assert.equal(state.error, null, `${filename}: snapshot error`);
+          }
+          const overview = data.overview;
+          const insights = data.insights;
+          const opportunities = data.opportunities.rows;
+          const briefs = data['action-briefs'].rows;
+          const releases = data.releases.rows;
+          const inScope = overview.distributions.surface.reduce((sum, row) => sum + row.count, 0);
+          assert.equal(overview.distributions.inScopeTotal, inScope, 'In-scope aggregate inconsistent');
+          for (const dimension of ['platform', 'category']) {
+            assert.equal(overview.distributions[dimension].reduce((sum, row) => sum + row.count, 0), inScope, `${dimension}: inconsistent in-scope total`);
+          }
+          const actual = {
+            dataset_members: overview.summary.totalIssues,
+            in_scope_feedback: inScope,
+            production_clusters: insights.counts.total,
+            emerging_signals: insights.counts.emerging,
+            needs_refinement: insights.counts.needsRefinement,
+            opportunities: opportunities.length,
+            non_empty_briefs: briefs.filter(row => row.brief && Object.keys(row.brief).length > 0).length,
+            empty_briefs: briefs.filter(row => !row.brief || Object.keys(row.brief).length === 0).length,
+            releases: releases.length,
+            comparable_releases: releases.filter(row => row.sufficientHistory === true).length,
+            insufficient_releases: releases.filter(row => row.sufficientHistory === false).length,
+          };
+          const expected = {
+            dataset_members: 2254, in_scope_feedback: 2096, production_clusters: 197,
+            emerging_signals: 25, needs_refinement: 15, opportunities: 44,
+            non_empty_briefs: 43, empty_briefs: 1, releases: 12,
+            comparable_releases: 1, insufficient_releases: 11,
+          };
+          assert.deepEqual(manifest.metric_counts, expected, 'Manifest metrics changed');
+          assert.deepEqual(actual, expected, 'Snapshot metrics inconsistent');
+          assert.equal(overview.summary.analyzedIssues, actual.dataset_members);
+          assert.equal(overview.clusterCount, actual.production_clusters);
+          assert.equal(overview.summary.emergingClusters, actual.emerging_signals);
+          assert.equal(overview.opportunityCount, actual.opportunities);
+          assert.deepEqual(overview.topOpportunities, opportunities, 'Overview opportunities differ');
+          assert.deepEqual(briefs, opportunities, 'Action Brief opportunities differ');
+          const statuses = { investigate_now: 0, validate: 0, monitor: 0, low_priority: 0 };
+          for (const [index, row] of opportunities.entries()) {
+            assert.ok(Object.hasOwn(statuses, row.action), 'Unknown opportunity status');
+            statuses[row.action] += 1;
+            assert.ok(Number.isFinite(row.priority), 'Invalid priority');
+            if (index > 0) assert.ok(opportunities[index - 1].priority >= row.priority, 'Opportunity ordering changed');
+          }
+          assert.deepEqual(statuses, { investigate_now: 6, validate: 9, monitor: 16, low_priority: 13 });
+          assert.deepEqual(statuses, manifest.opportunity_status_counts);
+          assert.equal(data.feedback.rows.length, 20, 'Feedback detail coverage changed');
+          assert.equal(insights.insights.length, 50, 'Insights detail coverage changed');
+          assert.equal(manifest.coverage_limitations.feedback.detail_rows, data.feedback.rows.length);
+          assert.equal(manifest.coverage_limitations.insights.detail_rows, insights.insights.length);
+          console.log('Frozen snapshot validation PASS', actual);
+          NODE
 
       - name: Exclude API routes for static export
         run: mv app/api ../api_backup && rm -rf .next

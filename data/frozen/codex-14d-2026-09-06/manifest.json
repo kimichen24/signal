@@ -1,0 +1,54 @@
+{
+  "snapshot_version": "1",
+  "dataset_id": "codex-14d-2026-09-06",
+  "analysis_version": "v0.3.4",
+  "freeze_date": "2026-09-30",
+  "source_directory": "generated/static-data",
+  "dataset_window": {
+    "start_inclusive": "2026-08-23",
+    "end_exclusive": "2026-09-06"
+  },
+  "files_sha256": {
+    "overview.json": "c93e57c69beaad8085e508df80df122786c25c13d71e11579c8b516023b366d9",
+    "feedback.json": "997a766db588d6140b8cf0016bf67e7ce88b5a7f6855af1d01d76f82904541e1",
+    "insights.json": "f7a7959adca2186b1c6a23457c5e02700868e0851b9e1494571bea48b24dce03",
+    "opportunities.json": "00a591f9f5a95e568ed614a2c8d7edb7ab8218c5f6c71fc8eaf4553e5855fcd7",
+    "action-briefs.json": "00a591f9f5a95e568ed614a2c8d7edb7ab8218c5f6c71fc8eaf4553e5855fcd7",
+    "releases.json": "10a77c561a6ac1358c138446c78eeddfeca808299d69e23184b0cda0ce15941c"
+  },
+  "metric_counts": {
+    "dataset_members": 2254,
+    "in_scope_feedback": 2096,
+    "production_clusters": 197,
+    "emerging_signals": 25,
+    "needs_refinement": 15,
+    "opportunities": 44,
+    "non_empty_briefs": 43,
+    "empty_briefs": 1,
+    "releases": 12,
+    "comparable_releases": 1,
+    "insufficient_releases": 11
+  },
+  "opportunity_status_counts": {
+    "investigate_now": 6,
+    "validate": 9,
+    "monitor": 16,
+    "low_priority": 13
+  },
+  "coverage_limitations": {
+    "non_realtime": true,
+    "feedback": {
+      "detail_rows": 20,
+      "dataset_members": 2254,
+      "note": "Existing snapshot contains only 20 Feedback detail rows, not the full dataset."
+    },
+    "insights": {
+      "detail_rows": 50,
+      "production_clusters": 197,
+      "note": "Existing snapshot contains only 50 Insight detail rows. Counts cover all 197 production clusters; flags in detail rows cannot reconstruct full emerging/refinement totals."
+    },
+    "action_briefs": "44 opportunities include 43 non-empty briefs and 1 missing brief; the missing brief is preserved.",
+    "releases": "Only 1 of 12 releases has sufficient history; 11 remain insufficient_history.",
+    "verification": "Full-dataset metrics are preserved from existing snapshot aggregates; this copy does not re-query Supabase or reconstruct missing detail rows."
+  }
+}

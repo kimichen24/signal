@@ -1,0 +1,3139 @@
+{
+  "summary": {
+    "configured": true,
+    "error": null,
+    "totalIssues": 2254,
+    "analyzedIssues": 2254,
+    "emergingClusters": 25,
+    "highSeverityIssues": 1427,
+    "latestIssueAt": null
+  },
+  "distributions": {
+    "surface": [
+      {
+        "label": "Codex App",
+        "count": 1435,
+        "pct": 68
+      },
+      {
+        "label": "CLI",
+        "count": 486,
+        "pct": 23
+      },
+      {
+        "label": "Web",
+        "count": 75,
+        "pct": 4
+      },
+      {
+        "label": "IDE Extension",
+        "count": 66,
+        "pct": 3
+      },
+      {
+        "label": "Unknown",
+        "count": 34,
+        "pct": 2
+      }
+    ],
+    "platform": [
+      {
+        "label": "Windows",
+        "count": 907,
+        "pct": 43
+      },
+      {
+        "label": "macOS",
+        "count": 635,
+        "pct": 30
+      },
+      {
+        "label": "Unknown",
+        "count": 343,
+        "pct": 16
+      },
+      {
+        "label": "Linux",
+        "count": 180,
+        "pct": 9
+      },
+      {
+        "label": "Android",
+        "count": 15,
+        "pct": 1
+      },
+      {
+        "label": "iOS",
+        "count": 15,
+        "pct": 1
+      },
+      {
+        "label": "Other",
+        "count": 1,
+        "pct": 0
+      }
+    ],
+    "category": [
+      {
+        "label": "Reliability",
+        "count": 610,
+        "pct": 29
+      },
+      {
+        "label": "App / UI / UX",
+        "count": 441,
+        "pct": 21
+      },
+      {
+        "label": "Tool Execution",
+        "count": 220,
+        "pct": 10
+      },
+      {
+        "label": "Safety & Permissions",
+        "count": 148,
+        "pct": 7
+      },
+      {
+        "label": "Usage & Credits",
+        "count": 117,
+        "pct": 6
+      },
+      {
+        "label": "Authentication & Account",
+        "count": 87,
+        "pct": 4
+      },
+      {
+        "label": "MCP & Integrations",
+        "count": 86,
+        "pct": 4
+      },
+      {
+        "label": "Context & Memory",
+        "count": 71,
+        "pct": 3
+      },
+      {
+        "label": "Performance",
+        "count": 65,
+        "pct": 3
+      },
+      {
+        "label": "Model Quality",
+        "count": 59,
+        "pct": 3
+      },
+      {
+        "label": "Installation & Updates",
+        "count": 59,
+        "pct": 3
+      },
+      {
+        "label": "CLI",
+        "count": 47,
+        "pct": 2
+      },
+      {
+        "label": "Git & Workspace",
+        "count": 45,
+        "pct": 2
+      },
+      {
+        "label": "Other",
+        "count": 16,
+        "pct": 1
+      },
+      {
+        "label": "Onboarding & Documentation",
+        "count": 13,
+        "pct": 1
+      },
+      {
+        "label": "IDE Integration",
+        "count": 12,
+        "pct": 1
+      }
+    ],
+    "inScopeTotal": 2096
+  },
+  "clusterCount": 197,
+  "topOpportunities": [
+    {
+      "id": "f8fc7378-dc83-4fe6-9ca9-5297de95b05e",
+      "clusterId": "bea4cde5-d87d-48f2-a92f-bef3516ced63",
+      "clusterKey": "Reliability:537ffbf6",
+      "name": "Backend API 404 errors on codex responses endpoint",
+      "category": "Reliability",
+      "size": 28,
+      "current": 28,
+      "previous": 0,
+      "priority": 0.7603,
+      "components": {
+        "frequency": 0.5185,
+        "severity": 0.812,
+        "signal": 0.9624,
+        "engagement": 0.8056
+      },
+      "weights": {
+        "frequency": 0.3,
+        "severity": 0.25,
+        "signal": 0.25,
+        "engagement": 0.2
+      },
+      "action": "investigate_now",
+      "trendState": "new_signal",
+      "signalScore": 0.9624,
+      "isEmerging": true,
+      "growthRate": null,
+      "shareDeltaPp": 2.54,
+      "needsRefinement": true,
+      "engagement": 0.8056,
+      "engagementAvailable": true,
+      "brief": {
+        "what_changed": "A new cluster of 28 Backend API 404 errors on the codex responses endpoint emerged in the current period, after zero occurrences in the previous period. This represents a 2.54 percentage point share increase in the Reliability category.",
+        "evidence_summary": "Multiple members report unexpected 404 Not Found errors when the app calls the `/backend-api/codex/responses` endpoint (e.g., issues #42538, #42541, #42542). Several critical-severity reports link the failures directly to a recent desktop application upgrade (#42537), with issues preventing model selection or reconnection (#42532, #42533, #42536).",
+        "affected_workflow": "Interacting with Codex models for code assistance",
+        "metrics_to_monitor": [
+          "Codex API 4xx error rate",
+          "Codex responses endpoint latency",
+          "Codex desktop app crash rate",
+          "Codex feature engagement",
+          "Codex endpoint request volume"
+        ],
+        "product_hypothesis": "The errors may be related to a recent Codex desktop application upgrade or an API endpoint routing change, causing client requests to target an unavailable or misconfigured path on the backend.",
+        "suggested_validation": "Confirm whether affected users are running a specific desktop version by requesting version numbers in issue triage. Check if the errors are isolated to specific geographic regions (e.g., MAD, SJC Cloudflare rays) or affect all regions.",
+        "affected_surface_platform": "Codex App on Windows and macOS",
+        "recommended_investigation": "Investigate the state and routing configuration of the `/backend-api/codex/responses` endpoint across environments to determine if it is active, deprecated, or has been moved. Correlate the error timeline with recent deployments to the Codex backend and the 26.830.60940 desktop application build."
+      },
+      "representatives": [
+        {
+          "issueNumber": 42538,
+          "title": "unexpected status 404 Not Found: Unknown error, url: https://chatgpt.com/backend-api/codex/responses, cf-ray: a35595eccb1ff781-MAD",
+          "githubUrl": "https://github.com/openai/codex/issues/42538",
+          "state": "open"
+        },
+        {
+          "issueNumber": 42558,
+          "title": "unexpected status 404 Not Found: Unknown error, url: https://chatgpt.com/backend-api/codex/responses, cf-ray: a355ab31cf6eb7a5-ABJ",
+          "githubUrl": "https://github.com/openai/codex/issues/42558",
+          "state": "open"
+        },
+        {
+          "issueNumber": 42562,
+          "title": "unexpected status 404 Not Found: Unknown error, url: https://chatgpt.com/backend-api/codex/responses, cf-ray: a355b4151fb6f1f8-KHH",
+          "githubUrl": "https://github.com/openai/codex/issues/42562",
+          "state": "open"
+        }
+      ]
+    },
+    {
+      "id": "4795ee63-7ee3-4f2b-a528-041b66bd2017",
+      "clusterId": "9e81332b-6d04-42ac-9031-8458a95e5788",
+      "clusterKey": "Reliability:8bbb6c56",
+      "name": "Windows desktop app crashes and unexpected exits",
+      "category": "Reliability",
+      "size": 72,
+      "current": 30,
+      "previous": 42,
+      "priority": 0.7092,
+      "components": {
+        "frequency": 1.0,
+        "severity": 0.837,
+        "signal": 0.0,
+        "engagement": 1.0
+      },
+      "weights": {
+        "frequency": 0.3,
+        "severity": 0.25,
+        "signal": 0.25,
+        "engagement": 0.2
+      },
+      "action": "investigate_now",
+      "trendState": "normal_growth",
+      "signalScore": null,
+      "isEmerging": false,
+      "growthRate": -0.2857142857142857,
+      "shareDeltaPp": -1.5,
+      "needsRefinement": true,
+      "engagement": 1.0,
+      "engagementAvailable": true,
+      "brief": {
+        "what_changed": "The cluster shows a 29% decrease in issue counts (from 42 to 30) over the previous period, shifting to normal growth. However, the 72 total issues and critical severity of multiple reports indicate the broad problem family of Windows desktop app crashes persists.",
+        "evidence_summary": "Member issues describe various crash scenarios, including mid-execution terminations (#40231), startup hangs from duplicated metadata (#40255), and crashes when reopening large tasks (#40349). Critical reports include repeated restarts during tool calls (#40400) and silent exits during normal work (#40576).",
+        "affected_workflow": "Windows Codex Desktop App stability during execution, startup, and reopening tasks.",
+        "metrics_to_monitor": [
+          "Windows desktop app crash rate",
+          "Average session duration before exit",
+          "Startup failure rate",
+          "Tool execution completion rate",
+          "WebSocket connection stability"
+        ],
+        "product_hypothesis": "The crashes may stem from diverse underlying issues such as memory management, process stability during tool execution, or WebSocket handling in the Windows desktop client, given the range of symptoms reported.",
+        "suggested_validation": "1. Review application logs and telemetry for the Windows desktop app around the timestamps of reported crashes to identify shared anomalies. 2. Test specific scenarios mentioned in issues, like executing long-running commands or reopening large browser-heavy tasks, in a controlled environment.",
+        "affected_surface_platform": "Codex App on Windows.",
+        "recommended_investigation": "1. Categorize the 72 member reports into sub-families based on crash triggers (e.g., startup, tool execution, large tasks). 2. Analyze common technical patterns across critical and high-severity issues, such as process exit codes or memory usage spikes."
+      },
+      "representatives": [
+        {
+          "issueNumber": 41056,
+          "title": "Windows ChatGPT/Codex Desktop 26.820.9563.0 can hang ~8 minutes before creating its main window",
+          "githubUrl": "https://github.com/openai/codex/issues/41056",
+          "state": "open"
+        },
+        {
+          "issueNumber": 42711,
+          "title": "[Windows][Desktop 26.901.4073.0] Startup fails with 3221225477 / 0xC0000005 while standalone CLI and app-server work",
+          "githubUrl": "https://github.com/openai/codex/issues/42711",
+          "state": "open"
+        },
+        {
+          "issueNumber": 42714,
+          "title": "[Windows] Codex desktop launches processes but shows no window after update",
+          "githubUrl": "https://github.com/openai/codex/issues/42714",
+          "state": "open"
+        }
+      ]
+    },
+    {
+      "id": "4158db50-9208-4455-aab1-8ad09029636d",
+      "clusterId": "7f85873a-fb06-4067-bfe9-5880d4ebdc15",
+      "clusterKey": "Reliability:5d3e1c96",
+      "name": "Paginated thread history projection inconsistencies",
+      "category": "Reliability",
+      "size": 54,
+      "current": 31,
+      "previous": 23,
+      "priority": 0.6856,
+      "components": {
+        "frequency": 1.0,
+        "severity": 0.806,
+        "signal": 0.0,
+        "engagement": 0.9206
+      },
+      "weights": {
+        "frequency": 0.3,
+        "severity": 0.25,
+        "signal": 0.25,
+        "engagement": 0.2
+      },
+      "action": "investigate_now",
+      "trendState": "normal_growth",
+      "signalScore": null,
+      "isEmerging": false,
+      "growthRate": 0.34782608695652173,
+      "shareDeltaPp": 0.5,
+      "needsRefinement": true,
+      "engagement": 0.9206,
+      "engagementAvailable": true,
+      "brief": {
+        "what_changed": "Reports of paginated thread history projection inconsistencies grew from 23 to 31 issues (a ~35% increase), making this a broad problem family affecting history display and state management across the Codex App.",
+        "evidence_summary": "The cluster includes 54 issues describing diverse history projection failures. Examples include #40336 and #40609 where reopening or continuing a task silently reverts the thread or omits completed turns, and #40512 and #40601 where live projection drops or only hydrates a recent subset of valid history. The high-severity reports (#40178, #40342, #40452, #40563) indicate multiple distinct mechanisms—duplicate ordinals, token_count halts, post-update replacement, and stale inProgress state—causing data loss or corruption in the UI.",
+        "affected_workflow": "Reviewing and continuing conversation history in task threads",
+        "metrics_to_monitor": [
+          "paginated_history_projection_error_rate",
+          "thread_history_turn_count_mismatch",
+          "app_relaunch_history_consistency_rate",
+          "history_pagination_token_count_halts",
+          "live_projection_output_drop_rate"
+        ],
+        "product_hypothesis": "The paginated history projection layer may lack robust state synchronization and conflict resolution between multiple sources of truth (e.g., live updates, file persistence, app restarts), leading to a family of consistency failures.",
+        "suggested_validation": "Design a test matrix that reproduces the key scenarios: app reboot/reopen, multi-turn continuation, update/restore, and long-thread pagination. Use automated validation to compare the rendered history against the persisted JSONL at each lifecycle stage.",
+        "affected_surface_platform": "Codex App, primarily Windows Desktop and macOS Desktop",
+        "recommended_investigation": "Conduct a systematic audit of the thread history state management lifecycle—from JSONL read/write and pagination logic to renderer hydration and app-session transitions—to identify all distinct failure points within this family. Map each reported issue type to the specific data flow transition where the history state diverges from the source file."
+      },
+      "representatives": [
+        {
+          "issueNumber": 40452,
+          "title": "Desktop App: paginated thread history is replaced by a single interrupted initial turn after update",
+          "githubUrl": "https://github.com/openai/codex/issues/40452",
+          "state": "open"
+        },
+        {
+          "issueNumber": 41864,
+          "title": "Codex desktop thread history is not persisted and task remains permanently in progress",
+          "githubUrl": "https://github.com/openai/codex/issues/41864",
+          "state": "open"
+        },
+        {
+          "issueNumber": 42157,
+          "title": "[Windows][26.831.1445.0] App update/resume duplicates a rollout ordinal and hides later task history",
+          "githubUrl": "https://github.com/openai/codex/issues/42157",
+          "state": "open"
+        }
+      ]
+    },
+    {
+      "id": "e1cfdd3c-3d89-4797-a224-0582d4c0ba29",
+      "clusterId": "8d707d69-2863-43ca-8eaf-9c223d10dade",
+      "clusterKey": "Usage & Credits:531d0144",
+      "name": "Weekly quota and 5-hour usage window limits",
+      "category": "Usage & Credits",
+      "size": 75,
+      "current": 39,
+      "previous": 36,
+      "priority": 0.6793,
+      "components": {
+        "frequency": 1.0,
+        "severity": 0.717,
+        "signal": 0.0,
+        "engagement": 1.0
+      },
+      "weights": {
+        "frequency": 0.3,
+        "severity": 0.25,
+        "signal": 0.25,
+        "engagement": 0.2
+      },
+      "action": "investigate_now",
+      "trendState": "normal_growth",
+      "signalScore": null,
+      "isEmerging": false,
+      "growthRate": 0.08333333333333333,
+      "shareDeltaPp": -0.08,
+      "needsRefinement": true,
+      "engagement": 1.0,
+      "engagementAvailable": true,
+      "brief": {
+        "what_changed": "Reports in this cluster grew slightly from 36 to 39 issues, continuing steady growth, with the cluster representing a broad family of concerns around weekly quota limits and the 5-hour usage window.",
+        "evidence_summary": "Members report a range of issues including weekly-limit percentages not matching token allocations across accounts (#40259), unexpected quota consumption after resets (#40527, #40693), and requests to decouple the 5-hour window from weekly limits (#40650, #40725). Several high-severity issues describe confusing or unpredictable quota behavior.",
+        "affected_workflow": "Managing and consuming Codex weekly quotas and usage windows",
+        "metrics_to_monitor": [
+          "quota-related support ticket volume",
+          "quota exhaustion complaint rate",
+          "weekly usage window satisfaction score",
+          "average quota utilization percentage",
+          "post-reset anomaly reports"
+        ],
+        "product_hypothesis": "The current design combining weekly quotas with a 5-hour rolling usage window may be creating confusion and perceived unfairness, leading to a broad family of related but distinct complaints that may stem from multiple underlying factors.",
+        "suggested_validation": "1. Conduct user interviews or surveys with affected members to map which specific sub-problem (quota transparency, window flexibility, reset behavior) they prioritize. 2. Prototype and test alternative quota/wall-clock window models with a subset of users to gather qualitative feedback.",
+        "affected_surface_platform": "Codex App on Windows",
+        "recommended_investigation": "1. Group and analyze the 75+ issues into sub-themes (e.g., quota math inconsistencies, window design friction, post-reset anomalies) to identify distinct problem clusters. 2. Audit the quota and usage window logic for common user scenarios such as multi-account usage, mid-week resets, and long-running jobs."
+      },
+      "representatives": [
+        {
+          "issueNumber": 40880,
+          "title": "Codex 5-hour usage limit is being consumed significantly faster since reintroduction",
+          "githubUrl": "https://github.com/openai/codex/issues/40880",
+          "state": "open"
+        },
+        {
+          "issueNumber": 42218,
+          "title": "5-hour usage limit starts at 89% after more than 10 hours without any Codex usage",
+          "githubUrl": "https://github.com/openai/codex/issues/42218",
+          "state": "open"
+        },
+        {
+          "issueNumber": 42250,
+          "title": "Severe reduction in effective Codex usage since the return of the 5-hour limit",
+          "githubUrl": "https://github.com/openai/codex/issues/42250",
+          "state": "open"
+        }
+      ]
+    },
+    {
+      "id": "9e73d731-76a1-4437-8dd8-97ea65cb6b30",
+      "clusterId": "1dd72c44-fe62-4dc5-927d-dd474a018a0c",
+      "clusterKey": "Safety & Permissions:25cd0c87",
+      "name": "False-positive safety and content filter blocks",
+      "category": "Safety & Permissions",
+      "size": 31,
+      "current": 21,
+      "previous": 10,
+      "priority": 0.623,
+      "components": {
+        "frequency": 0.5741,
+        "severity": 0.758,
+        "signal": 0.8737,
+        "engagement": 0.2143
+      },
+      "weights": {
+        "frequency": 0.3,
+        "severity": 0.25,
+        "signal": 0.25,
+        "engagement": 0.2
+      },
+      "action": "investigate_now",
+      "trendState": "normal_growth",
+      "signalScore": 0.8737,
+      "isEmerging": true,
+      "growthRate": 1.1,
+      "shareDeltaPp": 0.9,
+      "needsRefinement": true,
+      "engagement": 0.2143,
+      "engagementAvailable": true,
+      "brief": {
+        "what_changed": "Reports of false-positive safety and content filter blocks grew from 10 to 21 this period (raw growth rate 1.1), indicating the problem family is expanding rather than remaining isolated.",
+        "evidence_summary": "Members #40160, #40173, #40421, and #40970 report benign code-generation and scientific-software tasks being misclassified as cybersecurity or safety violations. Several high-severity issues (#40327, #40602, #40949) describe persistent 'invalid_prompt' errors and blocked completions even after prompt rewording or in fresh threads, suggesting the block logic is applied inconsistently.",
+        "affected_workflow": "Code generation, refactoring, and audit tasks that trigger safety filters",
+        "metrics_to_monitor": [
+          "safety_filter_block_rate",
+          "false_positive_report_count",
+          "invalid_prompt_error_rate",
+          "task_completion_rate_after_safety_block",
+          "prompt_rewording_success_rate"
+        ],
+        "product_hypothesis": "The safety and content filter heuristics may be overly broad or context-insensitive, causing legitimate technical-sounding prompts or code outputs to be flagged as policy violations.",
+        "suggested_validation": "1. Run a representative sample of blocked prompts through the filter offline to measure false-positive rate by category. 2. Conduct a small controlled test with relaxed keyword heuristics to observe impact on block rate and legitimate task completion.",
+        "affected_surface_platform": "CLI and desktop apps on macOS and Windows",
+        "recommended_investigation": "1. Categorize the 31 reports by trigger type (cybersecurity keyword, scientific term, generic false-positive) to identify sub-families within this broad cluster. 2. Review the filter's matching rules and prompt-classification pipeline for the most common trigger patterns."
+      },
+      "representatives": [
+        {
+          "issueNumber": 40160,
+          "title": "False Positive Cybersecurity Block",
+          "githubUrl": "https://github.com/openai/codex/issues/40160",
+          "state": "open"
+        },
+        {
+          "issueNumber": 41872,
+          "title": "Network safety mechanism is absurdly trigger-happy and repeatedly blocks legitimate local coding work",
+          "githubUrl": "https://github.com/openai/codex/issues/41872",
+          "state": "open"
+        },
+        {
+          "issueNumber": 42055,
+          "title": "False-positive cyber safety block prevents authorized   local defensive database review",
+          "githubUrl": "https://github.com/openai/codex/issues/42055",
+          "state": "open"
+        }
+      ]
+    },
+    {
+      "id": "795004ca-ecb7-4b7e-95ea-a362d74da48d",
+      "clusterId": "0db55299-03e2-4fd6-8cf3-944ee40a4e3d",
+      "clusterKey": "App / UI / UX:97578255",
+      "name": "Desktop pet interactivity and interaction failures",
+      "category": "App / UI / UX",
+      "size": 30,
+      "current": 20,
+      "previous": 10,
+      "priority": 0.6133,
+      "components": {
+        "frequency": 0.5556,
+        "severity": 0.475,
+        "signal": 0.759,
+        "engagement": 0.6905
+      },
+      "weights": {
+        "frequency": 0.3,
+        "severity": 0.25,
+        "signal": 0.25,
+        "engagement": 0.2
+      },
+      "action": "investigate_now",
+      "trendState": "normal_growth",
+      "signalScore": 0.759,
+      "isEmerging": true,
+      "growthRate": 1.0,
+      "shareDeltaPp": 0.81,
+      "needsRefinement": true,
+      "engagement": 0.6905,
+      "engagementAvailable": true,
+      "brief": null,
+      "representatives": [
+        {
+          "issueNumber": 41519,
+          "title": "[Windows] Custom v2 desktop pet cannot be clicked or dragged and may become invisible after switching",
+          "githubUrl": "https://github.com/openai/codex/issues/41519",
+          "state": "open"
+        },
+        {
+          "issueNumber": 41535,
+          "title": "[Windows] Desktop pet becomes click-through and cannot be dragged",
+          "githubUrl": "https://github.com/openai/codex/issues/41535",
+          "state": "open"
+        },
+        {
+          "issueNumber": 41920,
+          "title": "Windows desktop pet overlay reacts to mouse but cannot be dragged",
+          "githubUrl": "https://github.com/openai/codex/issues/41920",
+          "state": "open"
+        }
+      ]
+    },
+    {
+      "id": "c9f6c175-a413-4f83-8500-ddadeb708b98",
+      "clusterId": "17351492-728a-4f9d-a885-a48bd9bcd582",
+      "clusterKey": "Context & Memory:8c3a7aa6",
+      "name": "Context compaction reliability and side-effect failures",
+      "category": "Context & Memory",
+      "size": 23,
+      "current": 16,
+      "previous": 7,
+      "priority": 0.5455,
+      "components": {
+        "frequency": 0.4259,
+        "severity": 0.75,
+        "signal": 0.7782,
+        "engagement": 0.1786
+      },
+      "weights": {
+        "frequency": 0.3,
+        "severity": 0.25,
+        "signal": 0.25,
+        "engagement": 0.2
+      },
+      "action": "validate",
+      "trendState": "normal_growth",
+      "signalScore": 0.7782,
+      "isEmerging": true,
+      "growthRate": 1.2857142857142858,
+      "shareDeltaPp": 0.75,
+      "needsRefinement": true,
+      "engagement": 0.1786,
+      "engagementAvailable": true,
+      "brief": {
+        "what_changed": "Context compaction issues increased from 7 to 16 reports in the current period, a ~129% growth rate, indicating a broadening family of compaction-related reliability and side-effect failures.",
+        "evidence_summary": "Multiple members report automatic context compaction failing (#40213) or repeatedly triggering during sessions (#40366), disrupting active threads (#40326). Several report critical side effects including stale task resurrection (#40417) and unauthorized cross-task actions due to compaction (#41740), while others note compaction fails to sufficiently reduce usage (#40856).",
+        "affected_workflow": "Long-running sessions and context management",
+        "metrics_to_monitor": [
+          "Compaction event frequency",
+          "Post-compaction context usage percentage",
+          "Session disruption reports",
+          "Stale task revival incidents",
+          "Unauthorized action reports"
+        ],
+        "product_hypothesis": "The context compaction system may be handling diverse session states and content types unreliably, leading to unpredictable triggering, insufficient memory recovery, and unintended side effects across a wide range of scenarios.",
+        "suggested_validation": "1. Conduct a review of the compaction system's design documentation and recent changes to understand the scope of its responsibilities. 2. Survey affected users for common session characteristics (e.g., session duration, use of tools, number of tasks) to identify correlating factors.",
+        "affected_surface_platform": "Codex App on macOS",
+        "recommended_investigation": "1. Categorize all 23 issues into sub-families (e.g., triggering conditions, recovery failures, side effects, memory retention) to map the problem space. 2. Analyze session logs for the affected issues to identify common patterns in session length, content type, or app state preceding compaction events."
+      },
+      "representatives": [
+        {
+          "issueNumber": 40326,
+          "title": "Repeated context compaction and reconnection disrupt active threads",
+          "githubUrl": "https://github.com/openai/codex/issues/40326",
+          "state": "open"
+        },
+        {
+          "issueNumber": 42611,
+          "title": "[CLI] Auto-compaction replays an already-answered user message as a new turn",
+          "githubUrl": "https://github.com/openai/codex/issues/42611",
+          "state": "open"
+        },
+        {
+          "issueNumber": 42782,
+          "title": "Codex App: compaction replays completed plan-only prompt before active goal resumes",
+          "githubUrl": "https://github.com/openai/codex/issues/42782",
+          "state": "open"
+        }
+      ]
+    },
+    {
+      "id": "ac8fc28d-44a5-4fb6-b9db-e878ae368933",
+      "clusterId": "526c66f3-80cf-4344-891b-3ed647ae3199",
+      "clusterKey": "Authentication & Account:0bc846a7",
+      "name": "Desktop app session and token handling failures",
+      "category": "Authentication & Account",
+      "size": 39,
+      "current": 6,
+      "previous": 33,
+      "priority": 0.5219,
+      "components": {
+        "frequency": 0.7222,
+        "severity": 0.821,
+        "signal": 0.0,
+        "engagement": 0.5
+      },
+      "weights": {
+        "frequency": 0.3,
+        "severity": 0.25,
+        "signal": 0.25,
+        "engagement": 0.2
+      },
+      "action": "validate",
+      "trendState": "normal_growth",
+      "signalScore": null,
+      "isEmerging": false,
+      "growthRate": -0.8181818181818182,
+      "shareDeltaPp": -2.78,
+      "needsRefinement": true,
+      "engagement": 0.5,
+      "engagementAvailable": true,
+      "brief": {
+        "what_changed": "Reporting frequency for desktop session and token handling failures dropped from 33 to 6 issues this period (-81.8%), and the cluster's share of all issues fell by 2.78 percentage points. Despite the decline, 39 issues still span a wide family of authentication failure modes across Windows and macOS.",
+        "evidence_summary": "Members report a broad set of failure modes including repeated sign-outs after conversation resumes (#40395, #40267), loss of access tokens triggering 401 retry storms (#40332, #40373, #40374), expired login sessions (#40242), bundled app-server failures after workspace auth (#40222), and crashes on logout (#40293). The heterogeneity of these reports — spanning token persistence, refresh logic, retry behavior, and server connectivity — indicates this is a problem family rather than a single defect.",
+        "affected_workflow": "Maintaining a persistent authenticated desktop session",
+        "metrics_to_monitor": [
+          "desktop_unexpected_signout_rate",
+          "desktop_401_error_rate",
+          "desktop_token_refresh_failure_rate",
+          "desktop_auth_retry_count",
+          "desktop_session_duration_before_signout"
+        ],
+        "product_hypothesis": "The desktop client may lack a unified, robust token lifecycle strategy (covering persistence, rotation, graceful refresh failure, and retry limits), leading to multiple distinct surface-level failure modes that all manifest as unexpected sign-outs or auth errors.",
+        "suggested_validation": "1. Tag and segment new incoming auth reports by specific failure signature (e.g., 'token not persisted', 'refresh not attempted', 'retry storm') to understand the distribution within this family. 2. Run a structured test matrix covering token expiry, refresh-failure, and logout paths on both platforms to reproduce and classify the distinct failure modes.",
+        "affected_surface_platform": "Codex App on Windows and macOS (Desktop)",
+        "recommended_investigation": "1. Map all distinct token/session failure paths (refresh expiry, token not persisted, RPC disconnect, retry storms) and identify which are separate code paths vs. symptoms of shared logic. 2. Audit the desktop auth module's token persistence, refresh, and retry behavior on both Windows and macOS to determine where each failure mode originates."
+      },
+      "representatives": [
+        {
+          "issueNumber": 40761,
+          "title": "[Windows] Codex Desktop login succeeds, then /accounts/{id}/settings 401 causes auth_token_missing and a reauthentication loop (26.820.7780.0)",
+          "githubUrl": "https://github.com/openai/codex/issues/40761",
+          "state": "open"
+        },
+        {
+          "issueNumber": 40815,
+          "title": "Codex Desktop repeatedly signs out on macOS while CLI and web remain authenticated",
+          "githubUrl": "https://github.com/openai/codex/issues/40815",
+          "state": "open"
+        },
+        {
+          "issueNumber": 41136,
+          "title": "[Windows][26.820.9563.0] Codex Desktop repeatedly loses auth after account-settings 401 while ChatGPT Web remains signed in",
+          "githubUrl": "https://github.com/openai/codex/issues/41136",
+          "state": "open"
+        }
+      ]
+    },
+    {
+      "id": "33a2568b-708d-410e-94f6-9dde3d7d0802",
+      "clusterId": "afcb162b-e6d5-4fdc-b7fb-ca3e185c287f",
+      "clusterKey": "Git & Workspace:6e0094fc",
+      "name": "Windows/WSL path handling breaks project operations",
+      "category": "Git & Workspace",
+      "size": 9,
+      "current": 7,
+      "previous": 2,
+      "priority": 0.5199,
+      "components": {
+        "frequency": 0.1667,
+        "severity": 0.722,
+        "signal": 0.7035,
+        "engagement": 0.5675
+      },
+      "weights": {
+        "frequency": 0.3,
+        "severity": 0.25,
+        "signal": 0.25,
+        "engagement": 0.2
+      },
+      "action": "validate",
+      "trendState": "low_base_acceleration",
+      "signalScore": 0.7035,
+      "isEmerging": true,
+      "growthRate": 2.5,
+      "shareDeltaPp": 0.43,
+      "needsRefinement": false,
+      "engagement": 0.5675,
+      "engagementAvailable": true,
+      "brief": {
+        "what_changed": "Reports of Windows/WSL path handling breaking project operations surged from 2 to 7 issues in the current period, indicating a sharp acceleration in this failure pattern.",
+        "evidence_summary": "Multiple members report that Codex Desktop on Windows fails to correctly handle WSL paths, causing project creation, removal, and thread resumption to break (#41290, #41463, #41746, #42211, #42292, #42461). Path conversion errors—such as treating `/mnt/d/...` as `C:\\d\\...` or deserializing paths without a base—are cited as root failures across several issues. Containerized Docker workflows are also impacted when paths are forced out of the WSL2 filesystem (#41978).",
+        "affected_workflow": "Project creation and management in WSL mode on Windows",
+        "metrics_to_monitor": [
+          "WSL project creation success rate",
+          "path conversion error rate (WSL ↔ Windows)",
+          "project migration failure rate on Windows",
+          "WSL-mode thread resume error rate",
+          "new issues filed for WSL path handling"
+        ],
+        "product_hypothesis": "A recent change to how paths are serialized, deserialized, or converted between Windows and WSL formats may have broken project operations for users running in WSL mode.",
+        "suggested_validation": "Create a reproducible test matrix covering project creation, removal, thread resume, and migration using standard WSL path patterns (`/mnt/c/...`, `//wsl.localhost/...`) on Windows 11. Compare behavior on the current release against the last known-working version to isolate the introducing change.",
+        "affected_surface_platform": "Codex App on Windows (WSL)",
+        "recommended_investigation": "Audit all path serialization/deserialization and normalization code paths for WSL-to-Windows translation, especially `AbsolutePathBuf` handling and any recent changes to `threads.cwd` storage. Trace the project creation and migration flows end-to-end to identify where WSL paths (e.g., `/mnt/...`) are incorrectly converted to Windows paths."
+      },
+      "representatives": [
+        {
+          "issueNumber": 41463,
+          "title": "[Windows + WSL] Cannot create projects – AbsolutePathBuf deserialized without a base path",
+          "githubUrl": "https://github.com/openai/codex/issues/41463",
+          "state": "open"
+        },
+        {
+          "issueNumber": 41746,
+          "title": "Codex Desktop silently fails to create WSL project selected via wsl.localhost UNC path",
+          "githubUrl": "https://github.com/openai/codex/issues/41746",
+          "state": "open"
+        },
+        {
+          "issueNumber": 43048,
+          "title": "Windows desktop: project creation fails after Windows folder-picker path is converted to a WSL path",
+          "githubUrl": "https://github.com/openai/codex/issues/43048",
+          "state": "open"
+        }
+      ]
+    },
+    {
+      "id": "6d016fce-3137-489f-8df1-71da33656be0",
+      "clusterId": "8766e18f-4f95-4469-87b2-75b4938e3171",
+      "clusterKey": "Installation & Updates:4a6426fa",
+      "name": "Windows Codex CLI binary inaccessible after update",
+      "category": "Installation & Updates",
+      "size": 21,
+      "current": 8,
+      "previous": 13,
+      "priority": 0.5192,
+      "components": {
+        "frequency": 0.3889,
+        "severity": 0.81,
+        "signal": 0.0,
+        "engagement": 1.0
+      },
+      "weights": {
+        "frequency": 0.3,
+        "severity": 0.25,
+        "signal": 0.25,
+        "engagement": 0.2
+      },
+      "action": "validate",
+      "trendState": "normal_growth",
+      "signalScore": null,
+      "isEmerging": false,
+      "growthRate": -0.38461538461538464,
+      "shareDeltaPp": -0.58,
+      "needsRefinement": true,
+      "engagement": 1.0,
+      "engagementAvailable": true,
+      "brief": {
+        "what_changed": "Report volume for Windows Codex CLI binary inaccessibility dropped from 13 to 8 reports this period (38% decline), though the problem family persists across multiple failure modes. The cluster remains flagged as broad and unresolved.",
+        "evidence_summary": "Multiple members report the Codex Desktop app fails to start after auto-update on Windows, citing errors such as 'Unable to locate the Codex CLI binary,' 'Access is denied' on bundled codex.exe, and spawn EINVAL on .cmd wrappers (issues #40700, #40752, #40762, #40780, #40804, #40843, #40850, #40853). Failures span different error paths — relocation failures, encryption errors, and permission denials — suggesting this is a heterogeneous problem family rather than a single root cause.",
+        "affected_workflow": "Launching/updating Codex Desktop on Windows",
+        "metrics_to_monitor": [
+          "windows_codex_startup_failure_rate",
+          "post_update_binary_resolution_errors",
+          "msix_update_success_rate_windows",
+          "codex_cli_spawn_error_rate",
+          "report_volume_windows_installation_cluster"
+        ],
+        "product_hypothesis": "The multiple distinct failure modes (relocation, permission denial, encryption errors, wrapper spawn failures) may indicate that different Windows environments, update mechanisms, or installer configurations are triggering separate but related failure paths during the post-update binary resolution step.",
+        "suggested_validation": "1. Reproduce each failure variant on representative Windows configurations (different OS versions, antivirus setups, MSIX package states) to confirm which error signatures map to which environmental factors. 2. Triage the 13 additional member issues in this cluster to confirm whether the error distribution and affected versions match the patterns seen in the top 8 reports.",
+        "affected_surface_platform": "Codex App on Windows (MSIX/Desktop installer)",
+        "recommended_investigation": "1. Enumerate and cluster the distinct error signatures (Access Denied, ERROR_ENCRYPTION_FAILED, EINVAL, generic binary-not-found) to map which Windows configurations or update paths produce each variant. 2. Audit the MSIX update and binary relocation flow for the codex.exe bundled artifact to identify common failure points across these different error modes."
+      },
+      "representatives": [
+        {
+          "issueNumber": 40700,
+          "title": "[Windows 26.820] Codex Desktop cannot start: bundled codex.exe relocation from WindowsApps fails",
+          "githubUrl": "https://github.com/openai/codex/issues/40700",
+          "state": "open"
+        },
+        {
+          "issueNumber": 40843,
+          "title": "[Windows][MSIX 26.820.7780.0] App cannot start after auto-update: bundled codex.exe relocation fails with ERROR_ENCRYPTION_FAILED (Unable to locate the Codex CLI binary)",
+          "githubUrl": "https://github.com/openai/codex/issues/40843",
+          "state": "open"
+        },
+        {
+          "issueNumber": 40867,
+          "title": "Codex Windows App fails to start: bundled Codex CLI binary exists but cannot be executed",
+          "githubUrl": "https://github.com/openai/codex/issues/40867",
+          "state": "open"
+        }
+      ]
+    },
+    {
+      "id": "2728e790-c7ee-4434-9131-03f4695565ad",
+      "clusterId": "fcc4389f-a81a-422c-a708-125e202c95d8",
+      "clusterKey": "Reliability:b721e93e",
+      "name": "Model capacity errors interrupting active tasks",
+      "category": "Reliability",
+      "size": 9,
+      "current": 8,
+      "previous": 1,
+      "priority": 0.5124,
+      "components": {
+        "frequency": 0.1667,
+        "severity": 0.75,
+        "signal": 0.9375,
+        "engagement": 0.2024
+      },
+      "weights": {
+        "frequency": 0.3,
+        "severity": 0.25,
+        "signal": 0.25,
+        "engagement": 0.2
+      },
+      "action": "validate",
+      "trendState": "low_base_acceleration",
+      "signalScore": 0.9375,
+      "isEmerging": true,
+      "growthRate": 7.0,
+      "shareDeltaPp": 0.63,
+      "needsRefinement": false,
+      "engagement": 0.2024,
+      "engagementAvailable": true,
+      "brief": {
+        "what_changed": "Model capacity errors impacting active Codex tasks surged from 1 report in the previous period to 8 reports in the current period, indicating a marked acceleration on a previously low base.",
+        "evidence_summary": "Nine member reports (e.g., #41127, #41790, #41798) describe 'Selected model is at capacity' errors that interrupt or halt long-running Codex tasks, with several noting the app either silently switches reasoning models or marks goals as blocked without graceful recovery (#41730, #41808, #41810). The issues are concentrated on Windows and frequently reference GPT-5.6 Sol (#42169).",
+        "affected_workflow": "Active Codex task execution",
+        "metrics_to_monitor": [
+          "capacity_error_rate_windows_codex",
+          "task_completion_rate",
+          "goal_blocked_after_error_rate",
+          "model_fallback_usage_rate",
+          "retry_success_rate"
+        ],
+        "product_hypothesis": "The Codex App's retry and error-handling logic for transient model-capacity errors on Windows may not properly pause, resume, or inform the user's active task, leading to interrupted workflows and blocked goals.",
+        "suggested_validation": "1. Reproduce the capacity error on a Windows Codex App build and observe task lifecycle, goal status, and user-facing messaging. 2. Conduct a targeted search of telemetry or logs to quantify the frequency of silent model switches and blocked goals following capacity errors.",
+        "affected_surface_platform": "Codex App on Windows",
+        "recommended_investigation": "1. Review the Windows Codex App's capacity-error handling code paths to determine how retries, model fallbacks, and goal-state transitions are managed. 2. Compare error-handling behavior across platforms to identify any Windows-specific logic gaps."
+      },
+      "representatives": [
+        {
+          "issueNumber": 41790,
+          "title": "Repeated \"Selected model is at capacity\" errors interrupting Codex tasks on ChatGPT Pro",
+          "githubUrl": "https://github.com/openai/codex/issues/41790",
+          "state": "open"
+        },
+        {
+          "issueNumber": 41805,
+          "title": "Selected model is at capacity. Please try a different model.",
+          "githubUrl": "https://github.com/openai/codex/issues/41805",
+          "state": "open"
+        },
+        {
+          "issueNumber": 42169,
+          "title": "[Windows][Codex App 26.826.12353] GPT-5.6 Sol repeatedly returns “Selected model is at capacity”",
+          "githubUrl": "https://github.com/openai/codex/issues/42169",
+          "state": "open"
+        }
+      ]
+    },
+    {
+      "id": "df0ed22e-416a-4dc3-8b31-44fa94f26230",
+      "clusterId": "d59370e7-63d2-47ad-9ffe-40530b5def12",
+      "clusterKey": "Tool Execution:dd43bcc7",
+      "name": "Windows unified-exec tool execution failures",
+      "category": "Tool Execution",
+      "size": 32,
+      "current": 14,
+      "previous": 18,
+      "priority": 0.5016,
+      "components": {
+        "frequency": 0.5926,
+        "severity": 0.781,
+        "signal": 0.0,
+        "engagement": 0.6429
+      },
+      "weights": {
+        "frequency": 0.3,
+        "severity": 0.25,
+        "signal": 0.25,
+        "engagement": 0.2
+      },
+      "action": "validate",
+      "trendState": "normal_growth",
+      "signalScore": null,
+      "isEmerging": false,
+      "growthRate": -0.2222222222222222,
+      "shareDeltaPp": -0.54,
+      "needsRefinement": true,
+      "engagement": 0.6429,
+      "engagementAvailable": true,
+      "brief": {
+        "what_changed": "Reported Windows unified-exec tool execution failures decreased from 18 to 14 in the current period, a decline of ~22%, with the cluster's share of overall issues also dropping slightly. The trend state is classified as normal_growth.",
+        "evidence_summary": "Member issues describe a variety of distinct failure modes when attempting tool execution on Windows. Examples include process creation failing with 'helper_unknown_error: setup refresh had errors' (#40215, #40596), the code-mode host process exiting during handshake (#40798, #40899), and sandbox errors related to specific working directories or permissions (#40350, #40379, #40469). This cluster is flagged as a broad problem family requiring refinement.",
+        "affected_workflow": "Executing tools or commands via the Codex App's unified exec layer on Windows",
+        "metrics_to_monitor": [
+          "Windows exec tool call failure rate",
+          "Codex App tool execution success rate (Windows)",
+          "Code-mode host process crash rate (Windows)",
+          "Frequency of 'setup refresh had errors' messages",
+          "Sandbox process creation error rate (Windows)"
+        ],
+        "product_hypothesis": "The observed failures may stem from a family of related issues in the Windows execution service initialization, environment permissions, and host process lifecycle management, rather than a single root cause.",
+        "suggested_validation": "Conduct a structured review of the top 3-5 most common error signatures to confirm they represent distinct failure paths. Interview a sample of affected users to understand their specific Windows environment, installation path, and steps to reproduce.",
+        "affected_surface_platform": "Codex App on Windows",
+        "recommended_investigation": "Triage the member issues into sub-categories by specific error message and failure point (e.g., handshake exit, setup refresh error, permission denied). Review execution service logs from affected users to identify common environmental factors or failure sequences across the sub-categories."
+      },
+      "representatives": [
+        {
+          "issueNumber": 40469,
+          "title": "permissions",
+          "githubUrl": "https://github.com/openai/codex/issues/40469",
+          "state": "open"
+        },
+        {
+          "issueNumber": 41255,
+          "title": "Codex Desktop GPT-5.6 models fail to run exec tool: code-mode host exits during handshake",
+          "githubUrl": "https://github.com/openai/codex/issues/41255",
+          "state": "closed"
+        },
+        {
+          "issueNumber": 41507,
+          "title": "Codex Desktop (Windows): code-mode host exits during handshake, breaking every tool call for code_mode_only models",
+          "githubUrl": "https://github.com/openai/codex/issues/41507",
+          "state": "open"
+        }
+      ]
+    },
+    {
+      "id": "d274e05a-d37f-4698-a081-4eb1ca4bff43",
+      "clusterId": "fd5be675-3e65-4adc-aa2e-ea61b5840c12",
+      "clusterKey": "Reliability:3a790bb5",
+      "name": "Chat and conversation content loss or unavailability",
+      "category": "Reliability",
+      "size": 25,
+      "current": 15,
+      "previous": 10,
+      "priority": 0.4677,
+      "components": {
+        "frequency": 0.463,
+        "severity": 0.73,
+        "signal": 0.4358,
+        "engagement": 0.1865
+      },
+      "weights": {
+        "frequency": 0.3,
+        "severity": 0.25,
+        "signal": 0.25,
+        "engagement": 0.2
+      },
+      "action": "validate",
+      "trendState": "normal_growth",
+      "signalScore": 0.4358,
+      "isEmerging": true,
+      "growthRate": 0.5,
+      "shareDeltaPp": 0.36,
+      "needsRefinement": true,
+      "engagement": 0.1865,
+      "engagementAvailable": true,
+      "brief": {
+        "what_changed": "Chat and conversation content loss or unavailability reports grew from 10 to 15 issues (50% increase), with 25 total issues identified across the cluster. The trend state is normal_growth, suggesting this is an expanding but not anomalous problem family.",
+        "evidence_summary": "Members report a range of content loss scenarios: chats silently disappearing (#40674), completed responses vanishing after app restart (#40950), side chats failing to open (#40797), and critical errors where all new chats fail with permission errors (#40801). Additional critical reports include Codex app-server unavailability after updates (#41252) and content disappearing during remote Linux connections (#41251). This spans multiple distinct failure modes rather than a single root cause.",
+        "affected_workflow": "Maintaining and accessing chat/conversation content in Codex and ChatGPT desktop apps",
+        "metrics_to_monitor": [
+          "chat_content_loss_report_rate",
+          "desktop_app_crash_restart_rate",
+          "workspace_permission_error_rate",
+          "codex_server_availability_uptime",
+          "session_persistence_success_rate"
+        ],
+        "product_hypothesis": "The broad family of content loss and unavailability issues may stem from multiple interacting factors — including desktop app lifecycle management, workspace/permission handling, and session persistence — rather than a single root cause, making it difficult to attribute to one specific system failure.",
+        "suggested_validation": "1. Conduct structured triage interviews or surveys with the 47 engaged members to categorize their specific failure mode and determine which sub-clusters are most prevalent and actionable. 2. Review recent desktop app release changelogs and correlate issue timelines with known changes to persistence, workspace, or permission systems to identify candidate change sets for further investigation.",
+        "affected_surface_platform": "Primarily Codex App and ChatGPT Desktop on Windows and macOS",
+        "recommended_investigation": "1. Map the distinct failure modes within this cluster (silent drops, post-restart loss, permission errors, server unavailability) to specific code paths and app states to identify whether they share common dependencies or are truly independent issues. 2. Audit chat persistence and session recovery mechanisms across Windows and macOS desktop builds, particularly around app updates, restarts, and workspace changes, to identify fragile or inconsistent behavior."
+      },
+      "representatives": [
+        {
+          "issueNumber": 40950,
+          "title": "Completed local Codex responses disappear after restarting ChatGPT desktop app",
+          "githubUrl": "https://github.com/openai/codex/issues/40950",
+          "state": "open"
+        },
+        {
+          "issueNumber": 42310,
+          "title": "Scheduled task chats are not syncing from Codex Desktop to the Android mobile app",
+          "githubUrl": "https://github.com/openai/codex/issues/42310",
+          "state": "open"
+        },
+        {
+          "issueNumber": 43020,
+          "title": "[Windows10] Chats deleted on ChatGPT Web remain in Codex Desktop and cannot be deleted",
+          "githubUrl": "https://github.com/openai/codex/issues/43020",
+          "state": "open"
+        }
+      ]
+    },
+    {
+      "id": "b6955833-7598-421c-9000-326fb7c60602",
+      "clusterId": "d52f68db-db3d-4d02-abef-6f4c6ea76c11",
+      "clusterKey": "Reliability:98d028a7",
+      "name": "Premature task termination and state misrepresentation",
+      "category": "Reliability",
+      "size": 12,
+      "current": 9,
+      "previous": 3,
+      "priority": 0.4593,
+      "components": {
+        "frequency": 0.2222,
+        "severity": 0.833,
+        "signal": 0.6869,
+        "engagement": 0.0635
+      },
+      "weights": {
+        "frequency": 0.3,
+        "severity": 0.25,
+        "signal": 0.25,
+        "engagement": 0.2
+      },
+      "action": "validate",
+      "trendState": "normal_growth",
+      "signalScore": 0.6869,
+      "isEmerging": true,
+      "growthRate": 2.0,
+      "shareDeltaPp": 0.51,
+      "needsRefinement": false,
+      "engagement": 0.0635,
+      "engagementAvailable": true,
+      "brief": {
+        "what_changed": "Reported issues of premature task termination and state misrepresentation tripled from 3 in the previous period to 9 in the current period, with the cluster's share of the report population increasing by 0.51 percentage points. The trend state is classified as normal growth.",
+        "evidence_summary": "The cluster includes reports such as #40212, where a coordinator terminates analysis based on an unreported internal decision, and #41735, where a task finalizes despite an explicit unfinished-work gate. Other critical reports like #40929 and #42420 describe resumed goals ignoring objectives and long tasks claiming target validation before failing.",
+        "affected_workflow": "Long-running task execution and status monitoring",
+        "metrics_to_monitor": [
+          "Task completion rate with evidence",
+          "Unplanned task termination count",
+          "State sync error rate",
+          "High-CPU orphan process count",
+          "Token consumption in no-op turns"
+        ],
+        "product_hypothesis": "The observed pattern may indicate that the system's task lifecycle management and state synchronization mechanisms are not robustly handling long-running operations, leading to premature conclusions and incorrect status reporting.",
+        "suggested_validation": "1. Develop and execute a test suite that replicates long-running tasks with explicit pause gates and subagent dependencies to verify correct lifecycle behavior. 2. Implement and deploy enhanced logging for task state transitions and termination triggers in production to capture the next occurrences with full context.",
+        "affected_surface_platform": "Codex App on Windows (and Linux desktop)",
+        "recommended_investigation": "1. Audit the task state machine and coordinator logic to identify paths where completion is signaled prematurely or gates are bypassed. 2. Analyze logs from the specific reported scenarios (e.g., #40929, #42420) to trace the sequence of state transitions and termination decisions."
+      },
+      "representatives": [
+        {
+          "issueNumber": 40929,
+          "title": "Codex Desktop: resumed Goal ignores updated objective and rapidly loops no-progress continuations",
+          "githubUrl": "https://github.com/openai/codex/issues/40929",
+          "state": "open"
+        },
+        {
+          "issueNumber": 41735,
+          "title": "Codex Desktop finalizes ordinary task despite explicit unfinished-work gate and active required lanes",
+          "githubUrl": "https://github.com/openai/codex/issues/41735",
+          "state": "open"
+        },
+        {
+          "issueNumber": 43086,
+          "title": "Codex goal spent 4+ hours without verifying the primary objective and repeatedly continued after stopping discussions",
+          "githubUrl": "https://github.com/openai/codex/issues/43086",
+          "state": "open"
+        }
+      ]
+    },
+    {
+      "id": "05679f19-41c9-41f7-ba45-d668167f2c54",
+      "clusterId": "929b131f-16c5-437e-8fad-1af5074c3a4c",
+      "clusterKey": "App / UI / UX:f1282831",
+      "name": "Blank or white screen on app launch and fullscreen",
+      "category": "App / UI / UX",
+      "size": 8,
+      "current": 7,
+      "previous": 1,
+      "priority": 0.4506,
+      "components": {
+        "frequency": 0.1481,
+        "severity": 0.75,
+        "signal": 0.824,
+        "engagement": 0.0635
+      },
+      "weights": {
+        "frequency": 0.3,
+        "severity": 0.25,
+        "signal": 0.25,
+        "engagement": 0.2
+      },
+      "action": "validate",
+      "trendState": "low_base_acceleration",
+      "signalScore": 0.824,
+      "isEmerging": true,
+      "growthRate": 6.0,
+      "shareDeltaPp": 0.53,
+      "needsRefinement": false,
+      "engagement": 0.0635,
+      "engagementAvailable": true,
+      "brief": {
+        "what_changed": "Reports of blank or white screens on app launch and fullscreen increased from 1 to 7 over the previous period, representing a 6x raw growth rate and a 0.53 percentage point share increase within the App/UI/UX category.",
+        "evidence_summary": "Multiple high-severity reports (#41826, #41871, #42257, #42547) describe the Codex Windows app opening to a completely blank or white screen, with the renderer and GPU processes running but the window content never appearing. Issue #42547 (critical severity) specifically identifies Chromium 152 builds (26.831/26.901) and notes that `--disable-features=CalculateNativeWinOcclusion` resolves the blank screen, suggesting a native window occlusion calculation problem. Additional reports (#42694, #42825) extend the blank screen behavior to fullscreen plugin windows and fullscreen layout obscuring input areas.",
+        "affected_workflow": "Launching the Codex app and using fullscreen project/conversation views",
+        "metrics_to_monitor": [
+          "blank_screen_reports_count",
+          "app_launch_failure_rate",
+          "fullscreen_render_anomalies",
+          "chromium_152_crash_rate",
+          "window_paint_success_rate"
+        ],
+        "product_hypothesis": "A Chromium or Electron update (around build 26.825–26.901 with Chromium 152) may have introduced a native window occlusion or rendering paint visibility issue specific to Windows, causing the app window to appear blank despite the renderer successfully painting content.",
+        "suggested_validation": "1. Create a test build with `CalculateNativeWinOcclusion` disabled and distribute to affected members to confirm the workaround resolves the blank screen. 2. Test across multiple Windows versions (10 and 11) and GPU configurations to determine if the issue is environment-specific or broadly reproducible.",
+        "affected_surface_platform": "Codex App on Windows",
+        "recommended_investigation": "1. Reproduce the blank screen on Windows using Chromium 152-based Codex builds (26.831/26.901) and confirm whether `--disable-features=CalculateNativeWinOcclusion` consistently resolves it. 2. Review recent Chromium/Electron dependency upgrades and native window management code changes in the affected build range for occlusion or paint visibility regressions."
+      },
+      "representatives": [
+        {
+          "issueNumber": 41736,
+          "title": "broken",
+          "githubUrl": "https://github.com/openai/codex/issues/41736",
+          "state": "closed"
+        },
+        {
+          "issueNumber": 41871,
+          "title": "[Windows][26.825.6671.0] App opens to completely white screen while renderer, GPU process and codex.exe are running",
+          "githubUrl": "https://github.com/openai/codex/issues/41871",
+          "state": "open"
+        },
+        {
+          "issueNumber": 42257,
+          "title": "Codex Windows app shows blank screen when opening any project or conversation",
+          "githubUrl": "https://github.com/openai/codex/issues/42257",
+          "state": "open"
+        }
+      ]
+    },
+    {
+      "id": "4e0cbdff-87c8-4085-8d9f-ab9c13c2354b",
+      "clusterId": "1ae88b15-38d8-44bf-aa3d-d9efea5276f4",
+      "clusterKey": "Tool Execution:c6cfce67",
+      "name": "Standalone function_call_output missing call_id",
+      "category": "Tool Execution",
+      "size": 7,
+      "current": 6,
+      "previous": 1,
+      "priority": 0.4438,
+      "components": {
+        "frequency": 0.1296,
+        "severity": 0.786,
+        "signal": 0.7259,
+        "engagement": 0.1349
+      },
+      "weights": {
+        "frequency": 0.3,
+        "severity": 0.25,
+        "signal": 0.25,
+        "engagement": 0.2
+      },
+      "action": "monitor",
+      "trendState": "low_base_acceleration",
+      "signalScore": 0.7259,
+      "isEmerging": true,
+      "growthRate": 5.0,
+      "shareDeltaPp": 0.44,
+      "needsRefinement": false,
+      "engagement": 0.1349,
+      "engagementAvailable": true,
+      "brief": {
+        "what_changed": "Reports of standalone function_call_output messages missing the required call_id field have accelerated from 1 to 6 in the current period, representing a 5× increase over a previously low baseline.",
+        "evidence_summary": "Seven member issues (#41690, #41799, #42014, #42067, #42088, #42376, #41233) report that automation_update or bootstrap outputs inject a standalone function_call_output without a call_id, causing HTTP 400 rejections from strict upstream Responses providers including DeepSeek, Azure gpt-5.6-sol, Kimi/Moonshot, and custom endpoints. Issue #42014 notes this can brick an entire generated thread. The pattern is consistent across local cron, cross-thread send, and scheduled task scenarios.",
+        "affected_workflow": "Codex Desktop automation and scheduled task execution via third-party Responses providers",
+        "metrics_to_monitor": [
+          "automation_update_output_call_id_missing_rate",
+          "responses_provider_400_rejection_rate",
+          "scheduled_task_completion_rate",
+          "function_call_output_validation_failure_count",
+          "cross_thread_send_error_rate"
+        ],
+        "product_hypothesis": "The Codex App automation or response-generation pipeline may be constructing function_call_output messages without consistently propagating the originating call_id from the upstream function call, particularly for bootstrap or injected outputs.",
+        "suggested_validation": "1. Add a client-side validation gate that prevents any function_call_output message from being sent upstream without a non-empty call_id. 2. Write a unit or integration test that simulates the automation bootstrap, cron injection, and cross-thread send flows to assert call_id presence in all function_call_output payloads.",
+        "affected_surface_platform": "Codex App on macOS",
+        "recommended_investigation": "1. Audit the automation_update and bootstrap output construction paths in the Codex App macOS codebase to identify where call_id is assigned to function_call_output and which code paths can emit it without one. 2. Reproduce the issue with a strict Responses provider (e.g., DeepSeek) and capture the exact payload showing the missing call_id field."
+      },
+      "representatives": [
+        {
+          "issueNumber": 41690,
+          "title": "Codex Desktop automation + DeepSeek Responses: standalone automation_update output lacks call_id (HTTP 400)",
+          "githubUrl": "https://github.com/openai/codex/issues/41690",
+          "state": "open"
+        },
+        {
+          "issueNumber": 42014,
+          "title": "[app][macOS] Local cron automation injects call_id-less bootstrap and bricks generated thread on Responses HTTP",
+          "githubUrl": "https://github.com/openai/codex/issues/42014",
+          "state": "closed"
+        },
+        {
+          "issueNumber": 42088,
+          "title": "responses: function_call_output can be emitted without call_id and fails strict upstreams (400)",
+          "githubUrl": "https://github.com/openai/codex/issues/42088",
+          "state": "open"
+        }
+      ]
+    },
+    {
+      "id": "20c0a256-b86c-4d26-950d-7bc0f791d787",
+      "clusterId": "2ff8412e-5104-4b50-a34f-45a7ce4a49d3",
+      "clusterKey": "App / UI / UX:9acaaa6c",
+      "name": "Desktop app mode switching failures",
+      "category": "App / UI / UX",
+      "size": 15,
+      "current": 11,
+      "previous": 4,
+      "priority": 0.4285,
+      "components": {
+        "frequency": 0.2778,
+        "severity": 0.583,
+        "signal": 0.6867,
+        "engagement": 0.1389
+      },
+      "weights": {
+        "frequency": 0.3,
+        "severity": 0.25,
+        "signal": 0.25,
+        "engagement": 0.2
+      },
+      "action": "monitor",
+      "trendState": "normal_growth",
+      "signalScore": 0.6867,
+      "isEmerging": true,
+      "growthRate": 1.75,
+      "shareDeltaPp": 0.6,
+      "needsRefinement": true,
+      "engagement": 0.1389,
+      "engagementAvailable": true,
+      "brief": {
+        "what_changed": "Reports of desktop app mode-switching issues grew from 4 to 11 over the period, indicating a notable increase in user friction when navigating between ChatGPT and Codex views.",
+        "evidence_summary": "Multiple users report being stuck in Codex mode (#40353), seeing cross-contaminated content after switching (#40581), and encountering unclickable mode selectors (#42191). Additional issues describe confusing label conflation across modes (#41594) and requests for better separation of Work and Codex environments (#40963).",
+        "affected_workflow": "Switching between ChatGPT and Codex modes/views in the desktop app",
+        "metrics_to_monitor": [
+          "mode_switch_success_rate",
+          "mode_selector_click_through_rate",
+          "cross_mode_content_bleed_reports",
+          "app_restart_after_switch_rate",
+          "mode_switch_related_support_tickets"
+        ],
+        "product_hypothesis": "The current desktop app mode-switching architecture may not be clearly communicating or enforcing state boundaries between ChatGPT and Codex, leading to user confusion, stuck states, and cross-view content leakage.",
+        "suggested_validation": "Conduct moderated usability sessions with users performing ChatGPT↔Codex switches on both platforms to observe failure points. Audit desktop app telemetry for mode-switch events, error states, and view-rendering anomalies.",
+        "affected_surface_platform": "Codex App on Windows (primary) and macOS",
+        "recommended_investigation": "Map the full mode-switching user journey on Windows and macOS to identify where state persistence, UI rendering, or selector interaction breaks. Categorize the 15 member issues into sub-families (e.g., stuck states, content leakage, selector UX, labeling confusion) to determine if they share a common root or are distinct problems."
+      },
+      "representatives": [
+        {
+          "issueNumber": 42191,
+          "title": "[Windows] ChatGPT/Codex selector is unclickable on the New Chat page",
+          "githubUrl": "https://github.com/openai/codex/issues/42191",
+          "state": "closed"
+        },
+        {
+          "issueNumber": 42263,
+          "title": "On first opening the ChatGPT desktop app, the new chat page cannot switch to Codex, Search, or Temporary Chat",
+          "githubUrl": "https://github.com/openai/codex/issues/42263",
+          "state": "open"
+        },
+        {
+          "issueNumber": 42360,
+          "title": "Swapping between chatgpt and codex on desktop app",
+          "githubUrl": "https://github.com/openai/codex/issues/42360",
+          "state": "open"
+        }
+      ]
+    },
+    {
+      "id": "16fe8135-70a7-4856-b29b-0d642b562e0c",
+      "clusterId": "463396ff-a541-47f4-a2f9-7b2e35d17055",
+      "clusterKey": "App / UI / UX:4e157013",
+      "name": "Keyboard shortcut conflicts and customization",
+      "category": "App / UI / UX",
+      "size": 8,
+      "current": 7,
+      "previous": 1,
+      "priority": 0.4093,
+      "components": {
+        "frequency": 0.1481,
+        "severity": 0.562,
+        "signal": 0.777,
+        "engagement": 0.1508
+      },
+      "weights": {
+        "frequency": 0.3,
+        "severity": 0.25,
+        "signal": 0.25,
+        "engagement": 0.2
+      },
+      "action": "monitor",
+      "trendState": "low_base_acceleration",
+      "signalScore": 0.777,
+      "isEmerging": true,
+      "growthRate": 6.0,
+      "shareDeltaPp": 0.53,
+      "needsRefinement": false,
+      "engagement": 0.1508,
+      "engagementAvailable": true,
+      "brief": {
+        "what_changed": "Reports of keyboard shortcut conflicts and customization gaps surged from 1 to 7 in the current period (raw growth rate 6.0), indicating a sharp acceleration from a low baseline. This cluster now accounts for 0.53 percentage points more of overall issue share.",
+        "evidence_summary": "Multiple members report global shortcut conflicts where Codex intercepts or blocks OS and other app shortcuts — e.g., #42299 (Alt+P closes app, blocking Unreal Engine), #42258 (Ctrl+Space conflicts with macOS input switching), and #41698 (Ctrl+K hardcoded on Linux). Additional issues (#42957, #40936) request the ability to rebind existing shortcuts and expose missing commands. Several reports (#42723, #42726, #42756) specifically cite the inability to disable or rebind the 'Pet' feature shortcut.",
+        "affected_workflow": "Customizing or using keyboard shortcuts while working in the Codex app",
+        "metrics_to_monitor": [
+          "shortcut_conflict_issue_count",
+          "shortcut_rebinding_request_count",
+          "global_shortcut_collision_rate",
+          "pet_feature_usage_rate",
+          "settings_keyboard_shortcut_page_views"
+        ],
+        "product_hypothesis": "Codex may be registering global shortcuts that conflict with OS and third-party app defaults, and the app may lack sufficient user-facing controls to disable or rebind those shortcuts.",
+        "suggested_validation": "1. Survey affected members to identify which specific shortcuts cause the most disruption and which apps/workflows are blocked. 2. Prototype a keyboard shortcut settings panel that exposes all global and in-app shortcuts for rebinding and disabling.",
+        "affected_surface_platform": "Codex App on Windows (also reported on macOS and Linux)",
+        "recommended_investigation": "1. Audit all globally registered shortcuts across platforms and compare against common OS default bindings. 2. Inventory which shortcuts are currently user-rebindable vs. hardcoded, with special attention to the 'Pet' feature toggle."
+      },
+      "representatives": [
+        {
+          "issueNumber": 41698,
+          "title": "Linux app hardcodes Ctrl+K to clear the integrated terminal, preventing shell kill-line",
+          "githubUrl": "https://github.com/openai/codex/issues/41698",
+          "state": "open"
+        },
+        {
+          "issueNumber": 42723,
+          "title": "Add option to nuke so-called \"Pets\" feature",
+          "githubUrl": "https://github.com/openai/codex/issues/42723",
+          "state": "open"
+        },
+        {
+          "issueNumber": 42756,
+          "title": "[Windows] “Toggle Pet” global shortcut Alt+Win+P is shown but is not registered / does not work",
+          "githubUrl": "https://github.com/openai/codex/issues/42756",
+          "state": "open"
+        }
+      ]
+    },
+    {
+      "id": "2428747f-cc82-4975-9e77-a01d41d5520d",
+      "clusterId": "5072208b-b637-45c5-9a48-256cad35f0dc",
+      "clusterKey": "App / UI / UX:a2084867",
+      "name": "UI panels and input fields unexpectedly disappearing",
+      "category": "App / UI / UX",
+      "size": 9,
+      "current": 7,
+      "previous": 2,
+      "priority": 0.408,
+      "components": {
+        "frequency": 0.1667,
+        "severity": 0.694,
+        "signal": 0.6965,
+        "engagement": 0.0516
+      },
+      "weights": {
+        "frequency": 0.3,
+        "severity": 0.25,
+        "signal": 0.25,
+        "engagement": 0.2
+      },
+      "action": "monitor",
+      "trendState": "low_base_acceleration",
+      "signalScore": 0.6965,
+      "isEmerging": true,
+      "growthRate": 2.5,
+      "shareDeltaPp": 0.43,
+      "needsRefinement": false,
+      "engagement": 0.0516,
+      "engagementAvailable": true,
+      "brief": {
+        "what_changed": "Reports of UI panels and input fields unexpectedly disappearing accelerated from 2 in the previous period to 7 in the current period, representing a 2.5x growth rate. The cluster now accounts for 0.43 percentage points more of total issue share.",
+        "evidence_summary": "Nine reports describe input fields, toolbars, or panels vanishing during use. Issues #40210, #42633, #42786, #42795, #42860, and #42664 all report the chat input box or bottom toolbar disappearing on startup, after first input, or after updates on macOS (all high severity). Issues #40418 and #42869 describe answer or action panels rendering behind or missing from the visible UI.",
+        "affected_workflow": "Chat input and panel visibility during active sessions",
+        "metrics_to_monitor": [
+          "chat_input_visible_on_startup_rate",
+          "panel_render_success_rate",
+          "macos_app_crash_free_session_rate",
+          "time_to_first_chat_input_interaction",
+          "toolbar_visible_after_update_rate"
+        ],
+        "product_hypothesis": "A recent update to the Codex App on macOS (noted in #42786 as v26.901.31953) may have introduced a layout or rendering regression that causes input fields and bottom panels to fail initial display or hide after first interaction.",
+        "suggested_validation": "1. Run automated UI snapshot tests comparing panel visibility states across the relevant app versions on macOS. 2. Collect diagnostic logs from a subset of affected users to confirm whether layout calculations or visibility flags are being set incorrectly at runtime.",
+        "affected_surface_platform": "Codex App on macOS",
+        "recommended_investigation": "1. Diff the UI layout and rendering logic changes in the macOS Codex App between the version prior to v26.901.31953 and the current version, focusing on chat panel and toolbar initialization. 2. Reproduce the reported sequence (startup, first input, post-response state) on macOS builds matching the reported versions to identify the triggering condition."
+      },
+      "representatives": [
+        {
+          "issueNumber": 42633,
+          "title": "cursor window disappears after first input in chat/work",
+          "githubUrl": "https://github.com/openai/codex/issues/42633",
+          "state": "open"
+        },
+        {
+          "issueNumber": 42786,
+          "title": "Input box is missing after receiving a response in a conversation after updating to v26.901.31953",
+          "githubUrl": "https://github.com/openai/codex/issues/42786",
+          "state": "closed"
+        },
+        {
+          "issueNumber": 42795,
+          "title": "Input box disappears after the first response in new chats",
+          "githubUrl": "https://github.com/openai/codex/issues/42795",
+          "state": "closed"
+        }
+      ]
+    },
+    {
+      "id": "ebdaebd9-afdc-4eca-87ea-eceb7f260b32",
+      "clusterId": "83848548-eebb-46ef-b0f7-236641d3ae63",
+      "clusterKey": "Reliability:e989e117",
+      "name": "MacOS EXC_BREAKPOINT/SIGTRAP crashes",
+      "category": "Reliability",
+      "size": 6,
+      "current": 5,
+      "previous": 1,
+      "priority": 0.4063,
+      "components": {
+        "frequency": 0.1111,
+        "severity": 0.833,
+        "signal": 0.6305,
+        "engagement": 0.0357
+      },
+      "weights": {
+        "frequency": 0.3,
+        "severity": 0.25,
+        "signal": 0.25,
+        "engagement": 0.2
+      },
+      "action": "monitor",
+      "trendState": "low_base_acceleration",
+      "signalScore": 0.6305,
+      "isEmerging": true,
+      "growthRate": 4.0,
+      "shareDeltaPp": 0.35,
+      "needsRefinement": false,
+      "engagement": 0.0357,
+      "engagementAvailable": true,
+      "brief": {
+        "what_changed": "MacOS EXC_BREAKPOINT/SIGTRAP crash reports have increased from 1 to 5 between reporting periods (raw growth rate 4.0), shifting from a low-base situation to an accelerating cluster with 35pp share increase.",
+        "evidence_summary": "Six distinct crash reports (#40468, #41618, #42317, #42730, #42975, #43089) describe EXC_BREAKPOINT/SIGTRAP crashes across CrBrowserMain, Chrome_IOThread, and renderer processes. Several involve large file handling (224 MB PDF #42730, multi-frame HEIC #42975) or text selection operations (#40468), suggesting memory or resource pressure during content rendering.",
+        "affected_workflow": "Rendering and previewing large or complex content in the Codex desktop app",
+        "metrics_to_monitor": [
+          "macOS crash rate (EXC_BREAKPOINT)",
+          "large file preview success rate",
+          "Codex desktop renderer memory usage",
+          "task accessibility after file preview",
+          "CrBrowserMain process uptime before crash"
+        ],
+        "product_hypothesis": "Rendering large or complex content (PDFs, HEIC images, text selections) may be triggering buffer or memory boundary violations in Chromium's rendering and IO threads within the Codex macOS app.",
+        "suggested_validation": "Test rendering of progressively larger PDF and HEIC files on macOS to identify the threshold where crashes begin. Verify whether the text selection crash (#40468) also occurs in the latest build or if it was resolved by a renderer update.",
+        "affected_surface_platform": "Codex App on macOS",
+        "recommended_investigation": "Reproduce crashes using the large PDF (#42730) and multi-frame HEIC (#42975) assets to identify the specific Chromium code paths hitting the breakpoint. Analyze crash logs for shared memory addresses, allocation sizes, or thread states across the CrBrowserMain and Chrome_IOThread failures."
+      },
+      "representatives": [
+        {
+          "issueNumber": 41618,
+          "title": "[macOS][26.825.41651] Codex/ChatGPT app crashes with EXC_BREAKPOINT (SIGTRAP) in CrBrowserMain",
+          "githubUrl": "https://github.com/openai/codex/issues/41618",
+          "state": "open"
+        },
+        {
+          "issueNumber": 42317,
+          "title": "[macOS] Codex app 26.831.21537 crashes with EXC_BREAKPOINT/SIGTRAP on Chrome_IOThread",
+          "githubUrl": "https://github.com/openai/codex/issues/42317",
+          "state": "open"
+        },
+        {
+          "issueNumber": 43089,
+          "title": "Desktop app 26.901.41600: repeated macOS SIGTRAP in CrBrowserMain, possible read_thread correlation",
+          "githubUrl": "https://github.com/openai/codex/issues/43089",
+          "state": "open"
+        }
+      ]
+    },
+    {
+      "id": "26ab2749-3cf6-4558-b349-4f78394dce3e",
+      "clusterId": "9e4e66c5-24b8-4f52-aee8-58b5d3c2a2f9",
+      "clusterKey": "App / UI / UX:cc54824e",
+      "name": "Desktop chat history persistence and deletion failures",
+      "category": "App / UI / UX",
+      "size": 16,
+      "current": 11,
+      "previous": 5,
+      "priority": 0.3873,
+      "components": {
+        "frequency": 0.2963,
+        "severity": 0.531,
+        "signal": 0.5578,
+        "engagement": 0.131
+      },
+      "weights": {
+        "frequency": 0.3,
+        "severity": 0.25,
+        "signal": 0.25,
+        "engagement": 0.2
+      },
+      "action": "monitor",
+      "trendState": "normal_growth",
+      "signalScore": 0.5578,
+      "isEmerging": true,
+      "growthRate": 1.2,
+      "shareDeltaPp": 0.5,
+      "needsRefinement": true,
+      "engagement": 0.131,
+      "engagementAvailable": true,
+      "brief": {
+        "what_changed": "Reported issues around desktop chat history persistence and deletion rose from 5 in the previous period to 11 in the current period, representing over 100% growth and a broader problem family rather than a single defect.",
+        "evidence_summary": "Members report a variety of related but distinct symptoms: conversations disappear from the UI while underlying files still exist (#40779), side chats vanish and cannot be reopened (#40262), CLI-created threads appear in Recents but cannot be archived and are invisible on the web (#40432, #41067), and deleted conversations persist across resets and re-logins (#41693). Issues #40869 and #41932 reference ghost chats or stale empty-thread entries, while #41616 requests permanent deletion for accidental branches.",
+        "affected_workflow": "Accessing, archiving, and deleting chat history in the desktop client",
+        "metrics_to_monitor": [
+          "desktop_chat_history_issue_volume",
+          "recents_list_sync_error_rate",
+          "local_index_vs_cloud_mismatch_count",
+          "chat_archive_action_success_rate",
+          "stale_thread_entry_count"
+        ],
+        "product_hypothesis": "The desktop client's local-to-cloud synchronization and index management for chat history may have multiple independent failure modes causing inconsistent visibility, persistence, and deletion states across surfaces.",
+        "suggested_validation": "Reproduce the top 3-4 distinct symptom patterns (disappearing but file-present, ghost/stale entries, undeletable items) on current Windows builds to confirm which are still active and gather diagnostic logs. Compare local JSONL session state against the cloud canonical list for a sample of affected accounts to quantify divergence.",
+        "affected_surface_platform": "Codex Desktop App on Windows",
+        "recommended_investigation": "Map each reported symptom to specific code paths (local indexing, cloud sync, archive/delete operations) to identify whether they share a common root or are genuinely independent failures. Audit the Recents list population logic to determine how threads from different creation sources (CLI, web, desktop) are indexed and why some become orphaned or unmanageable."
+      },
+      "representatives": [
+        {
+          "issueNumber": 42613,
+          "title": "[macOS] Archived cloud chats have no permanent delete action in ChatGPT/Codex desktop app",
+          "githubUrl": "https://github.com/openai/codex/issues/42613",
+          "state": "open"
+        },
+        {
+          "issueNumber": 42614,
+          "title": "[macOS] Archived cloud chats have no permanent delete action in ChatGPT/Codex desktop app",
+          "githubUrl": "https://github.com/openai/codex/issues/42614",
+          "state": "closed"
+        },
+        {
+          "issueNumber": 42617,
+          "title": "[macOS] Archived cloud chats have no permanent delete action in ChatGPT/Codex desktop app",
+          "githubUrl": "https://github.com/openai/codex/issues/42617",
+          "state": "closed"
+        }
+      ]
+    },
+    {
+      "id": "4600a361-edc3-4a16-8d17-db0009a734c3",
+      "clusterId": "1a7089d3-da7b-49d8-b42e-3fe40c766753",
+      "clusterKey": "Authentication & Account:4ab43198",
+      "name": "OAuth authentication flow failures across environments",
+      "category": "Authentication & Account",
+      "size": 13,
+      "current": 8,
+      "previous": 5,
+      "priority": 0.3804,
+      "components": {
+        "frequency": 0.2407,
+        "severity": 0.808,
+        "signal": 0.3486,
+        "engagement": 0.0952
+      },
+      "weights": {
+        "frequency": 0.3,
+        "severity": 0.25,
+        "signal": 0.25,
+        "engagement": 0.2
+      },
+      "action": "monitor",
+      "trendState": "normal_growth",
+      "signalScore": 0.3486,
+      "isEmerging": true,
+      "growthRate": 0.6,
+      "shareDeltaPp": 0.22,
+      "needsRefinement": false,
+      "engagement": 0.0952,
+      "engagementAvailable": true,
+      "brief": {
+        "what_changed": "OAuth authentication failures grew from 5 to 8 reports in the current period, a 60% increase, with the cluster accounting for 0.22 percentage points more of total issues. The trend state is normal growth, indicating a steady upward trajectory rather than a spike.",
+        "evidence_summary": "Multiple members report OAuth token exchange failures in Codex CLI (e.g., #40839, #41847), with one critical severity report for CLI 0.151.0. Additional issues include browser bridge failures on macOS (#40959, #41434), 401 errors after enabling Advanced Account Security (#40633), and expired Platform connections lacking a reauth path (#42212). Port exclusion issues on Windows (#40344) and HTTP 500 errors during account switching (#41812) round out the evidence.",
+        "affected_workflow": "OAuth login and token exchange",
+        "metrics_to_monitor": [
+          "OAuth token exchange success rate",
+          "CLI authentication error rate",
+          "Browser callback listener startup success rate",
+          "/oauth/token endpoint 5xx rate",
+          "Account switching authentication success rate"
+        ],
+        "product_hypothesis": "It is possible that recent changes to the OAuth token exchange endpoint or client-side authentication handling have introduced regressions, particularly affecting CLI and desktop environments where network conditions or security settings differ from browser-based flows.",
+        "suggested_validation": "Reproduce the OAuth token exchange failure in a controlled Windows CLI environment with the reported port exclusion and Advanced Account Security settings enabled. Test the macOS desktop OAuth flow end-to-end, verifying browser bridge URL opening and callback listener startup under various network configurations.",
+        "affected_surface_platform": "Primarily CLI on Windows, with additional reports on macOS desktop and VS Code extension surfaces",
+        "recommended_investigation": "First, audit recent changes to the /oauth/token endpoint and CLI authentication modules for regressions, focusing on error handling for network failures and token exchange. Second, compare the OAuth flow implementation across CLI, desktop, and browser surfaces to identify divergences in callback listener setup, port binding, and error recovery."
+      },
+      "representatives": [
+        {
+          "issueNumber": 40839,
+          "title": "[Windows][Auth] Codex CLI 0.145.0 fails OAuth token exchange and device auth while browser authentication works",
+          "githubUrl": "https://github.com/openai/codex/issues/40839",
+          "state": "open"
+        },
+        {
+          "issueNumber": 41434,
+          "title": "macOS: OAuth token exchange fails with \"error sending request\" while curl to the same /oauth/token endpoint succeeds",
+          "githubUrl": "https://github.com/openai/codex/issues/41434",
+          "state": "open"
+        },
+        {
+          "issueNumber": 41847,
+          "title": "Codex CLI 0.151.0 fails at OAuth token exchange.",
+          "githubUrl": "https://github.com/openai/codex/issues/41847",
+          "state": "open"
+        }
+      ]
+    },
+    {
+      "id": "ac8d21b7-a7a9-4d82-abf7-b6acf6a12226",
+      "clusterId": "39e1b21c-f104-41be-9f6c-b9c0b8c9758d",
+      "clusterKey": "Reliability:d99968f5",
+      "name": "WebSocket connection stability and stalling issues",
+      "category": "Reliability",
+      "size": 6,
+      "current": 5,
+      "previous": 1,
+      "priority": 0.3804,
+      "components": {
+        "frequency": 0.1111,
+        "severity": 0.75,
+        "signal": 0.6097,
+        "engagement": 0.0357
+      },
+      "weights": {
+        "frequency": 0.3,
+        "severity": 0.25,
+        "signal": 0.25,
+        "engagement": 0.2
+      },
+      "action": "monitor",
+      "trendState": "low_base_acceleration",
+      "signalScore": 0.6097,
+      "isEmerging": true,
+      "growthRate": 4.0,
+      "shareDeltaPp": 0.35,
+      "needsRefinement": false,
+      "engagement": 0.0357,
+      "engagementAvailable": true,
+      "brief": {
+        "what_changed": "Reports of WebSocket connection stability and stalling issues have increased significantly, rising from 1 to 5 issues in the current period (a 4.0x raw growth rate), indicating an acceleration in this reliability problem cluster.",
+        "evidence_summary": "Members report severe reliability failures including prolonged stalls and incorrect error messaging on Windows CLI (#43015, #43022), connection black-holes and false network status indicators (#42914, #42430), and connection aborts or interruptions during tasks (#41667, #40214). These issues collectively point to instability in the underlying WebSocket connection lifecycle and fallback mechanisms.",
+        "affected_workflow": "Maintaining a stable, persistent connection for real-time chat, code execution, and artifact delivery.",
+        "metrics_to_monitor": [
+          "WebSocket connection error rate",
+          "Time to reconnection after disconnect",
+          "Rate of 'Reconnecting...' UI state display",
+          "Fallback to HTTP trigger rate",
+          "CLI command completion latency under load"
+        ],
+        "product_hypothesis": "Recent changes or inherent flaws in the WebSocket connection management, particularly the idle watchdog and network state detection logic, may be causing premature disconnections, false stalls, and failed fallbacks under specific conditions on Windows.",
+        "suggested_validation": "1. Implement enhanced logging for WebSocket connection state transitions, Ping/Pong frames, and watchdog triggers to capture the exact conditions leading to a stall. 2. Run a controlled test matrix across platforms (Windows, macOS) and network conditions (stable, VPN, high-latency) to measure connection persistence and recovery time.",
+        "affected_surface_platform": "Primarily affecting the CLI and Desktop/Sidebar on Windows, with one instance on macOS.",
+        "recommended_investigation": "1. Conduct a focused code review of the WebSocket connection state machine, idle watchdog timers, and network detection logic in the Windows CLI and Desktop clients. 2. Reproduce the stalling scenarios described (e.g., large-context sessions, VPN disconnects) to isolate the failure modes and gather diagnostic logs."
+      },
+      "representatives": [
+        {
+          "issueNumber": 42914,
+          "title": "Responses WebSocket black-hole after VPN disconnect leaves CLI Thinking for 5 minutes",
+          "githubUrl": "https://github.com/openai/codex/issues/42914",
+          "state": "open"
+        },
+        {
+          "issueNumber": 43015,
+          "title": "Severe CLI reliability failure: 63.8 MB image-history requests before any compaction, WebSocket fallback, and prolonged stalls on Windows",
+          "githubUrl": "https://github.com/openai/codex/issues/43015",
+          "state": "open"
+        },
+        {
+          "issueNumber": 43022,
+          "title": "Severe WS stalls in 0.153.4: live Ping/Pong still trips the idle watchdog (Windows loopback-only reproduction)",
+          "githubUrl": "https://github.com/openai/codex/issues/43022",
+          "state": "open"
+        }
+      ]
+    },
+    {
+      "id": "1a47700c-bdfb-44ac-9a49-1aae62432ab5",
+      "clusterId": "1800a1e7-7701-4a92-ac73-d769d09417f5",
+      "clusterKey": "Reliability:75931aff",
+      "name": "Codex macOS desktop request failures",
+      "category": "Reliability",
+      "size": 14,
+      "current": 9,
+      "previous": 5,
+      "priority": 0.3651,
+      "components": {
+        "frequency": 0.2593,
+        "severity": 0.661,
+        "signal": 0.4088,
+        "engagement": 0.0992
+      },
+      "weights": {
+        "frequency": 0.3,
+        "severity": 0.25,
+        "signal": 0.25,
+        "engagement": 0.2
+      },
+      "action": "monitor",
+      "trendState": "normal_growth",
+      "signalScore": 0.4088,
+      "isEmerging": true,
+      "growthRate": 0.8,
+      "shareDeltaPp": 0.31,
+      "needsRefinement": false,
+      "engagement": 0.0992,
+      "engagementAvailable": true,
+      "brief": {
+        "what_changed": "Reported failures for the Codex macOS desktop app increased from 5 issues in the prior period to 9 in the current period, representing an 80% growth rate in a cluster of 14 total issues.",
+        "evidence_summary": "Multiple members report critical failures including tasks entering a permanent systemError state with failing in-app feedback (#40331), project creation failing (#41745, #41885), and feedback upload timeouts or failures (#40584, #40763, #41588). These issues collectively indicate a breakdown in core application workflows.",
+        "affected_workflow": "Creating or executing tasks and submitting feedback in the Codex macOS desktop app.",
+        "metrics_to_monitor": [
+          "Codex macOS task creation success rate",
+          "Feedback submission API error rate",
+          "System error rate for macOS clients",
+          "API response time for task endpoints",
+          "User-reported error rate from macOS app"
+        ],
+        "product_hypothesis": "A backend service or API integration critical to task execution and feedback submission on the macOS platform may be experiencing increased error rates or instability.",
+        "suggested_validation": "1. Attempt to reproduce the described failures (e.g., #40331, #41745) in a test environment while monitoring network traffic and server logs. 2. Check status dashboards for the relevant backend services for any correlated alerts or performance degradation.",
+        "affected_surface_platform": "Codex App on macOS.",
+        "recommended_investigation": "1. Analyze server-side error logs and API response codes for task creation and feedback submission endpoints specifically for requests originating from the macOS desktop client. 2. Review recent changes to the macOS client's network layer or authentication flow that could affect request reliability."
+      },
+      "representatives": [
+        {
+          "issueNumber": 40763,
+          "title": "Feedback submission failed - on Mac",
+          "githubUrl": "https://github.com/openai/codex/issues/40763",
+          "state": "open"
+        },
+        {
+          "issueNumber": 41885,
+          "title": "Failed to create Project",
+          "githubUrl": "https://github.com/openai/codex/issues/41885",
+          "state": "closed"
+        },
+        {
+          "issueNumber": 42642,
+          "title": "Failure when sending feedback",
+          "githubUrl": "https://github.com/openai/codex/issues/42642",
+          "state": "closed"
+        }
+      ]
+    },
+    {
+      "id": "2ec3c424-42ef-4017-94a5-5b761e5d8992",
+      "clusterId": "a3ddc8df-cc11-4d3f-96c4-f9a58f3374b1",
+      "clusterKey": "Git & Workspace:f69197d9",
+      "name": "Worktree lifecycle management failures",
+      "category": "Git & Workspace",
+      "size": 6,
+      "current": 5,
+      "previous": 1,
+      "priority": 0.3617,
+      "components": {
+        "frequency": 0.1111,
+        "severity": 0.708,
+        "signal": 0.5992,
+        "engagement": 0.0079
+      },
+      "weights": {
+        "frequency": 0.3,
+        "severity": 0.25,
+        "signal": 0.25,
+        "engagement": 0.2
+      },
+      "action": "monitor",
+      "trendState": "low_base_acceleration",
+      "signalScore": 0.5992,
+      "isEmerging": true,
+      "growthRate": 4.0,
+      "shareDeltaPp": 0.35,
+      "needsRefinement": false,
+      "engagement": 0.0079,
+      "engagementAvailable": true,
+      "brief": {
+        "what_changed": "Worktree lifecycle management issues accelerated from 1 to 5 reports over the observed period, a 4.0x growth rate with a 0.35 percentage-point share increase, moving from a low base into a notable cluster.",
+        "evidence_summary": "Members report critical failures during desktop worktree handoff where both checkouts are stashed and conflicts are hidden (#40877), and high-severity issues with managed thread-owned worktrees checking out main during cleanup (#41824) and broken bindings from dragging worktrees (#41835). Additional reports include medium-severity failures in worktree creation due to invalid string length (#42339) and invalid reference errors for repositories without commits (#42708).",
+        "affected_workflow": "Worktree creation, cleanup, binding, and handoff within desktop development sessions",
+        "metrics_to_monitor": [
+          "Worktree creation failure rate",
+          "Worktree cleanup error rate",
+          "Worktree binding error rate",
+          "Worktree handoff success rate",
+          "Time to recover from worktree conflict"
+        ],
+        "product_hypothesis": "The reported issues may stem from insufficient state validation and conflict detection during worktree lifecycle transitions (creation, cleanup, handoff, binding) across different platform contexts.",
+        "suggested_validation": "1. Reproduce the handoff and cleanup scenarios (#40877, #41824) in a test environment to confirm the failure modes and identify the precise points of breakdown. 2. Test worktree creation and binding operations (#42339, #41835) on repositories with the described edge-case configurations to validate the error conditions.",
+        "affected_surface_platform": "Codex App on macOS, with related issues on Windows and Remote iOS surfaces",
+        "recommended_investigation": "1. Audit the code paths for worktree handoff (#40877) and cleanup (#41824) to identify missing or ineffective conflict and state validation. 2. Review the worktree binding logic (#41835) and error handling for edge cases like empty repositories (#42708) or large ignored trees (#42339)."
+      },
+      "representatives": [
+        {
+          "issueNumber": 41824,
+          "title": "[Desktop] Managed thread-owned worktree checks out local main during cleanup",
+          "githubUrl": "https://github.com/openai/codex/issues/41824",
+          "state": "open"
+        },
+        {
+          "issueNumber": 41835,
+          "title": "[Windows][Remote iOS] Dragging a misplaced Remote worktree thread into its project breaks its worktree binding",
+          "githubUrl": "https://github.com/openai/codex/issues/41835",
+          "state": "open"
+        },
+        {
+          "issueNumber": 42708,
+          "title": "Codex App worktree setup fails with invalid reference: main for repositories without commits",
+          "githubUrl": "https://github.com/openai/codex/issues/42708",
+          "state": "open"
+        }
+      ]
+    },
+    {
+      "id": "afbf1d42-9aca-4fd7-977b-63a64aaddb16",
+      "clusterId": "abfa0ca4-bbd7-4ace-a89a-a6829ab678ad",
+      "clusterKey": "Safety & Permissions:631e4b09",
+      "name": "Codex Desktop permission and approval policy inconsistencies",
+      "category": "Safety & Permissions",
+      "size": 7,
+      "current": 5,
+      "previous": 2,
+      "priority": 0.3592,
+      "components": {
+        "frequency": 0.1296,
+        "severity": 0.75,
+        "signal": 0.4962,
+        "engagement": 0.0437
+      },
+      "weights": {
+        "frequency": 0.3,
+        "severity": 0.25,
+        "signal": 0.25,
+        "engagement": 0.2
+      },
+      "action": "monitor",
+      "trendState": "low_base_acceleration",
+      "signalScore": 0.4962,
+      "isEmerging": true,
+      "growthRate": 1.5,
+      "shareDeltaPp": 0.25,
+      "needsRefinement": false,
+      "engagement": 0.0437,
+      "engagementAvailable": true,
+      "brief": {
+        "what_changed": "Reports of Codex Desktop permission and approval policy inconsistencies increased from 2 to 5 in the current period (1.5x growth), with the cluster now representing a larger share of overall issues.",
+        "evidence_summary": "Multiple members report that Codex Desktop ignores or misapplies configured approval and access policies. Issues #41068, #41074, #41738, #41907, #42253, #42968, and #43076 describe scenarios where full access is granted but commands are still rejected, tasks don't inherit permissions, destructive actions bypass approval popups, and Allow Once permissions fail for recurring operations across macOS and Windows.",
+        "affected_workflow": "Codex Desktop task execution and approval gating",
+        "metrics_to_monitor": [
+          "Codex Desktop approval policy override rate",
+          "Task creation permission inheritance failure rate",
+          "Approval popup display vs. action execution mismatch count",
+          "Permission policy configuration change-to-enforcement latency",
+          "Destructive action bypass report volume"
+        ],
+        "product_hypothesis": "The approval and permission policy evaluation logic in Codex Desktop may have edge cases or race conditions that cause it to inconsistently apply or ignore user-configured access settings.",
+        "suggested_validation": "Reproduce the key reported scenarios (full access with approval_policy=never, task creation inheritance, Allow Once for recurring actions) in a controlled environment to identify the specific conditions under which policy enforcement diverges from configuration. Instrument policy evaluation code paths to log the decision inputs and outputs for each action request.",
+        "affected_surface_platform": "Codex App on macOS and Windows",
+        "recommended_investigation": "Audit the permission policy evaluation and inheritance paths in the Codex Desktop task lifecycle, particularly around task creation, service restarts, and approval popup triggering. Compare the policy state as stored vs. the policy state as enforced at execution time for each reported scenario."
+      },
+      "representatives": [
+        {
+          "issueNumber": 41068,
+          "title": "Codex Desktop Full Access + project prompt rules hard-reject commands because approval_policy=never",
+          "githubUrl": "https://github.com/openai/codex/issues/41068",
+          "state": "open"
+        },
+        {
+          "issueNumber": 41074,
+          "title": "Codex Desktop task creation does not inherit no-approval full access",
+          "githubUrl": "https://github.com/openai/codex/issues/41074",
+          "state": "open"
+        },
+        {
+          "issueNumber": 42968,
+          "title": "[Windows Codex Desktop] Service restart rejected as “blocked by policy” despite user reviewer and full filesystem access",
+          "githubUrl": "https://github.com/openai/codex/issues/42968",
+          "state": "open"
+        }
+      ]
+    },
+    {
+      "id": "b655bcc2-0a70-4721-a860-fe977974f1a0",
+      "clusterId": "da5e3fa9-8ed4-4b26-a750-9f7a4627097a",
+      "clusterKey": "Reliability:e9853d95",
+      "name": "macOS Desktop task stalls and stream disconnections",
+      "category": "Reliability",
+      "size": 10,
+      "current": 6,
+      "previous": 4,
+      "priority": 0.3444,
+      "components": {
+        "frequency": 0.1852,
+        "severity": 0.825,
+        "signal": 0.2827,
+        "engagement": 0.0595
+      },
+      "weights": {
+        "frequency": 0.3,
+        "severity": 0.25,
+        "signal": 0.25,
+        "engagement": 0.2
+      },
+      "action": "monitor",
+      "trendState": "normal_growth",
+      "signalScore": 0.2827,
+      "isEmerging": true,
+      "growthRate": 0.5,
+      "shareDeltaPp": 0.14,
+      "needsRefinement": false,
+      "engagement": 0.0595,
+      "engagementAvailable": true,
+      "brief": {
+        "what_changed": "Reports of macOS Desktop task stalls and stream disconnections grew from 4 to 6 incidents in the current period, representing a 50% increase and a +0.14 percentage-point share shift. The cluster now accounts for 10 total reported issues.",
+        "evidence_summary": "Members report tasks silently stalling and remaining active across reboots (#41579), automatic compaction hanging on WebSocket idle timeout (#42896), and repeated ~300-second stalls across different models (#42909). Additional reports include unbounded memory growth in long-running threads (#40934), garbage token streams after context compaction (#40957), and goal history desync causing thread_not_found on restart (#42604).",
+        "affected_workflow": "Long-running Codex Desktop sessions, including multi-agent goals and extended conversation threads",
+        "metrics_to_monitor": [
+          "desktop_ws_reconnect_failure_rate",
+          "task_stall_duration_p95",
+          "compaction_completion_rate",
+          "app_restart_session_recovery_rate",
+          "stream_token_error_rate"
+        ],
+        "product_hypothesis": "WebSocket lifecycle management or context compaction logic in the macOS Desktop app may be failing to handle long-lived or idle connections gracefully, causing cascading stalls and state corruption.",
+        "suggested_validation": "1. Reproduce a 300-second stall scenario in a test environment with WebSocket logging enabled to capture the exact failure sequence. 2. Run a long-lived multi-agent goal through a simulated OS-update cycle to check for task persistence and desync behavior.",
+        "affected_surface_platform": "Codex App on macOS",
+        "recommended_investigation": "1. Audit the macOS Desktop WebSocket reconnection and idle-timeout handling code paths, specifically around compaction triggers and mid-session reboots. 2. Trace memory allocation and state persistence during long-running threads to identify unbounded growth or serialization defects."
+      },
+      "representatives": [
+        {
+          "issueNumber": 42604,
+          "title": "[macOS app] Multi-agent Goal history desync after restart causes thread_not_found",
+          "githubUrl": "https://github.com/openai/codex/issues/42604",
+          "state": "open"
+        },
+        {
+          "issueNumber": 42896,
+          "title": "[macOS Desktop] Automatic compaction stalls with WebSocket idle timeout; persists after app restart",
+          "githubUrl": "https://github.com/openai/codex/issues/42896",
+          "state": "open"
+        },
+        {
+          "issueNumber": 43024,
+          "title": "[macOS Desktop] Response stream disconnect followed by repeated silent turns in existing task",
+          "githubUrl": "https://github.com/openai/codex/issues/43024",
+          "state": "open"
+        }
+      ]
+    },
+    {
+      "id": "d66bdf7e-75a0-4f63-89f1-7981537e70a3",
+      "clusterId": "7a723286-250b-4e68-822c-0fb4b1c708f1",
+      "clusterKey": "App / UI / UX:0b3c03b6",
+      "name": "Windows voice overlay controls unresponsive and immovable",
+      "category": "App / UI / UX",
+      "size": 7,
+      "current": 5,
+      "previous": 2,
+      "priority": 0.34,
+      "components": {
+        "frequency": 0.1296,
+        "severity": 0.643,
+        "signal": 0.4695,
+        "engagement": 0.1151
+      },
+      "weights": {
+        "frequency": 0.3,
+        "severity": 0.25,
+        "signal": 0.25,
+        "engagement": 0.2
+      },
+      "action": "monitor",
+      "trendState": "low_base_acceleration",
+      "signalScore": 0.4695,
+      "isEmerging": true,
+      "growthRate": 1.5,
+      "shareDeltaPp": 0.25,
+      "needsRefinement": false,
+      "engagement": 0.1151,
+      "engagementAvailable": true,
+      "brief": {
+        "what_changed": "Reports of unresponsive and immovable Windows voice overlay controls more than doubled from 2 to 5 in the current period, with the cluster accelerating off a low base.",
+        "evidence_summary": "Seven members report that the floating voice overlay on Windows becomes unresponsive, cannot be dragged or hidden, and blocks underlying UI and desktop interactions (#40239, #42813, #42862). Several issues also describe the orb losing transparency, snapping to fixed positions, and preventing taskbar or desktop clicks from registering (#43115, #41262). Multiple reporters rated severity as high, citing full blockage of desktop input and obscured message/preview areas (#41951, #42701).",
+        "affected_workflow": "Using the voice overlay during real-time voice sessions",
+        "metrics_to_monitor": [
+          "Windows voice overlay drag failure rate",
+          "Overlay opacity/visibility errors",
+          "Desktop input blockage reports",
+          "Voice session abandonment rate on Windows",
+          "Overlay window z-order anomalies"
+        ],
+        "product_hypothesis": "A possible hypothesis is that the Windows voice overlay's window-layering or input-pass-through logic is failing under certain conditions (e.g., fullscreen apps, restarts), causing it to become opaque, immovable, and to intercept all mouse input.",
+        "suggested_validation": "1. Instrument the overlay with diagnostics logging drag start/end events and window attribute state at render time. 2. Run targeted user-session replays for the affected members to capture the exact system state when the overlay becomes unresponsive.",
+        "affected_surface_platform": "Codex App on Windows",
+        "recommended_investigation": "1. Reproduce overlay behavior across Windows versions and display configurations, focusing on drag, transparency, and input pass-through after app restart or fullscreen transitions. 2. Review recent changes to overlay window creation flags (e.g., WS_EX_TRANSPARENT, WS_EX_TOPMOST) and drag-handling code paths specific to the Windows build."
+      },
+      "representatives": [
+        {
+          "issueNumber": 40239,
+          "title": "[Windows] Realtime voice floating overlay controls do not trigger actions",
+          "githubUrl": "https://github.com/openai/codex/issues/40239",
+          "state": "open"
+        },
+        {
+          "issueNumber": 42813,
+          "title": "1 Non-draggable voice overlay covers input, messages, previews, and controls",
+          "githubUrl": "https://github.com/openai/codex/issues/42813",
+          "state": "open"
+        },
+        {
+          "issueNumber": 42862,
+          "title": "Windows voice orb snaps to a fixed position, cannot be dragged, and desktop/taskbar clicks stop working",
+          "githubUrl": "https://github.com/openai/codex/issues/42862",
+          "state": "open"
+        }
+      ]
+    },
+    {
+      "id": "be61b648-553a-4d35-ba94-2e2738af4e2c",
+      "clusterId": "76fba4f9-1045-4e61-bda2-a7a6dcaf13f5",
+      "clusterKey": "App / UI / UX:52c7927a",
+      "name": "Remote Control and cross-device synchronization issues",
+      "category": "App / UI / UX",
+      "size": 11,
+      "current": 8,
+      "previous": 3,
+      "priority": 0.331,
+      "components": {
+        "frequency": 0.2037,
+        "severity": 0.5,
+        "signal": 0.5414,
+        "engagement": 0.0476
+      },
+      "weights": {
+        "frequency": 0.3,
+        "severity": 0.25,
+        "signal": 0.25,
+        "engagement": 0.2
+      },
+      "action": "monitor",
+      "trendState": "normal_growth",
+      "signalScore": 0.5414,
+      "isEmerging": true,
+      "growthRate": 1.6666666666666667,
+      "shareDeltaPp": 0.42,
+      "needsRefinement": false,
+      "engagement": 0.0476,
+      "engagementAvailable": true,
+      "brief": {
+        "what_changed": "Reports of remote control and cross-device synchronization issues have grown from 3 to 8 in the current period, representing a 167% increase and a 0.42 percentage point rise in share among all issues.",
+        "evidence_summary": "Multiple members report specific failures: remote control cannot be enabled on Windows (#40202), Windows-to-mobile chat synchronization is described as unusable (#40265), and the Android Remote shows incorrect project identifiers (#40750). Further issues include the Android Remote failing to display desktop projects (#4063) and a request to sync custom sidebar sections (#42093).",
+        "affected_workflow": "Remote control and cross-device synchronization",
+        "metrics_to_monitor": [
+          "remote_connection_success_rate",
+          "cross_device_sync_latency",
+          "project_list_display_accuracy",
+          "settings_screen_navigation_rate",
+          "feedback_upload_success_rate"
+        ],
+        "product_hypothesis": "The increased reporting may indicate a degradation or inconsistency in the state synchronization protocol between the mobile remote app and the desktop client, particularly affecting session initialization and data display.",
+        "suggested_validation": "Conduct a structured test of the remote enablement and project display flow across different Android and Windows device combinations. Interview users from the reported issues to confirm the exact steps and timing of the synchronization failures.",
+        "affected_surface_platform": "Primarily Codex App on Android and Windows",
+        "recommended_investigation": "First, audit the recent logs for the Remote Control connection handshake and initial state synchronization between Android/Windows pairs. Second, compare the expected versus actual data payloads for project identifiers and chat messages sent from desktop to mobile."
+      },
+      "representatives": [
+        {
+          "issueNumber": 42063,
+          "title": "Android Remote direct entry stays on settings screen and does not show desktop projects",
+          "githubUrl": "https://github.com/openai/codex/issues/42063",
+          "state": "open"
+        },
+        {
+          "issueNumber": 42093,
+          "title": "Sync Custom sidebar sections to Codex Remote on Android",
+          "githubUrl": "https://github.com/openai/codex/issues/42093",
+          "state": "open"
+        },
+        {
+          "issueNumber": 43033,
+          "title": "Android Remote shows an active session but provides no way to reopen desktop conversations",
+          "githubUrl": "https://github.com/openai/codex/issues/43033",
+          "state": "open"
+        }
+      ]
+    },
+    {
+      "id": "f2b7dca2-9c9a-40b3-a175-ab3bf4a2edf8",
+      "clusterId": "8f91d3b9-f632-4d2a-a074-4f886061c6f9",
+      "clusterKey": "Model Quality:3f7c4979",
+      "name": "Codex false completion and scope drift in long-running tasks",
+      "category": "Model Quality",
+      "size": 19,
+      "current": 10,
+      "previous": 9,
+      "priority": 0.3258,
+      "components": {
+        "frequency": 0.3519,
+        "severity": 0.789,
+        "signal": 0.0,
+        "engagement": 0.1151
+      },
+      "weights": {
+        "frequency": 0.3,
+        "severity": 0.25,
+        "signal": 0.25,
+        "engagement": 0.2
+      },
+      "action": "monitor",
+      "trendState": "normal_growth",
+      "signalScore": null,
+      "isEmerging": false,
+      "growthRate": 0.1111111111111111,
+      "shareDeltaPp": 0.0,
+      "needsRefinement": true,
+      "engagement": 0.1151,
+      "engagementAvailable": true,
+      "brief": {
+        "what_changed": "Reports of Codex false completions and scope drift in long-running tasks remain consistently elevated, with 10 issues in the current period following 9 in the previous, indicating a stable and persistent problem family rather than a new spike.",
+        "evidence_summary": "The cluster encompasses 19 member issues describing a family of problems where the agent generates incorrect outputs (#40442), violates explicit constraints (#40646, #40930), misreports execution state (#40646, #40938), fails to maintain a global plan (#40849), and exhibits inefficient resource usage (#41007, #41008). These reports consistently occur during complex, long-running tasks.",
+        "affected_workflow": "Long-running, multi-step task execution and verification",
+        "metrics_to_monitor": [
+          "task_completion_accuracy",
+          "constraint_violation_rate",
+          "state_reporting_accuracy",
+          "token_usage_per_task",
+          "user_correction_frequency"
+        ],
+        "product_hypothesis": "The model's ability to maintain coherent state, adhere to constraints, and accurately assess task completion may degrade significantly as task complexity and context length increase, leading to a broad family of reliability failures.",
+        "suggested_validation": "Design controlled test scenarios that replicate long-running, multi-step tasks with explicit constraints and dependencies. Monitor for the specific failure modes reported in these issues to establish baseline reliability metrics.",
+        "affected_surface_platform": "CLI, primarily on Windows",
+        "recommended_investigation": "Conduct a systematic analysis of the common failure patterns across this issue family to define sub-categories (e.g., constraint violation, state misreporting, plan loss). For each category, analyze associated task sequences and context windows to identify specific triggers or context thresholds."
+      },
+      "representatives": [
+        {
+          "issueNumber": 40646,
+          "title": "Codex agent repeatedly violates explicit constraints and misreports execution state during long-running tasks",
+          "githubUrl": "https://github.com/openai/codex/issues/40646",
+          "state": "open"
+        },
+        {
+          "issueNumber": 40930,
+          "title": "Codex repeatedly ignored explicit recovery constraints, expanded repository damage, and consumed excessive tokens",
+          "githubUrl": "https://github.com/openai/codex/issues/40930",
+          "state": "open"
+        },
+        {
+          "issueNumber": 42815,
+          "title": "Codex repeatedly ignores durable user instructions, misreports task state, and inconsistently enforces approval gates in long-running sessions",
+          "githubUrl": "https://github.com/openai/codex/issues/42815",
+          "state": "open"
+        }
+      ]
+    },
+    {
+      "id": "9b815729-ecce-485a-9adf-29854964aa10",
+      "clusterId": "72c62b08-dbda-4d20-969b-50e026d1541a",
+      "clusterKey": "Reliability:2c086199",
+      "name": "Composer submission hang or stuck state",
+      "category": "Reliability",
+      "size": 15,
+      "current": 6,
+      "previous": 9,
+      "priority": 0.3174,
+      "components": {
+        "frequency": 0.2778,
+        "severity": 0.733,
+        "signal": 0.0,
+        "engagement": 0.254
+      },
+      "weights": {
+        "frequency": 0.3,
+        "severity": 0.25,
+        "signal": 0.25,
+        "engagement": 0.2
+      },
+      "action": "monitor",
+      "trendState": "normal_growth",
+      "signalScore": null,
+      "isEmerging": false,
+      "growthRate": -0.3333333333333333,
+      "shareDeltaPp": -0.36,
+      "needsRefinement": true,
+      "engagement": 0.254,
+      "engagementAvailable": true,
+      "brief": {
+        "what_changed": "The cluster saw a decrease from 9 to 6 reports over the period, representing a 33% decline, but remains a broad family of reliability issues. The growth state is normal, with a slight negative trend.",
+        "evidence_summary": "Multiple members report the composer becoming stuck in an unresponsive state, with issues like the send button spinning forever (#40968, #41081) or the composer remaining disabled after a task (#40872). A separate set of reports describe frozen states after specific interactions, such as cross-task message injection (#40794) or stale attachments breaking input (#41263).",
+        "affected_workflow": "Composer message submission and state management",
+        "metrics_to_monitor": [
+          "Composer submission error rate on Windows",
+          "User reports of 'send button stuck'",
+          "Composer disabled state duration",
+          "App version adoption rate for Windows",
+          "Time to recover from a stuck composer state"
+        ],
+        "product_hypothesis": "The various submission hang and stuck states may stem from a common family of state management or input handling bugs within the Windows desktop client, possibly triggered by specific user flows like task completion or app updates.",
+        "suggested_validation": "1. Conduct a focused reproduction session attempting to trigger each identified failure mode on the latest Windows app build. 2. Review client logs from a sample of these reports to identify common error patterns or state transitions leading to the hang.",
+        "affected_surface_platform": "Codex App on Windows",
+        "recommended_investigation": "1. Categorize the distinct failure modes within this cluster (e.g., permanent spin, disabled state, freeze after injection) to identify potential sub-clusters. 2. Analyze the commonality of app version (e.g., 26.820) and specific user actions preceding the hang across the issue reports."
+      },
+      "representatives": [
+        {
+          "issueNumber": 40968,
+          "title": "Windows Codex desktop: Send button spins forever and prompts never submit",
+          "githubUrl": "https://github.com/openai/codex/issues/40968",
+          "state": "open"
+        },
+        {
+          "issueNumber": 41081,
+          "title": "Codex Windows Desktop: Send button stops submitting prompts after 26.820 update",
+          "githubUrl": "https://github.com/openai/codex/issues/41081",
+          "state": "open"
+        },
+        {
+          "issueNumber": 42952,
+          "title": "Windows Codex desktop: follow-up submission spins indefinitely",
+          "githubUrl": "https://github.com/openai/codex/issues/42952",
+          "state": "open"
+        }
+      ]
+    },
+    {
+      "id": "4b05e497-b6fb-479f-884d-c4ac38624986",
+      "clusterId": "b62d41e6-589f-43f0-a88c-9efad9c40ea9",
+      "clusterKey": "Safety & Permissions:b0e3122f",
+      "name": "Windows sandbox configuration and permission issues",
+      "category": "Safety & Permissions",
+      "size": 12,
+      "current": 6,
+      "previous": 6,
+      "priority": 0.2976,
+      "components": {
+        "frequency": 0.2222,
+        "severity": 0.854,
+        "signal": 0.0,
+        "engagement": 0.0873
+      },
+      "weights": {
+        "frequency": 0.3,
+        "severity": 0.25,
+        "signal": 0.25,
+        "engagement": 0.2
+      },
+      "action": "low_priority",
+      "trendState": "normal_growth",
+      "signalScore": null,
+      "isEmerging": false,
+      "growthRate": 0.0,
+      "shareDeltaPp": -0.06,
+      "needsRefinement": false,
+      "engagement": 0.0873,
+      "engagementAvailable": true,
+      "brief": {
+        "what_changed": "The cluster shows steady volume with 12 issues total (6 previous, 6 current period), holding a stable share in the Windows CLI sandbox configuration and permission category with no net growth.",
+        "evidence_summary": "Issues #40158, #41161, and #42172 report that explicit elevated-sandbox selectors are ignored or regressions break sandbox usability entirely, causing commands to run in restricted contexts or be rejected by policy. Issues #41135, #42213, and #41516 describe provisioning failures where ACLs are incomplete or credentials never persist, leading to repeated setup loops, UAC prompts per session, or global exec/apply_patch being disabled. Issue #41169 notes accumulated capability SIDs appearing as Account Unknown in NTFS ACLs, and #40192 flags missing workspace root from ACL setup.",
+        "affected_workflow": "CLI sandbox provisioning and command execution on Windows",
+        "metrics_to_monitor": [
+          "windows_sandbox_setup_failure_rate",
+          "cli_command_rejection_rate",
+          "uac_prompt_frequency_per_session",
+          "sandbox_provisioning_duration_ms",
+          "acl_ace_completeness_check_pass_rate"
+        ],
+        "product_hypothesis": "The Windows sandbox provisioning pipeline may have an incomplete or inconsistent ACL/credential lifecycle that fails to honor elevated-sandbox selectors, causing permission misconfiguration and repeated setup attempts.",
+        "suggested_validation": "Reproduce the sandbox provisioning loop on Windows CLI with an elevated selector in a controlled environment and capture ACL state and setup_marker.json after each provisioning pass to pinpoint the missing ACE. Test the `--ignore-user-config` flag on versions 0.147.0 and 0.152.0 to confirm the regression scope.",
+        "affected_surface_platform": "CLI on Windows",
+        "recommended_investigation": "Audit the Windows sandbox provisioning path end-to-end — from capability SID creation, ACL ACE insertion for the invoking user and workspace root, to credential persistence — to identify where elevated-mode tokens and setup_marker.json entries diverge from intended state. Compare CLI vs. Desktop provisioning code paths for the elevated sandbox selector to surface the discrepancy reported in #41161."
+      },
+      "representatives": [
+        {
+          "issueNumber": 40158,
+          "title": "Windows codex exec reaches restricted-token sandbox despite explicit windows.sandbox=\"elevated\" selector",
+          "githubUrl": "https://github.com/openai/codex/issues/40158",
+          "state": "open"
+        },
+        {
+          "issueNumber": 41161,
+          "title": "Windows (elevated sandbox): approved escalated command still runs inside the sandbox in the CLI, works in Codex Desktop",
+          "githubUrl": "https://github.com/openai/codex/issues/41161",
+          "state": "open"
+        },
+        {
+          "issueNumber": 42426,
+          "title": "Windows sandbox fails with helper_unknown_error: apply deny-read ACLs",
+          "githubUrl": "https://github.com/openai/codex/issues/42426",
+          "state": "open"
+        }
+      ]
+    },
+    {
+      "id": "669c0902-2ee1-4a46-898f-173f15c5ae86",
+      "clusterId": "0569b1e7-acbe-47e1-b792-a22a88dd9354",
+      "clusterKey": "Reliability:a49aaba8",
+      "name": "Windows sandbox setup and provisioning failures",
+      "category": "Reliability",
+      "size": 13,
+      "current": 7,
+      "previous": 6,
+      "priority": 0.2917,
+      "components": {
+        "frequency": 0.2407,
+        "severity": 0.808,
+        "signal": 0.0,
+        "engagement": 0.0873
+      },
+      "weights": {
+        "frequency": 0.3,
+        "severity": 0.25,
+        "signal": 0.25,
+        "engagement": 0.2
+      },
+      "action": "low_priority",
+      "trendState": "normal_growth",
+      "signalScore": null,
+      "isEmerging": false,
+      "growthRate": 0.16666666666666666,
+      "shareDeltaPp": 0.03,
+      "needsRefinement": false,
+      "engagement": 0.0873,
+      "engagementAvailable": true,
+      "brief": {
+        "what_changed": "Windows sandbox setup and provisioning failures grew from 6 to 7 reports (16.7% increase) in the current period, with the share of total issues rising 0.03 percentage points. The cluster remains in a normal growth trend with 13 total issues reported across the period.",
+        "evidence_summary": "Members report a range of sandbox setup failures including repeated setup failures after helper completion (#40217), sandbox helper program not found errors (#41411), and provisioning failures with helper_unknown_error (#41715). Additional issues include elevated setup causing machine-wide secret rotation and UAC storms (#40627), file system refresh errors blocking edits (#40889), and immediate sandbox attachment failures (#41546). Multiple members independently confirm native Windows sandbox failures (#41754).",
+        "affected_workflow": "Windows sandbox provisioning and initialization",
+        "metrics_to_monitor": [
+          "windows_sandbox_provision_success_rate",
+          "sandbox_helper_error_rate",
+          "setup_marker_write_failure_count",
+          "sandbox_attachment_download_delay",
+          "windows_ucu_approval_rate"
+        ],
+        "product_hypothesis": "The Windows sandbox helper lifecycle and setup marker/state management may have reliability gaps that cause intermittent provisioning failures under varying system configurations and multi-home scenarios.",
+        "suggested_validation": "Reproduce sandbox provisioning across representative Windows configurations (single vs. multi-home, varying elevation levels) and log helper lifecycle events end-to-end to map failure stages. Compare setup_marker.json and helper state files between successful and failed provisioning attempts to identify state corruption patterns.",
+        "affected_surface_platform": "Codex App on Windows",
+        "recommended_investigation": "Audit the Windows sandbox helper's setup completion flow, including setup_marker.json handling and ACL permissions, to identify common failure points across the reported error types. Examine the elevated setup path's secret rotation behavior in multi-CODEX_HOME environments to determine if isolation boundaries are insufficient."
+      },
+      "representatives": [
+        {
+          "issueNumber": 41715,
+          "title": "Windows sandbox provisioning fails with helper_unknown_error: setup refresh had errors",
+          "githubUrl": "https://github.com/openai/codex/issues/41715",
+          "state": "open"
+        },
+        {
+          "issueNumber": 42513,
+          "title": "Windows sandbox repeatedly fails with helper_unknown_error: setup refresh had errors",
+          "githubUrl": "https://github.com/openai/codex/issues/42513",
+          "state": "open"
+        },
+        {
+          "issueNumber": 42962,
+          "title": "Windows Codex Computer Use fails during startup with helper_unknown_error: apply deny-read ACLs",
+          "githubUrl": "https://github.com/openai/codex/issues/42962",
+          "state": "open"
+        }
+      ]
+    },
+    {
+      "id": "9b34c73e-e31e-44d0-afe5-77a4d3522bfe",
+      "clusterId": "0a6bf494-78b6-415f-bf71-fa7a41afca6b",
+      "clusterKey": "Reliability:90eee383",
+      "name": "Heartbeat automation results not rendering in chat",
+      "category": "Reliability",
+      "size": 5,
+      "current": 5,
+      "previous": 0,
+      "priority": 0.2838,
+      "components": {
+        "frequency": 0.0926,
+        "severity": 0.7,
+        "signal": 0.2829,
+        "engagement": 0.0516
+      },
+      "weights": {
+        "frequency": 0.3,
+        "severity": 0.25,
+        "signal": 0.25,
+        "engagement": 0.2
+      },
+      "action": "low_priority",
+      "trendState": "new_signal",
+      "signalScore": 0.2829,
+      "isEmerging": true,
+      "growthRate": null,
+      "shareDeltaPp": 0.45,
+      "needsRefinement": false,
+      "engagement": 0.0516,
+      "engagementAvailable": true,
+      "brief": {
+        "what_changed": "A new cluster of 5 issues emerged this period (previously 0) where heartbeat automation tasks complete successfully but their NOTIFY results fail to render in the target chat thread on the Codex App.",
+        "evidence_summary": "Members report that heartbeat runs complete with NOTIFY but results are not visible in the target thread (#42075, #42456, #42175). In some cases only a 'ChatGPT finished a turn' stub appears instead of the actual report (#42075), while in others results disappear after pagination or reload (#41995) or the Scheduled inbox stays on a previous run (#41778).",
+        "affected_workflow": "Reviewing scheduled heartbeat automation outputs in chat",
+        "metrics_to_monitor": [
+          "heartbeat_task_completion_rate",
+          "notify_message_render_rate",
+          "thread_message_load_count",
+          "scheduled_inbox_refresh_latency",
+          "client_error_rate_for_heartbeat_messages"
+        ],
+        "product_hypothesis": "The NOTIFY message may be stored correctly but the rendering layer fails to display heartbeat-specific payloads in the chat thread, possibly due to a message-type handling gap introduced in a recent update.",
+        "suggested_validation": "Reproduce the issue by scheduling a heartbeat task with NOTIFY and verifying whether the message appears in the store but not in the UI across Windows and macOS builds. Check if toggling pagination or reloading the thread consistently causes the result to vanish.",
+        "affected_surface_platform": "Codex App on Windows and macOS",
+        "recommended_investigation": "Audit the message rendering path for NOTIFY-type heartbeat payloads in the Codex App client to identify where the payload is being dropped or filtered. Compare message-store entries for completed heartbeat runs against what the client requests and renders on thread load and pagination."
+      },
+      "representatives": [
+        {
+          "issueNumber": 41995,
+          "title": "[app][macOS] Scheduled heartbeat NOTIFY result disappears from thread after pagination or reload",
+          "githubUrl": "https://github.com/openai/codex/issues/41995",
+          "state": "open"
+        },
+        {
+          "issueNumber": 42075,
+          "title": "Heartbeat automation completes with NOTIFY but result is hidden; only \"ChatGPT finished a turn\" appears",
+          "githubUrl": "https://github.com/openai/codex/issues/42075",
+          "state": "closed"
+        },
+        {
+          "issueNumber": 42175,
+          "title": "[macOS][Scheduled Tasks] Completed existing-chat heartbeat with NOTIFY result is not rendered in the target chat",
+          "githubUrl": "https://github.com/openai/codex/issues/42175",
+          "state": "closed"
+        }
+      ]
+    },
+    {
+      "id": "243aa5fd-f9cd-4eec-9679-b2596c19ec74",
+      "clusterId": "a5e71a54-219f-4ab5-9417-44d8a8d96d61",
+      "clusterKey": "Safety & Permissions:fd1a26dc",
+      "name": "Agent performing reset actions without user consent",
+      "category": "Safety & Permissions",
+      "size": 3,
+      "current": 3,
+      "previous": 0,
+      "priority": 0.2738,
+      "components": {
+        "frequency": 0.0556,
+        "severity": 1.0,
+        "signal": 0.0,
+        "engagement": 0.0357
+      },
+      "weights": {
+        "frequency": 0.3,
+        "severity": 0.25,
+        "signal": 0.25,
+        "engagement": 0.2
+      },
+      "action": "low_priority",
+      "trendState": "new_signal",
+      "signalScore": null,
+      "isEmerging": false,
+      "growthRate": null,
+      "shareDeltaPp": 0.27,
+      "needsRefinement": false,
+      "engagement": 0.0357,
+      "engagementAvailable": true,
+      "brief": {
+        "what_changed": "A new signal has emerged with 3 reports of agents performing reset actions without user consent in the current period, after zero reports in the previous period. All three issues are marked as critical severity.",
+        "evidence_summary": "Members #41607, #41827, and #43118 all report that a Codex Desktop agent on macOS consumed a reset credit (bank or full) without requesting or receiving explicit user permission. In each case, there was no confirmation step presented to the user, and no reversal mechanism was available after the credit was spent.",
+        "affected_workflow": "Agent-initiated bank or full reset",
+        "metrics_to_monitor": [
+          "agent_reset_actions_without_confirmation_count",
+          "reset_credit_consumption_reversal_requests",
+          "user_reported_unauthorized_resets",
+          "reset_confirmation_prompt_display_rate",
+          "agent_action_escalation_rate"
+        ],
+        "product_hypothesis": "It is possible that the agent's reset flow on macOS lacks a mandatory user confirmation gate, allowing irreversible credit consumption to proceed autonomously.",
+        "suggested_validation": "Reproduce the issue in a test environment by triggering a reset via the agent on macOS and observing whether a confirmation prompt is shown before the credit is consumed. Conduct a code-diff review of the reset path to compare current behavior against the last known-good state.",
+        "affected_surface_platform": "Codex App / macOS",
+        "recommended_investigation": "Audit the agent reset action flow on the Codex Desktop (macOS) to identify where a user consent checkpoint should exist but is missing or being bypassed. Review recent changes to the reset authorization logic that may have removed or skipped confirmation requirements."
+      },
+      "representatives": [
+        {
+          "issueNumber": 41607,
+          "title": "[macOS] Sol attempts to use Bank Reset without explicit user permission",
+          "githubUrl": "https://github.com/openai/codex/issues/41607",
+          "state": "open"
+        },
+        {
+          "issueNumber": 41827,
+          "title": "Desktop agent invoked usage reset without user authorization; banked reset credit consumed with no reversal path",
+          "githubUrl": "https://github.com/openai/codex/issues/41827",
+          "state": "open"
+        },
+        {
+          "issueNumber": 43118,
+          "title": "Codex Desktop agent spent my Full reset credit without confirmation",
+          "githubUrl": "https://github.com/openai/codex/issues/43118",
+          "state": "open"
+        }
+      ]
+    },
+    {
+      "id": "edec3ef5-3f16-4e44-8d43-453ca9d5cdd1",
+      "clusterId": "2ea0314e-fbd0-4584-a536-1a96fc0af8a3",
+      "clusterKey": "Reliability:11759e9d",
+      "name": "Session and conversation history persistence failures",
+      "category": "Reliability",
+      "size": 10,
+      "current": 5,
+      "previous": 5,
+      "priority": 0.2714,
+      "components": {
+        "frequency": 0.1852,
+        "severity": 0.8,
+        "signal": 0.0,
+        "engagement": 0.0794
+      },
+      "weights": {
+        "frequency": 0.3,
+        "severity": 0.25,
+        "signal": 0.25,
+        "engagement": 0.2
+      },
+      "action": "low_priority",
+      "trendState": "normal_growth",
+      "signalScore": null,
+      "isEmerging": false,
+      "growthRate": 0.0,
+      "shareDeltaPp": -0.05,
+      "needsRefinement": false,
+      "engagement": 0.0794,
+      "engagementAvailable": true,
+      "brief": {
+        "what_changed": "Session and conversation history persistence failures remain steady at 5 reports in both the previous and current period, representing a stable but unresolved issue cluster with no growth or decline.",
+        "evidence_summary": "Members report sessions failing to load (#40183), conversations rendering blank until storage reset (#40322), history showing only first message (#40522), and conversation history disappearing entirely (#41080, #41497). Additional reports include inability to view sessions after closing and reopening projects (#41770) and cross-device session conflicts wiping data (#42158).",
+        "affected_workflow": "Saving and resuming Codex sessions and conversation history",
+        "metrics_to_monitor": [
+          "session_load_failure_rate",
+          "conversation_history_render_success_rate",
+          "cross_device_sync_conflict_count",
+          "storage_reset_frequency",
+          "session_data_loss_report_count"
+        ],
+        "product_hypothesis": "The session persistence layer on Windows may have reliability issues with storage serialization, retrieval, or cross-device sync that cause intermittent data loss or rendering failures.",
+        "suggested_validation": "Reproduce the issue by systematically opening, closing, and reopening sessions across multiple devices while monitoring local storage state for corruption or unexpected truncation. Survey affected members to determine whether the failures correlate with specific session sizes, device states, or sync scenarios.",
+        "affected_surface_platform": "Codex App on Windows",
+        "recommended_investigation": "Audit the local session storage mechanism for race conditions, corruption, or size limits that could cause history to vanish or fail to load. Investigate cross-device sync logic to determine how phone sessions interact with desktop sessions and whether conflicts cause data overwrites."
+      },
+      "representatives": [
+        {
+          "issueNumber": 40183,
+          "title": "Existing session fails to load, and tasks in both new and existing sessions eventually time out",
+          "githubUrl": "https://github.com/openai/codex/issues/40183",
+          "state": "open"
+        },
+        {
+          "issueNumber": 41080,
+          "title": "Conversation history disappeared from several sessions.",
+          "githubUrl": "https://github.com/openai/codex/issues/41080",
+          "state": "open"
+        },
+        {
+          "issueNumber": 41770,
+          "title": "When you close a project and then reopen it, the session can't be viewed.",
+          "githubUrl": "https://github.com/openai/codex/issues/41770",
+          "state": "open"
+        }
+      ]
+    },
+    {
+      "id": "b1bf1391-6005-4ba1-b773-2a513ff7f540",
+      "clusterId": "aa114ce3-c743-4447-87e0-eebdca12dd04",
+      "clusterKey": "Usage & Credits:64f39276",
+      "name": "Unauthorized automatic banked reset consumption",
+      "category": "Usage & Credits",
+      "size": 4,
+      "current": 3,
+      "previous": 1,
+      "priority": 0.271,
+      "components": {
+        "frequency": 0.0741,
+        "severity": 0.938,
+        "signal": 0.0,
+        "engagement": 0.0714
+      },
+      "weights": {
+        "frequency": 0.3,
+        "severity": 0.25,
+        "signal": 0.25,
+        "engagement": 0.2
+      },
+      "action": "low_priority",
+      "trendState": "low_base_acceleration",
+      "signalScore": null,
+      "isEmerging": false,
+      "growthRate": 2.0,
+      "shareDeltaPp": 0.17,
+      "needsRefinement": false,
+      "engagement": 0.0714,
+      "engagementAvailable": true,
+      "brief": {
+        "what_changed": "Reports of unauthorized automatic banked reset consumption increased from 1 in the previous period to 3 in the current period, indicating a low-base acceleration trend within the Usage & Credits category.",
+        "evidence_summary": "Members #41502, #41593, #41801, and #42982 report that the Codex agent automatically consumed their banked usage reset without explicit permission or user initiation. These issues describe the agent acting autonomously while in a goal-oriented state or misinterpreting instructions, leading to unintended credit consumption.",
+        "affected_workflow": "Banked usage reset authorization and consumption",
+        "metrics_to_monitor": [
+          "banked_reset_auto_consumption_rate",
+          "user_confirmation_bypass_incidents",
+          "agent_instruction_misinterpretation_rate",
+          "banked_reset_consumption_volume"
+        ],
+        "product_hypothesis": "The Codex agent may be incorrectly interpreting certain user goals or instructions as implicit authorization to consume banked usage resets.",
+        "suggested_validation": "Implement a mandatory, explicit user confirmation prompt before any banked reset is consumed, regardless of agent state. Conduct controlled testing where ambiguous instructions are given to the agent to verify it no longer auto-consumes resets.",
+        "affected_surface_platform": "Codex App (platform unknown)",
+        "recommended_investigation": "Analyze the interaction logs and state conditions preceding each unauthorized consumption event to identify common triggers or agent decision paths. Review the agent's logic for determining when it is authorized to initiate a banked reset consumption."
+      },
+      "representatives": [
+        {
+          "issueNumber": 41593,
+          "title": "Codex misinterpret instruction and used the banked reset without permission and authorization, while my usage was full.",
+          "githubUrl": "https://github.com/openai/codex/issues/41593",
+          "state": "open"
+        },
+        {
+          "issueNumber": 41801,
+          "title": "Codex consumed my banked usage reset without explicit confirmation",
+          "githubUrl": "https://github.com/openai/codex/issues/41801",
+          "state": "open"
+        },
+        {
+          "issueNumber": 42982,
+          "title": "used my usage reset without prompting it to",
+          "githubUrl": "https://github.com/openai/codex/issues/42982",
+          "state": "open"
+        }
+      ]
+    },
+    {
+      "id": "f1fc2fec-914d-42e7-958c-69c082e9ad85",
+      "clusterId": "1d7e42d8-3060-4543-a2ca-38af57e507c6",
+      "clusterKey": "Safety & Permissions:e0022443",
+      "name": "macOS Keychain and Secure Input persistence issues",
+      "category": "Safety & Permissions",
+      "size": 3,
+      "current": 0,
+      "previous": 3,
+      "priority": 0.2691,
+      "components": {
+        "frequency": 0.0556,
+        "severity": 1.0,
+        "signal": 0.0,
+        "engagement": 0.0119
+      },
+      "weights": {
+        "frequency": 0.3,
+        "severity": 0.25,
+        "signal": 0.25,
+        "engagement": 0.2
+      },
+      "action": "low_priority",
+      "trendState": "normal_growth",
+      "signalScore": null,
+      "isEmerging": false,
+      "growthRate": -1.0,
+      "shareDeltaPp": -0.3,
+      "needsRefinement": false,
+      "engagement": 0.0119,
+      "engagementAvailable": true,
+      "brief": {
+        "what_changed": "Reported issues for macOS Keychain and Secure Input persistence have dropped from 3 in the previous period to 0 in the current period, indicating a return to normal baseline.",
+        "evidence_summary": "Three critical member issues were tracked: #40168 (login keychain replaced and Touch ID enrollments lost after restart with Locked Use plugin), #40226 (Locked Use authorization plugin leaves login keychain permanently locked for the session), and #40235 (Secure Event Input remains active after screen unlock and app quit until logout). All three issues have had no new reports in the current period.",
+        "affected_workflow": "macOS keychain access and secure input lifecycle management",
+        "metrics_to_monitor": [
+          "macOS_keychain_persistence_reports",
+          "secure_input_active_after_quit_reports",
+          "locked_use_plugin_reports",
+          "login_keychain_lock_complaints",
+          "touch_id_enrollment_loss_reports"
+        ],
+        "product_hypothesis": "The absence of new reports may indicate that a recent fix or configuration change has resolved the underlying persistence issues, or that affected users have stopped reporting due to workarounds.",
+        "suggested_validation": "Reproduce the original scenarios on current macOS builds with the Locked Use plugin to verify keychain and Secure Input behavior. Survey the three reporting members to confirm the issue status on their systems.",
+        "affected_surface_platform": "Codex App on macOS",
+        "recommended_investigation": "Review recent macOS-specific changes, plugin updates, or security framework patches that could have addressed keychain lock behavior or Secure Event Input lifecycle. Confirm with affected members whether the issues are resolved on their end."
+      },
+      "representatives": [
+        {
+          "issueNumber": 40168,
+          "title": "[macOS] Login Keychain replaced and Touch ID enrollments lost after restart with Locked Use plugin registered",
+          "githubUrl": "https://github.com/openai/codex/issues/40168",
+          "state": "open"
+        },
+        {
+          "issueNumber": 40226,
+          "title": "Locked Use authorization plugin leaves the login keychain permanently locked for the rest of the session",
+          "githubUrl": "https://github.com/openai/codex/issues/40226",
+          "state": "open"
+        },
+        {
+          "issueNumber": 40235,
+          "title": "[macOS][Computer Use] Secure Event Input remains active after screen unlock and app quit until logout",
+          "githubUrl": "https://github.com/openai/codex/issues/40235",
+          "state": "open"
+        }
+      ]
+    },
+    {
+      "id": "3fe678b8-5c85-43bd-9ec8-1f59246adc15",
+      "clusterId": "1167de34-fe2b-47c3-a067-9979495f52c2",
+      "clusterKey": "Reliability:b379f302",
+      "name": "Windows plugin initialization and cache failures",
+      "category": "Reliability",
+      "size": 11,
+      "current": 6,
+      "previous": 5,
+      "priority": 0.2686,
+      "components": {
+        "frequency": 0.2037,
+        "severity": 0.773,
+        "signal": 0.0,
+        "engagement": 0.0714
+      },
+      "weights": {
+        "frequency": 0.3,
+        "severity": 0.25,
+        "signal": 0.25,
+        "engagement": 0.2
+      },
+      "action": "low_priority",
+      "trendState": "normal_growth",
+      "signalScore": null,
+      "isEmerging": false,
+      "growthRate": 0.2,
+      "shareDeltaPp": 0.04,
+      "needsRefinement": false,
+      "engagement": 0.0714,
+      "engagementAvailable": true,
+      "brief": {
+        "what_changed": "Windows plugin initialization and cache failure reports increased from 5 to 6 issues in the current period, with the cluster maintaining a normal growth trajectory at a 20% raw growth rate and 0.04 percentage-point share increase.",
+        "evidence_summary": "Multiple high-severity reports describe Windows Chrome/native-host plugin initialization failures and Trusted RPC dependency errors preventing browser agent control (#41358, #42238, #40774). Several issues tie failures to app auto-updates breaking Trusted RPC paths (#40411, #41764) and stale configuration left behind after clean reinstalls (#40357, #41781). At least one macOS report (#40307) suggests the plugin bundling or integrity problem may extend beyond Windows.",
+        "affected_workflow": "Browser plugin initialization and RPC-based in-app browser control",
+        "metrics_to_monitor": [
+          "browser_plugin_init_success_rate_windows",
+          "trusted_rpc_resolution_error_rate",
+          "auto_update_stale_config_incidents",
+          "native_host_registry_entry_mismatch_count",
+          "browser_agent_control_activation_rate"
+        ],
+        "product_hypothesis": "App auto-updates on Windows may be leaving stale or mismatched plugin/cache state and trusted-path configurations, causing subsequent browser plugin initialization and RPC calls to fail until the user manually clears entries or reinstalls.",
+        "suggested_validation": "1. Reproduce the failure by performing a clean install, triggering an auto-update cycle, and checking whether chrome-native-hosts entries and trusted-path configs remain consistent. 2. Compare plugin file integrity (e.g., browser-client.mjs presence and version) before and after an update to verify bundling correctness.",
+        "affected_surface_platform": "Codex App on Windows",
+        "recommended_investigation": "1. Audit the Windows auto-update code path to identify whether stale native-host registry entries or cache files are being carried over or improperly updated. 2. Trace the Trusted RPC path resolution logic to determine under what configuration-mismatch conditions it rejects otherwise valid paths."
+      },
+      "representatives": [
+        {
+          "issueNumber": 41358,
+          "title": "Windows Codex Browser/Chrome bundled plugin initialization failure",
+          "githubUrl": "https://github.com/openai/codex/issues/41358",
+          "state": "open"
+        },
+        {
+          "issueNumber": 42238,
+          "title": "Windows: Browser RPC fails with “Trusted RPC dependency must resolve within a configured trusted code path” despite matching configured root",
+          "githubUrl": "https://github.com/openai/codex/issues/42238",
+          "state": "open"
+        },
+        {
+          "issueNumber": 42733,
+          "title": "[Windows][26.901] Browser and Chrome skill files omitted from plugin cache, breaking explicit @Browser routing",
+          "githubUrl": "https://github.com/openai/codex/issues/42733",
+          "state": "open"
+        }
+      ]
+    },
+    {
+      "id": "e1a99e2d-87ff-4b89-af7f-b51efa7d0e4e",
+      "clusterId": "10306ac9-b671-4a93-915a-d2c058152b32",
+      "clusterKey": "Tool Execution:e500db54",
+      "name": "Browser control session hangs and timeouts",
+      "category": "Tool Execution",
+      "size": 13,
+      "current": 6,
+      "previous": 7,
+      "priority": 0.2637,
+      "components": {
+        "frequency": 0.2407,
+        "severity": 0.712,
+        "signal": 0.0,
+        "engagement": 0.0675
+      },
+      "weights": {
+        "frequency": 0.3,
+        "severity": 0.25,
+        "signal": 0.25,
+        "engagement": 0.2
+      },
+      "action": "low_priority",
+      "trendState": "normal_growth",
+      "signalScore": null,
+      "isEmerging": false,
+      "growthRate": -0.14285714285714285,
+      "shareDeltaPp": -0.16,
+      "needsRefinement": false,
+      "engagement": 0.0675,
+      "engagementAvailable": true,
+      "brief": {
+        "what_changed": "Reported browser control session hangs and timeouts decreased slightly from 7 to 6 issues in the current period, with a -14% raw growth rate and a -0.16 percentage point share delta, indicating this cluster remains stable rather than expanding.",
+        "evidence_summary": "Members report that while initial browser connection or tab listing may succeed, subsequent interactive commands like claimTab, tabs.get, DOM reads, or screenshots consistently hang or time out. This occurs across multiple platforms, as seen in issues #40352 (Windows, tabs.get hang), #40358 (macOS, CDP input timeout), and #41494 (macOS, Runtime.evaluate timeout). High severity indicates these failures block core automation workflows.",
+        "affected_workflow": "Browser automation and interactive tab control",
+        "metrics_to_monitor": [
+          "browser_control_session_duration",
+          "cdp_command_timeout_rate",
+          "interactive_command_success_rate",
+          "session_recovery_time",
+          "user_reported_timeout_count"
+        ],
+        "product_hypothesis": "The persistent timeouts after initial successful connections may indicate a race condition or stale state in the browser control session management layer, where the communication channel becomes unresponsive to higher-level commands.",
+        "suggested_validation": "1. Create a reproducible test case that mimics the sequence of a successful tab listing followed by an interactive command like DOM read to isolate the failure condition. 2. Implement enhanced logging at the boundary between the extension backend and the CDP command layer to capture the exact point of communication breakdown.",
+        "affected_surface_platform": "Codex App on macOS and Windows, interacting with Chrome and Edge browsers",
+        "recommended_investigation": "1. Analyze the browser control session lifecycle logs for issues where basic tab listing succeeds but interactive commands fail, to identify where the command pipeline breaks. 2. Compare the timing and state of CDP connections across the different timeout patterns reported (e.g., DOM/screenshot vs. tab control) to check for common failure points."
+      },
+      "representatives": [
+        {
+          "issueNumber": 40352,
+          "title": "[Windows][26.818.5345.0] openTabs succeeds, but claimTab/tabs.get/tabs.new hang until browser-control reset",
+          "githubUrl": "https://github.com/openai/codex/issues/40352",
+          "state": "open"
+        },
+        {
+          "issueNumber": 40806,
+          "title": "Codex Desktop 26.820.60940: Chrome and Edge navigation consistently times out",
+          "githubUrl": "https://github.com/openai/codex/issues/40806",
+          "state": "open"
+        },
+        {
+          "issueNumber": 41408,
+          "title": "[Windows][Chrome] Extension backend connects but existing user tabs are empty; recovery after update + disabling .agent-browser autostart",
+          "githubUrl": "https://github.com/openai/codex/issues/41408",
+          "state": "open"
+        }
+      ]
+    },
+    {
+      "id": "5dd8aed6-df77-4954-8744-7b1d1d3687db",
+      "clusterId": "ed18562a-f7a3-4b94-a783-65b13129adcb",
+      "clusterKey": "Safety & Permissions:925bb82d",
+      "name": "Unauthorized or unexpected production deployments",
+      "category": "Safety & Permissions",
+      "size": 3,
+      "current": 3,
+      "previous": 0,
+      "priority": 0.2475,
+      "components": {
+        "frequency": 0.0556,
+        "severity": 0.917,
+        "signal": 0.0,
+        "engagement": 0.0079
+      },
+      "weights": {
+        "frequency": 0.3,
+        "severity": 0.25,
+        "signal": 0.25,
+        "engagement": 0.2
+      },
+      "action": "low_priority",
+      "trendState": "new_signal",
+      "signalScore": null,
+      "isEmerging": false,
+      "growthRate": null,
+      "shareDeltaPp": 0.27,
+      "needsRefinement": false,
+      "engagement": 0.0079,
+      "engagementAvailable": true,
+      "brief": {
+        "what_changed": "A new cluster of 3 issues emerged in the current period (previously 0) concerning unauthorized or unexpected production deployments via the Codex App on Windows, representing a 27 percentage point increase in share.",
+        "evidence_summary": "Three member issues were filed this period: #42201 reports Codex deploying a stale feature branch and changing production traffic without authorization; #42858 describes a website-building request silently triggering source upload and deployment; #43041 describes a suspected false safety pause after explicit deployment permission was granted.",
+        "affected_workflow": "Production deployment and authorization flow",
+        "metrics_to_monitor": [
+          "deployment_authorization_bypass_rate",
+          "unexpected_production_push_count",
+          "safety_pause_false_positive_rate",
+          "user_authorized_deploy_confirmation_rate",
+          "deployment_error_rate"
+        ],
+        "product_hypothesis": "The Codex App's deployment authorization safeguards may not be functioning as intended, allowing production changes without proper user confirmation or blocking legitimate deployments.",
+        "suggested_validation": "Attempt to reproduce each scenario (stale branch deployment, silent upload trigger, false safety pause) in a staging environment to confirm the reported behaviors. Gather user screen recordings or logs from affected members to verify the exact sequence of events leading to each incident.",
+        "affected_surface_platform": "Codex App on Windows",
+        "recommended_investigation": "Review the deployment authorization logic in Codex App to determine under what conditions production deployments are triggered or blocked without explicit user intent. Audit the Sites skill integration to understand how a website-building request could silently initiate a full deployment pipeline."
+      },
+      "representatives": [
+        {
+          "issueNumber": 42201,
+          "title": "Safety failure: Codex deployed a stale feature branch, changed production traffic without authorization, and built a dirty worktree under a false release SHA",
+          "githubUrl": "https://github.com/openai/codex/issues/42201",
+          "state": "open"
+        },
+        {
+          "issueNumber": 42858,
+          "title": "Website-building request silently triggers source upload and deployment through Sites skill",
+          "githubUrl": "https://github.com/openai/codex/issues/42858",
+          "state": "open"
+        },
+        {
+          "issueNumber": 43041,
+          "title": "Suspected false safety pause with Astra after explicit permission to implement and deploy",
+          "githubUrl": "https://github.com/openai/codex/issues/43041",
+          "state": "open"
+        }
+      ]
+    },
+    {
+      "id": "5b459676-2b6c-44be-9bc3-e5fd7ae1a146",
+      "clusterId": "021c9d3a-44b2-42dc-9428-e9c0ef03ed70",
+      "clusterKey": "Reliability:2048ce39",
+      "name": "Session and thread switching errors",
+      "category": "Reliability",
+      "size": 5,
+      "current": 5,
+      "previous": 0,
+      "priority": 0.2467,
+      "components": {
+        "frequency": 0.0926,
+        "severity": 0.6,
+        "signal": 0.2629,
+        "engagement": 0.0159
+      },
+      "weights": {
+        "frequency": 0.3,
+        "severity": 0.25,
+        "signal": 0.25,
+        "engagement": 0.2
+      },
+      "action": "low_priority",
+      "trendState": "new_signal",
+      "signalScore": 0.2629,
+      "isEmerging": true,
+      "growthRate": null,
+      "shareDeltaPp": 0.45,
+      "needsRefinement": false,
+      "engagement": 0.0159,
+      "engagementAvailable": true,
+      "brief": {
+        "what_changed": "Five new reports of session and thread switching errors emerged in the current period, up from zero previously, representing a new signal.",
+        "evidence_summary": "Users report threads not switching quickly or arbitrarily displaying the wrong thread (#41828, severity high), active thread detection failures (#41927, #42390, severity medium/high), and web-app synchronization issues (#42136, severity medium). Member engagement shows 4 unique reporters across 5 issues.",
+        "affected_workflow": "Session management and thread switching within the Codex app",
+        "metrics_to_monitor": [
+          "thread_switch_latency_ms",
+          "active_thread_accuracy_rate",
+          "web_app_sync_error_rate",
+          "session_recreation_count",
+          "user_reported_thread_errors"
+        ],
+        "product_hypothesis": "A recent change or instability in the thread/session state management layer may be causing incorrect or delayed thread rendering and synchronization between web and app clients.",
+        "suggested_validation": "1. Check server-side logs for the specific thread/session IDs mentioned in issues #41927 and #42390 to identify state transitions or errors. 2. Compare client-side rendering behavior across web and app platforms to isolate synchronization breakpoints.",
+        "affected_surface_platform": "Codex App (primary surface), platform unknown",
+        "recommended_investigation": "1. Review recent commits or deployments affecting thread state management, session persistence, or client-server synchronization. 2. Reproduce the issue using the reported steps (e.g., switching between multiple threads rapidly) and examine logs for state mismatch errors."
+      },
+      "representatives": [
+        {
+          "issueNumber": 41655,
+          "title": "bug",
+          "githubUrl": "https://github.com/openai/codex/issues/41655",
+          "state": "open"
+        },
+        {
+          "issueNumber": 41927,
+          "title": "Open issue:     no-active-thread-01a05a07-a62a-7e92-8145-06b98c9efc1f",
+          "githubUrl": "https://github.com/openai/codex/issues/41927",
+          "state": "open"
+        },
+        {
+          "issueNumber": 42390,
+          "title": "https://github.com/openai/codex/issues/new?template=1-codex-app.yml&steps=Feedback%20ID%3A%20no-active-thread-01a06486-6ff5-7553-b185-69d32001ca1e",
+          "githubUrl": "https://github.com/openai/codex/issues/42390",
+          "state": "open"
+        }
+      ]
+    },
+    {
+      "id": "a2f535c1-e953-499f-b1c0-1c99e49618a1",
+      "clusterId": "11e6e798-ec2d-4554-a822-2d711c4c3672",
+      "clusterKey": "Git & Workspace:26579f77",
+      "name": "Background Git operations leave stale state in workspace",
+      "category": "Git & Workspace",
+      "size": 4,
+      "current": 2,
+      "previous": 2,
+      "priority": 0.2252,
+      "components": {
+        "frequency": 0.0741,
+        "severity": 0.812,
+        "signal": 0.0,
+        "engagement": 0.0
+      },
+      "weights": {
+        "frequency": 0.3,
+        "severity": 0.25,
+        "signal": 0.25,
+        "engagement": 0.2
+      },
+      "action": "low_priority",
+      "trendState": "low_base_acceleration",
+      "signalScore": null,
+      "isEmerging": false,
+      "growthRate": 0.0,
+      "shareDeltaPp": -0.02,
+      "needsRefinement": false,
+      "engagement": 0.0,
+      "engagementAvailable": true,
+      "brief": {
+        "what_changed": "The cluster 'Background Git operations leave stale state in workspace' maintained a low base with 4 issues (2 in the previous period, 2 in the current), indicating a persistent but low-volume problem family with no acceleration in growth.",
+        "evidence_summary": "The cluster includes issues like #41305 where a canceled review-summary git diff on Windows leaves a stale .git/index.lock file, and #42775 where the Changes counter persists across old project conversations after commit, push, and restart. Additional issues report problems with large untracked files (#41147) and background review silently restoring deleted files (#41723).",
+        "affected_workflow": "Background Git operations and workspace state management",
+        "metrics_to_monitor": [
+          "Stale .git/index.lock file creation rate",
+          "Changes counter accuracy after Git operations",
+          "Background Git process completion status",
+          "UI state synchronization latency after commits"
+        ],
+        "product_hypothesis": "Background Git processes may not be handling interruptions or completions cleanly, leading to leftover lock files, stale state indicators, and unintended file system changes.",
+        "suggested_validation": "Reproduce scenarios where background Git operations are interrupted (e.g., canceling diffs) and monitor for leftover .git/index.lock files or persistent UI counters. Audit the code responsible for background Git process cleanup and state updates.",
+        "affected_surface_platform": "Primary surface: Codex App; Primary platform: Windows",
+        "recommended_investigation": "Investigate the lifecycle management of background Git operations in the Codex Desktop app, focusing on process termination, cleanup routines, and state synchronization with the UI."
+      },
+      "representatives": [
+        {
+          "issueNumber": 41305,
+          "title": "[Windows][Desktop 26.818.8289.0] canceled review-summary git diff leaves stale .git/index.lock",
+          "githubUrl": "https://github.com/openai/codex/issues/41305",
+          "state": "open"
+        },
+        {
+          "issueNumber": 41723,
+          "title": "[Regression][macOS] Background review silently restores previously deleted files into active checkout",
+          "githubUrl": "https://github.com/openai/codex/issues/41723",
+          "state": "open"
+        },
+        {
+          "issueNumber": 42775,
+          "title": "Codex Desktop Changes counter persists across old project conversations after commit, push, and restart",
+          "githubUrl": "https://github.com/openai/codex/issues/42775",
+          "state": "open"
+        }
+      ]
+    },
+    {
+      "id": "631dc371-2f56-4569-bf95-edaa1b86e661",
+      "clusterId": "a13b8fea-ce6a-4652-bce2-99c3a2be0688",
+      "clusterKey": "App / UI / UX:322995a4",
+      "name": "TUI rendering and display inconsistencies",
+      "category": "App / UI / UX",
+      "size": 12,
+      "current": 6,
+      "previous": 6,
+      "priority": 0.2012,
+      "components": {
+        "frequency": 0.2222,
+        "severity": 0.5,
+        "signal": 0.0,
+        "engagement": 0.0476
+      },
+      "weights": {
+        "frequency": 0.3,
+        "severity": 0.25,
+        "signal": 0.25,
+        "engagement": 0.2
+      },
+      "action": "low_priority",
+      "trendState": "normal_growth",
+      "signalScore": null,
+      "isEmerging": false,
+      "growthRate": 0.0,
+      "shareDeltaPp": -0.06,
+      "needsRefinement": false,
+      "engagement": 0.0476,
+      "engagementAvailable": true,
+      "brief": {
+        "what_changed": "Issue volume for TUI rendering and display inconsistencies remains steady at 12 issues across consecutive periods, with stable growth but a slight decrease in category share. The cluster continues to surface medium and high severity issues related to text rendering, layout, and output management.",
+        "evidence_summary": "Issues #41299 and #41347, both high severity, describe view flooding from historical tool output and severe eye strain from full-transcript replay during long sessions. Multiple medium-severity issues (#40345, #41440, #41604) report text truncation, stale transcript visibility, and a request to collapse large diffs.",
+        "affected_workflow": "TUI session interaction and transcript navigation",
+        "metrics_to_monitor": [
+          "tui_session_duration",
+          "tui_scroll_events_per_session",
+          "tui_output_overflow_events",
+          "user_reports_of_visual_strain",
+          "tui_memory_usage_during_session"
+        ],
+        "product_hypothesis": "The TUI's current rendering model may lack mechanisms for efficient output summarization and progressive disclosure, leading to information overload and visual inconsistencies during extended or complex sessions.",
+        "suggested_validation": "1. Conduct user interviews or usability tests focused on navigating long transcripts and managing tool output. 2. Prototype a collapsible output or summary view and measure its impact on task completion and reported strain.",
+        "affected_surface_platform": "CLI on macOS",
+        "recommended_investigation": "1. Audit the TUI rendering pipeline for long-session performance degradation and output accumulation logic. 2. Analyze user interaction patterns around transcript scrolling and tool output visibility to identify key pain points."
+      },
+      "representatives": [
+        {
+          "issueNumber": 40345,
+          "title": "TUI resize-reflow truncates a single long user message in the main chat view",
+          "githubUrl": "https://github.com/openai/codex/issues/40345",
+          "state": "open"
+        },
+        {
+          "issueNumber": 41299,
+          "title": "[CLI/TUI] Resumed threads ignore command collapsing and flood the view with historical tool output",
+          "githubUrl": "https://github.com/openai/codex/issues/41299",
+          "state": "open"
+        },
+        {
+          "issueNumber": 41347,
+          "title": "Severe eye strain from full-transcript replay in long TUI sessions",
+          "githubUrl": "https://github.com/openai/codex/issues/41347",
+          "state": "open"
+        }
+      ]
+    }
+  ],
+  "opportunityCount": 44
+}

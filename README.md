@@ -50,6 +50,15 @@ python -m pytest tests -q       # 配置一致性测试
 2. 把 `prompts/00_BOOTSTRAP.md` 交给 Codex（已完成）
 3. 按 `prompts/01` → `05` 逐轮执行，每轮先读文档、写 plan、小步提交
 
+## Static Demo Mode
+
+- GitHub Pages 使用仓库内的冻结 JSON：`data/frozen/codex-14d-2026-09-06/`，不连接 Supabase，也不在构建时运行 `snapshot_static.py`；Vercel 仍保留 Supabase runtime 查询。
+- 数据来源：`codex-14d-2026-09-06`，真实 `openai/codex` GitHub Issues，创建时间窗口为 2026-08-23（含）至 2026-09-06（不含）。本次文件冻结日期为 2026-09-30，**非实时数据**；六份 JSON 与原 `generated/static-data/` 逐字节一致。
+- 全量汇总口径：2254 条 Issues、2096 条 in-scope、197 个簇、25 个 Emerging Signals、15 个 needs_refinement、44 个 Opportunities、43 份非空 Action Brief；12 个 Releases 中 1 个历史充分、11 个历史不足。
+- **明细覆盖限制**：Feedback JSON 仅包含现有快照的 20 条明细；Insights JSON 仅包含 50 个簇明细，不覆盖全部 197 个簇。全量汇总来自原快照的聚合字段，不能用有限明细重新推导全量指标。保留 1 个缺失 Action Brief，不补造内容。
+- `manifest.json` 记录快照版本、冻结日期、每份文件的 SHA256、指标和覆盖限制。Pages workflow 在构建前校验文件、hash、指标、机会状态及排序；任一不符直接失败。更新快照需显式审核，构建不会自动刷新数据。
+- 快照目录的 `.gitattributes` 使用 `*.json -text` 保留原 JSON 的 CRLF 字节，防止 Git 换行转换导致 SHA256 跨平台不一致。
+
 ## MVP 页面
 - Overview — What Changed?
 - Feedback
@@ -114,6 +123,7 @@ python -m pytest tests -q       # 配置一致性测试
 - needs_refinement 宽簇不伪装成单一精确痛点
 
 ## 进度（Progress）
+- [x] Static Demo Migration Phase 3 — 六份 JSON 逐字节冻结至 `data/frozen/codex-14d-2026-09-06/`，manifest / SHA256 / 指标与覆盖限制已记录；Pages workflow 移除 Supabase secrets 和快照生成，增加失败即阻断的校验。干净副本 typecheck / ESLint / Vitest 19 / pytest 176 通过；无 Supabase 环境变量、无 dotenv、无 generated 数据的 Pages 构建通过，Vercel 六页仍为 runtime 动态路由。机会 priority / status / ordering 不变，三页严重度仍显示 `0.xx / 1`；未提交、未部署。
 - [x] Severity presentation consistency — Overview / Insights / Opportunities 共用数值展示 helper，簇平均 AI 严重度统一为 0–1 分数、两位小数；移除页面等级阈值，不改数据库、pipeline、评分或机会排序。pytest 176 / Vitest 19、typecheck、lint、正常生产构建与冻结快照静态构建通过；Portfolio 四张证据截图已从本地生产构建重新生成，未提交、未部署。
 - [x] Post-audit maintenance — pytest 文档计数更新为 176；移除共享 dynamic 重导出，Vercel 数据分支使用 connection() 保持请求时读取，Pages 继续使用静态快照。pytest 176 / Vitest 12、typecheck、lint、双目标构建通过，无 Route Segment Config 警告；六页运行时验证通过，Pages 零 Supabase 请求，health API 仅保留在 Vercel。
 - [x] Phase 0 — Bootstrap：Next.js shell、typed env、Supabase server client、`/api/health`、pipeline 环境、lint/typecheck/test

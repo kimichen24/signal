@@ -1,7 +1,7 @@
 /**
  * Target-aware data adapter.
  * - Vercel: delegates to existing Supabase query functions (runtime).
- * - GitHub Pages: reads from build-time generated static JSON snapshots.
+ * - GitHub Pages: reads from checked-in frozen JSON snapshots.
  *
  * Pages import from this module instead of directly from queries.ts.
  * Function signatures match the original Supabase queries.
@@ -14,7 +14,7 @@ import { connection } from "next/server";
 const isStatic = process.env.DEPLOY_TARGET === "github-pages";
 
 function readStaticJSON<T>(filename: string): T {
-  const path = join(process.cwd(), "generated", "static-data", filename);
+  const path = join(process.cwd(), "data", "frozen", "codex-14d-2026-09-06", filename);
   return JSON.parse(readFileSync(path, "utf-8")) as T;
 }
 
